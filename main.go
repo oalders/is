@@ -1,47 +1,74 @@
+// The main package is the command line runner
 package main
 
 import (
-	"fmt"
 	"os"
-	"runtime"
 
 	"github.com/alecthomas/kong"
 )
 
-var CLI struct {
-	Debug bool `help: turn on debugging statements`
-	OS    struct {
-		Name struct {
-			Eq  string `arg required:"" enum:"eq,ne"`
-			Val string `arg:"" required:""`
-		} `cmd`
-	} `cmd:"" help:"Match on OS."`
+var cli struct {
+	Debug   bool       `help:"turn on debugging statements"`
+	OS      OSCmd      `cmd:""`
+	Command CommandCmd `cmd:""`
+	Known   KnownCmd   `cmd:""`
+	There   ThereCmd   `cmd:"" help:"Check if command exists"`
+	Verbose bool       `help:"Print output to screen"`
+}
+
+type meta struct {
+	Success bool
+}
+
+// Context type tracks top level debugging flag
+type Context struct {
+	Debug   bool
+	Success bool
+	Verbose bool
+}
+
+// CommandCmd type is configuration for CLI level checks
+type CommandCmd struct {
+	Name struct {
+		Name string `arg:"" required:""`
+		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte"`
+		Val  string `arg:"" required:""`
+	} `arg:"" help:"Check version of command"`
+}
+
+// OSCmd type is configuration for OS level checks
+type OSCmd struct {
+	Name struct {
+		Op  string `arg:"" required:"" enum:"eq,ne"`
+		Val string `arg:"" required:""`
+	} `cmd:"" help:"Check OS name"`
+	Version struct {
+		Op  string `arg:"" required:"" enum:"eq,ne"`
+		Val string `arg:"" required:""`
+	} `cmd:"" help:"Check OS version"`
+}
+
+// KnownCmd type is configuration for printing environment info
+type KnownCmd struct {
+	Name struct {
+		Name string `arg:"" required:"" enum:"os,command-version"`
+		Val  string `arg:"" required:""`
+	} `arg:"" help:"Print without testing condition. e.g. \"is known os name\""`
+}
+
+// ThereCmd is configuration for finding executables
+type ThereCmd struct {
+	Name string `arg:"" required:""`
 }
 
 func main() {
-	ctx := kong.Parse(&CLI)
-	switch ctx.Command() {
-	case "rm <path>":
-	case "os name <eq> <val>":
-		// fmt.Printf("%+v", ctx.Args)
-		expected := ctx.Args[len(ctx.Args)-1]
-		if ctx.Args[2] == "eq" {
-			if runtime.GOOS == expected {
-				os.Exit(0)
-			}
-			fmt.Printf("Comparison failed: %s eq %s\n", runtime.GOOS, expected)
-			os.Exit(1)
-		}
-		if ctx.Args[2] == "ne" {
-			if ctx.Args[3] != runtime.GOOS {
-				os.Exit(0)
-			}
-			fmt.Printf("Comparison failed: %s ne %s\n", runtime.GOOS, expected)
-			os.Exit(1)
-		}
-		os.Exit(1)
-	case "ls":
-	default:
-		panic(ctx.Command())
+	ctx := kong.Parse(&cli)
+	var info meta
+	err := ctx.Run(&Context{Debug: cli.Debug, Verbose: cli.Verbose}, &info)
+	ctx.FatalIfErrorf(err)
+
+	if info.Success {
+		os.Exit(0)
 	}
+	os.Exit(1)
 }

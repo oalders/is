@@ -1,0 +1,71 @@
+---
+project_name: 'is'
+
+env:
+  - 'GO111MODULE=on'
+
+before:
+  hooks:
+    - 'go mod tidy'
+
+builds:
+  - id: 'is'
+    main: 'main.go'
+    binary: 'is'
+    goos:
+      - 'darwin'
+      - 'linux'
+      - 'windows'
+    ignore:
+      - goos: 'darwin'
+        goarch: '386'
+
+archives:
+  - id: 'is'
+    builds:
+      - 'is'
+    wrap_in_directory: true
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - 'CHANGELOG.md'
+      - 'LICENSE-APACHE'
+      - 'LICENSE-MIT'
+      - 'README.md'
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: '{{ .Tag }}-next'
+
+changelog:
+  skip: true
+
+nfpms:
+  -
+    id: 'is'
+    package_name: is
+    builds:
+      - 'is'
+    vendor: 'Olaf Alders'
+    homepage: 'https://www.olafalders.com/'
+    maintainer: 'Olaf Alders <https://github.com/oalders>'
+    description: 'Lint included and excluded paths in a precious config file.'
+    license: 'Apache 2.0 or MIT'
+    provides:
+      - is
+    formats:
+      - 'deb'
+      - 'rpm'
+    bindir: '/usr/bin'
+    contents:
+      - src: 'CHANGELOG.md'
+        dst: '/usr/share/doc/is/CHANGELOG.md'
+      - src: 'LICENSE-APACHE'
+        dst: '/usr/share/doc/is/LICENSE-APACHE'
+      - src: 'LICENSE-MIT'
+        dst: '/usr/share/doc/is/LICENSE-MIT'
+      - src: 'README.md'
+        dst: '/usr/share/doc/is/README.md'
