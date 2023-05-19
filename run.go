@@ -70,6 +70,7 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 		switch r.Name.Val {
 		case "name":
 			info.Success = true
+			fmt.Printf("%s\n", runtime.GOOS)
 		case "version":
 			if runtime.GOOS == "darwin" {
 				o, err := exec.Command("sw_vers", "-productVersion").Output()
