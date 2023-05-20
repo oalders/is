@@ -24,6 +24,7 @@ archives:
   - id: 'is'
     builds:
       - 'is'
+    rlcp: true
     wrap_in_directory: true
     format_overrides:
       - goos: windows
