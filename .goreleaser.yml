@@ -52,7 +52,7 @@ nfpms:
     vendor: 'Olaf Alders'
     homepage: 'https://www.olafalders.com/'
     maintainer: 'Olaf Alders <https://github.com/oalders>'
-    description: 'Lint included and excluded paths in a precious config file.'
+    description: 'is tells you what is available in your environment'
     license: 'Apache 2.0 or MIT'
     provides:
       - is
