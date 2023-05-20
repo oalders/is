@@ -17,6 +17,9 @@ jobs:
       - name: Build
         run: go build -v ./...
 
+      - name: Install executables required for testing
+        run: sudo apt install tmux
+
       - name: Test
         run: go test -race -coverprofile=coverage.out -covermode=atomic -v ./...
 
