@@ -98,7 +98,11 @@ func (r *ThereCmd) Run(ctx *Context, info *meta) error {
 	cmd := exec.Command("command", "-v", r.Name)
 	err := cmd.Run()
 	if err != nil {
-		return err
+		cmd := exec.Command("which", r.Name)
+		err := cmd.Run()
+		if err != nil {
+			return err
+		}
 	}
 	info.Success = true
 	return nil

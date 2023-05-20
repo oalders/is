@@ -18,7 +18,10 @@ func cliOutput(cliName string) (string, error) {
 
 	o, err := exec.Command("command", cliName, arg).Output()
 	if err != nil {
-		return "", err
+		o, err = exec.Command(cliName, arg).Output()
+		if err != nil {
+			return "", err
+		}
 	}
 
 	return cliVersion(cliName, string(o)), nil
