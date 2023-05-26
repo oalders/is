@@ -8,12 +8,13 @@ import (
 )
 
 var cli struct {
-	Debug   bool       `help:"turn on debugging statements"`
-	OS      OSCmd      `cmd:""`
-	Command CommandCmd `cmd:""`
-	Known   KnownCmd   `cmd:""`
-	There   ThereCmd   `cmd:"" help:"Check if command exists"`
-	Verbose bool       `help:"Print output to screen"`
+	Debug   bool             `help:"turn on debugging statements"`
+	OS      OSCmd            `cmd:""`
+	Command CommandCmd       `cmd:""`
+	Known   KnownCmd         `cmd:""`
+	There   ThereCmd         `cmd:"" help:"Check if command exists"`
+	Verbose bool             `help:"Print output to screen"`
+	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
 type meta struct {
@@ -62,7 +63,10 @@ type ThereCmd struct {
 }
 
 func main() {
-	ctx := kong.Parse(&cli)
+	ctx := kong.Parse(&cli,
+		kong.Vars{
+			"version": "0.0.3",
+		})
 	var info meta
 	err := ctx.Run(&Context{Debug: cli.Debug, Verbose: cli.Verbose}, &info)
 	ctx.FatalIfErrorf(err)
