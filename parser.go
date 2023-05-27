@@ -29,9 +29,11 @@ func cliOutput(cliName string) (string, error) {
 
 func cliVersion(cliName, output string) string {
 	regexen := map[string]string{
+		"git":  `git version (\d+\.\d+\.\d+)\s`,
 		"go":   `go version go(\d+\.\d+\.\d+)\s`,
 		"perl": `This is perl .* \((v\d+\.\d+\.\d+)\)`,
 		"tmux": `tmux (.*)\b`,
+		"vim":  `VIM - Vi IMproved (\d+\.\d+)\s`,
 	}
 	re := regexp.MustCompile(cliName + `\s+(.*)\b`)
 	if v, exists := regexen[cliName]; exists {
