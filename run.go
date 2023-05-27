@@ -20,13 +20,17 @@ func (r *CommandCmd) Run(ctx *Context, info *meta) error {
 
 	got, err := version.NewVersion(output)
 	if err != nil {
-		// fmt.Printf("Could not parse %s %v", output, err)
+		if ctx.Debug {
+			fmt.Printf("Could not parse %s %v", output, err)
+		}
 		return err
 	}
 
 	want, err := version.NewVersion(r.Name.Val)
 	if err != nil {
-		// fmt.Printf("Could not parse %s %v", wantArg, err)
+		if ctx.Debug {
+			fmt.Printf("Could not parse %s %v", r.Name.Val, err)
+		}
 		return err
 	}
 
