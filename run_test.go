@@ -21,7 +21,7 @@ func TestThereCmd(t *testing.T) {
 		cmd := ThereCmd{Name: "catzzzzz"}
 		info := meta{}
 		err := cmd.Run(&ctx, &info)
-		assert.Error(t, err)
+		assert.NoError(t, err)
 		assert.False(t, info.Success)
 	}
 }

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"runtime"
@@ -101,6 +102,9 @@ func (r *ThereCmd) Run(ctx *Context, info *meta) error {
 		cmd := exec.Command("which", r.Name)
 		err := cmd.Run()
 		if err != nil {
+			if e := (&exec.ExitError{}); errors.As(err, &e) {
+				return nil
+			}
 			return err
 		}
 	}
