@@ -1,3 +1,7 @@
+## 0.0.4 - 2023-05-26
+
+- Add a --version flag
+
 ## 0.0.3 - 2023-05-20
 
 - Tweak goreleaser config
