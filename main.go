@@ -65,7 +65,7 @@ type ThereCmd struct {
 func main() {
 	ctx := kong.Parse(&cli,
 		kong.Vars{
-			"version": "0.0.4",
+			"version": "0.0.5",
 		})
 	var info meta
 	err := ctx.Run(&Context{Debug: cli.Debug, Verbose: cli.Verbose}, &info)
