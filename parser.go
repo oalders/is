@@ -34,10 +34,9 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"git":     `git version (\d+\.\d+\.\d+)\s`,
 		"go":      `go version go(\d+\.\d+\.\d+)\s`,
 		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
-		"python3": `Python (\d+\.\d+\.\d+)\b`,
 		"ruby":    `(\d+\.\d+\.[\d\w]+)\b`,
-		"tree":    `(v\d+\.\d+\.\d+)\b`,
 		"tmux":    `tmux (.*)\b`,
+		"tree":    `(v\d+\.\d+\.\d+)\b`,
 		"vim":     `VIM - Vi IMproved (\d+\.\d+)\s`,
 	}
 	var re *regexp.Regexp
