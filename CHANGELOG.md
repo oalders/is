@@ -1,4 +1,6 @@
-## 0.0.5
+## 0.0.5 - 2023-05-29
+
+- Silence error output when a command is not found
 
 ## 0.0.4 - 2023-05-26
 
