@@ -1,11 +1,85 @@
 # is (is) an inspector for your environment
 
-## Why?
+## What is `is`?
 
-I want to know things about my environment when I'm installing my dot files and I'm tired of having to remember the different
-incantations of software versioning.
+`is` is an inspector for your environment. It tries to make it a little bit
+easier to run commands which rely on a specific OS or a specific CLI version.
 
-`go version` vs `perl --version` vs `tmux -V`
+### Quick Examples
+
+#### Is the minimum version of this tool available?
+
+```bash
+$ is command git gt 2.40.0 && echo 🥳 || echo 😢
+```
+
+#### Is this the target Operating System?
+```bash
+$ (is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧)
+```
+
+#### Do we have go? Then update `go` binaries used by `vim-go`.
+
+```bash
+#!/bin/bash
+
+if eval is there go; then
+    nvim +':GoUpdateBinaries' +qa || true
+fi
+```
+
+#### Extracting Versions of Available Tools
+
+Forget about the remembering the different `version` incantations of command
+line tools. Don't make up regexes to extract the actual version number.
+
+### Go (version)
+
+```text
+$ go version
+go version go1.20.4 darwin/arm64
+```
+
+```text
+$ is known command-version go
+1.20.4
+```
+
+### Perl (--version)
+
+```text
+$ perl --version
+
+This is perl 5, version 36, subversion 1 (v5.36.1) built for darwin-2level
+
+Copyright 1987-2023, Larry Wall
+
+Perl may be copied only under the terms of either the Artistic License or the
+GNU General Public License, which may be found in the Perl 5 source kit.
+
+Complete documentation for Perl, including FAQ lists, should be found on
+this system using "man perl" or "perldoc perl".  If you have access to the
+Internet, point your browser at https://www.perl.org/, the Perl Home Page.
+```
+
+```text
+$ is known command-version perl
+v5.36.1
+```
+
+### tmux (-V)
+
+```text
+$ tmux -V
+tmux 3.3a
+```
+
+```text
+$ is known command-version tmux
+3.3a
+```
+
+
 
 ## How Does it Work?
 
@@ -17,7 +91,8 @@ In a script:
 #!/bin/bash
 
 if eval is os name eq darwin; then
-  echo "this is a mac"
+  # This is a Mac. Creating karabiner config dir."
+  mkdir -p "$HOME/.config/karabiner"
 fi
 ```
 
@@ -94,9 +169,13 @@ Comparison failed: darwin eq darwins
 
 ## Installation
 
-[Download releases](https://github.com/oalders/is/releases) or use [ubi](https://github.com/houseabsolute/ubi).
+* [Download a release](https://github.com/oalders/is/releases)
+* `go install`
+  * `go install github.com/oalders/is@latestgithub.com/oalders/is@latest`
+  * `go install github.com/oalders/is@latestgithub.com/oalders/is@v0.0.5`
+* Use [ubi](https://github.com/houseabsolute/ubi)
 
-```
+```bash
 #!/usr/bin/env bash
 
 set -eux
