@@ -10,6 +10,7 @@ import (
 func cliOutput(ctx *Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"go":   "version",
+		"ssh":  "-V",
 		"tmux": "-V",
 	}
 	arg := "--version"
@@ -17,7 +18,14 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 		arg = v
 	}
 
-	o, err := exec.Command("command", cliName, arg).Output()
+	cmd := exec.Command("command", cliName, arg)
+	o, err := cmd.Output()
+
+	// ssh -V doesn't print to STDOUT?
+	if len(o) == 0 && err == nil {
+		o, err = cmd.CombinedOutput()
+	}
+
 	if err != nil {
 		o, err = exec.Command(cliName, arg).Output()
 		if err != nil {
@@ -34,7 +42,9 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"git":     `git version (\d+\.\d+\.\d+)\s`,
 		"go":      `go version go(\d+\.\d+\.\d+)\s`,
 		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
+		"rg":      `ripgrep ([0-9.]*)\b`,
 		"ruby":    `(\d+\.\d+\.[\d\w]+)\b`,
+		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
 		"tmux":    `tmux (.*)\b`,
 		"tree":    `(v\d+\.\d+\.\d+)\b`,
 		"vim":     `VIM - Vi IMproved (\d+\.\d+)\s`,
