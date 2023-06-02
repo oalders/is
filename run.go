@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -13,7 +14,7 @@ import (
 
 // Run logic for CLI checks
 func (r *CommandCmd) Run(ctx *Context, info *meta) error {
-	output, err := cliOutput(r.Name.Name)
+	output, err := cliOutput(ctx, r.Name.Name)
 	if err != nil {
 		return err
 	}
@@ -87,12 +88,20 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 			}
 		}
 	case "command-version":
-		output, err := cliOutput(r.Name.Val)
+		output, err := cliOutput(ctx, r.Name.Val)
 		if err != nil {
+			re := regexp.MustCompile(`executable file not found`)
+			if re.MatchString(err.Error()) {
+				if ctx.Debug {
+					fmt.Printf("executable file \"%s\" not found", r.Name.Val)
+				}
+				return nil
+			}
 			return err
 		}
-		fmt.Printf("%s\n", string(output))
-		info.Success = true
+		if len(output) > 0 {
+			info.Success = true
+		}
 	}
 
 	return nil
@@ -101,8 +110,14 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 // Run logic for There checks
 func (r *ThereCmd) Run(ctx *Context, info *meta) error {
 	cmd := exec.Command("command", "-v", r.Name)
+	if ctx.Debug {
+		fmt.Printf("Running \"command -v %s\"\n", r.Name)
+	}
 	err := cmd.Run()
 	if err != nil {
+		if ctx.Debug {
+			fmt.Printf("Running \"which %s\"\n", r.Name)
+		}
 		cmd := exec.Command("which", r.Name)
 		err := cmd.Run()
 		if err != nil {

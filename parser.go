@@ -2,11 +2,12 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 )
 
-func cliOutput(cliName string) (string, error) {
+func cliOutput(ctx *Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"go":   "version",
 		"tmux": "-V",
@@ -24,10 +25,10 @@ func cliOutput(cliName string) (string, error) {
 		}
 	}
 
-	return cliVersion(cliName, string(o)), nil
+	return cliVersion(ctx, cliName, string(o)), nil
 }
 
-func cliVersion(cliName, output string) string {
+func cliVersion(ctx *Context, cliName, output string) string {
 	regexen := map[string]string{
 		"git":  `git version (\d+\.\d+\.\d+)\s`,
 		"go":   `go version go(\d+\.\d+\.\d+)\s`,
@@ -35,13 +36,18 @@ func cliVersion(cliName, output string) string {
 		"tmux": `tmux (.*)\b`,
 		"vim":  `VIM - Vi IMproved (\d+\.\d+)\s`,
 	}
-	re := regexp.MustCompile(cliName + `\s+(.*)\b`)
+	var re *regexp.Regexp
 	if v, exists := regexen[cliName]; exists {
 		re = regexp.MustCompile(v)
+	} else {
+		re = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
 	}
+
 	matches := re.FindAllStringSubmatch(output, -1)
 	if len(matches) > 0 {
 		output = matches[0][1]
+	} else if ctx.Debug {
+		fmt.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
 	}
 	return output
 }
