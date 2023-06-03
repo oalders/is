@@ -30,11 +30,15 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 
 func cliVersion(ctx *Context, cliName, output string) string {
 	regexen := map[string]string{
-		"git":  `git version (\d+\.\d+\.\d+)\s`,
-		"go":   `go version go(\d+\.\d+\.\d+)\s`,
-		"perl": `This is perl .* \((v\d+\.\d+\.\d+)\)`,
-		"tmux": `tmux (.*)\b`,
-		"vim":  `VIM - Vi IMproved (\d+\.\d+)\s`,
+		"ansible": `ansible \[core (\d+\.\d+\.\d+)\]`,
+		"git":     `git version (\d+\.\d+\.\d+)\s`,
+		"go":      `go version go(\d+\.\d+\.\d+)\s`,
+		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
+		"python3": `Python (\d+\.\d+\.\d+)\b`,
+		"ruby":    `(\d+\.\d+\.[\d\w]+)\b`,
+		"tree":    `(v\d+\.\d+\.\d+)\b`,
+		"tmux":    `tmux (.*)\b`,
+		"vim":     `VIM - Vi IMproved (\d+\.\d+)\s`,
 	}
 	var re *regexp.Regexp
 	if v, exists := regexen[cliName]; exists {
