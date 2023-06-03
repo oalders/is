@@ -101,6 +101,7 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 		}
 		if len(output) > 0 {
 			info.Success = true
+			fmt.Printf("%s\n", strings.TrimRight(string(output), "\n"))
 		}
 	}
 
