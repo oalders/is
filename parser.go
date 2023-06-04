@@ -29,7 +29,11 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 	if err != nil {
 		o, err = exec.Command(cliName, arg).Output()
 		if err != nil {
-			return "", err
+			o, err = exec.Command("/bin/bash", "-c", cliName, arg).Output()
+			if err != nil {
+				fmt.Printf("err %+v\n", err)
+				return "", err
+			}
 		}
 	}
 
@@ -42,6 +46,8 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"git":     `git version (\d+\.\d+\.\d+)\s`,
 		"go":      `go version go(\d+\.\d+\.\d+)\s`,
 		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
+		"python":  `Python ([0-9.]*)\b`,
+		"python3": `Python ([0-9.]*)\b`,
 		"rg":      `ripgrep ([0-9.]*)\b`,
 		"ruby":    `(\d+\.\d+\.[\d\w]+)\b`,
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
