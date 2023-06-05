@@ -24,6 +24,8 @@ This is free software; you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.`,
 	))
 	assert.Equal(t, "1.20.4", cliVersion(ctx, "go", "go version go1.20.4 darwin/amd64"))
+	assert.Equal(t, "v20.2.0", cliVersion(ctx, "node", "v20.2.0"))
+	assert.Equal(t, "9.6.6", cliVersion(ctx, "npx", "9.6.6"))
 	assert.Equal(t, "v5.36.0", cliVersion(
 		ctx,
 		"perl",
