@@ -44,6 +44,7 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 func cliVersion(ctx *Context, cliName, output string) string {
 	regexen := map[string]string{
 		"ansible": `ansible \[core (\d+\.\d+\.\d+)\]`,
+		"bash":    `GNU bash, version ([\d\.]*)\b`,
 		"git":     `git version (\d+\.\d+\.\d+)\s`,
 		"go":      `go version go(\d+\.\d+\.\d+)\s`,
 		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,

@@ -13,6 +13,16 @@ func TestCLIVersion(t *testing.T) {
 		"ansible",
 		`ansible [core 2.14.2]`),
 	)
+	assert.Equal(t, "5.2.15", cliVersion(
+		ctx,
+		"bash",
+		`GNU bash, version 5.2.15(1)-release (aarch64-apple-darwin22.1.0)
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+This is free software; you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.`,
+	))
 	assert.Equal(t, "1.20.4", cliVersion(ctx, "go", "go version go1.20.4 darwin/amd64"))
 	assert.Equal(t, "v5.36.0", cliVersion(
 		ctx,
