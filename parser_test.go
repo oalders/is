@@ -20,6 +20,7 @@ func TestCLIVersion(t *testing.T) {
 		`This is perl 5, version 36, subversion 0 (v5.36.0) built for darwin-2level`),
 	)
 	assert.Equal(t, "3.11.3", cliVersion(ctx, "python", "Python 3.11.3"))
+	assert.Equal(t, "2.3.1-8-gd908472", cliVersion(ctx, "plenv", "plenv 2.3.1-8-gd908472"))
 	assert.Equal(t, "3.11.3", cliVersion(ctx, "python3", "Python 3.11.3"))
 	assert.Equal(t, "3.3a", cliVersion(ctx, "tmux", "tmux 3.3a"))
 	assert.Equal(t, "v2.1.0", cliVersion(

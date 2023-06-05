@@ -47,6 +47,7 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"git":     `git version (\d+\.\d+\.\d+)\s`,
 		"go":      `go version go(\d+\.\d+\.\d+)\s`,
 		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
+		"plenv":   `plenv ([\d\w\-\.]*)\b`,
 		"python":  `Python ([0-9.]*)\b`,
 		"python3": `Python ([0-9.]*)\b`,
 		"rg":      `ripgrep ([0-9.]*)\b`,
