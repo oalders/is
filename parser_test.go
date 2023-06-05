@@ -41,6 +41,7 @@ There is NO WARRANTY, to the extent permitted by law.`,
 		`tree v2.1.0 © 1996 - 2022 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro`),
 	)
 	assert.Equal(t, "0.0.24", cliVersion(ctx, "ubi", "ubi 0.0.24"))
+	assert.Equal(t, "5.9", cliVersion(ctx, "zsh", "zsh 5.9 (x86_64-apple-darwin22.0)"))
 }
 
 func TestCLIOutput(t *testing.T) {

@@ -57,6 +57,7 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"tmux":    `tmux (.*)\b`,
 		"tree":    `(v\d+\.\d+\.\d+)\b`,
 		"vim":     `VIM - Vi IMproved (\d+\.\d+)\s`,
+		"zsh":     `zsh ([\d\.]*)\b`,
 	}
 	var re *regexp.Regexp
 	if v, exists := regexen[cliName]; exists {
