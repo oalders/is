@@ -23,6 +23,7 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 
 	// ssh -V doesn't print to STDOUT?
 	if len(o) == 0 && err == nil {
+		cmd = exec.Command("command", cliName, arg)
 		o, err = cmd.CombinedOutput()
 	}
 
