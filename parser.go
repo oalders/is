@@ -10,6 +10,7 @@ import (
 func cliOutput(ctx *Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"go":   "version",
+		"lua":  "-v",
 		"ssh":  "-V",
 		"tmux": "-V",
 	}
@@ -42,22 +43,38 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 }
 
 func cliVersion(ctx *Context, cliName, output string) string {
+	floatRegex := `[\d.]*`
+	floatWithTrailingLetterRegex := `[\d.]*\w`
+	intRegex := `\d*`
+	vStringRegex := `v[\d.]*`
+	vStringWithTrailingLetterRegex := `v[\d.]*\w`
 	regexen := map[string]string{
-		"ansible": `ansible \[core (\d+\.\d+\.\d+)\]`,
-		"bash":    `GNU bash, version ([\d\.]*)\b`,
-		"git":     `git version (\d+\.\d+\.\d+)\s`,
-		"go":      `go version go(\d+\.\d+\.\d+)\s`,
-		"perl":    `This is perl .* \((v\d+\.\d+\.\d+)\)`,
+		"ansible": fmt.Sprintf(`ansible \[core (%s)\b`, floatRegex),
+		"bash":    fmt.Sprintf(`version (%s)\b`, floatRegex),
+		"curl":    fmt.Sprintf(`curl (%s)\b`, floatRegex),
+		"docker":  fmt.Sprintf(`version (%s),`, floatRegex),
+		"gcc":     fmt.Sprintf(`clang version (%s)\b`, floatRegex),
+		"git":     fmt.Sprintf(`git version (%s)\s`, floatRegex),
+		"gh":      fmt.Sprintf(`gh version (%s)\b`, floatRegex),
+		"go":      fmt.Sprintf(`go version go(%s)\s`, floatRegex),
+		"jq":      fmt.Sprintf(`jq-(%s)\b`, floatRegex),
+		"less":    fmt.Sprintf(`less (%s)\b`, intRegex),
+		"lua":     fmt.Sprintf(`Lua (%s)\b`, floatRegex),
+		"md5sum":  fmt.Sprintf(`md5sum \(GNU coreutils\) (%s)\b`, floatRegex),
+		"perl":    fmt.Sprintf(`This is perl .* \((%s)\)\s`, vStringRegex),
 		"plenv":   `plenv ([\d\w\-\.]*)\b`,
-		"python":  `Python ([0-9.]*)\b`,
-		"python3": `Python ([0-9.]*)\b`,
-		"rg":      `ripgrep ([0-9.]*)\b`,
-		"ruby":    `(\d+\.\d+\.[\d\w]+)\b`,
+		"python":  fmt.Sprintf(`Python (%s)\b`, floatRegex),
+		"python3": fmt.Sprintf(`Python (%s)\b`, floatRegex),
+		"rg":      fmt.Sprintf(`ripgrep (%s)\b`, floatRegex),
+		"ruby":    `ruby (\d+\.\d+\.[\d\w]+)\b`,
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
-		"tmux":    `tmux (.*)\b`,
-		"tree":    `(v\d+\.\d+\.\d+)\b`,
-		"vim":     `VIM - Vi IMproved (\d+\.\d+)\s`,
-		"zsh":     `zsh ([\d\.]*)\b`,
+		"tar":     fmt.Sprintf(`bsdtar (%s)\b`, floatRegex),
+		"tmux":    fmt.Sprintf(`tmux (%s)\b`, floatWithTrailingLetterRegex),
+		"tree":    fmt.Sprintf(`tree (%s)\b`, vStringWithTrailingLetterRegex),
+		"trurl":   fmt.Sprintf(`trurl version (%s)\b`, floatRegex),
+		"unzip":   fmt.Sprintf(`UnZip (%s)\b`, floatRegex),
+		"vim":     fmt.Sprintf(`VIM - Vi IMproved (%s)\b`, floatRegex),
+		"zsh":     fmt.Sprintf(`zsh (%s)\b`, floatRegex),
 	}
 	var re *regexp.Regexp
 	if v, exists := regexen[cliName]; exists {
