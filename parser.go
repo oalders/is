@@ -19,24 +19,24 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 		arg = v
 	}
 
-	cmd := exec.Command("command", cliName, arg)
+	args := []string{cliName, arg}
+	if ctx.Debug {
+		fmt.Printf("Running: %s %s\n", args[0], args[1])
+	}
+	cmd := exec.Command(cliName, arg)
 	o, err := cmd.Output()
 
 	// ssh -V doesn't print to STDOUT?
 	if len(o) == 0 && err == nil {
-		cmd = exec.Command("command", cliName, arg)
+		if ctx.Debug {
+			fmt.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
+		}
+		cmd = exec.Command(cliName, arg)
 		o, err = cmd.CombinedOutput()
 	}
 
 	if err != nil {
-		o, err = exec.Command(cliName, arg).Output()
-		if err != nil {
-			o, err = exec.Command("/bin/bash", "-c", cliName, arg).Output()
-			if err != nil {
-				fmt.Printf("err %+v\n", err)
-				return "", err
-			}
-		}
+		return "", err
 	}
 
 	return cliVersion(ctx, cliName, string(o)), nil
