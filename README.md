@@ -151,13 +151,86 @@ is there tmux && echo "we have tmux"
 ## `is known`: Print Information Without Testing It
 
 ```text
-$ is known command-version tmux
-3.3a
+$ is known os name
+linux
+```
+
+```text
+$ is known os pretty-name
+Ubuntu 22.04.2 LTS
+```
+
+Possible values for `name`:
+
+```text
+aix
+android
+darwin
+dragonfly
+freebsd
+illumos
+ios
+js
+linux
+netbsd
+openbsd
+plan9
+solaris
+windows
+```
+
+```text
+$ is known os arch
+amd64
+```
+
+Possible values for `arch`:
+
+```text
+386
+amd64
+arm
+arm64
+loong64
+mips
+mips64
+mips64le
+mipsle
+ppc64
+ppc64le
+riscv64
+s390x
+wasm
+```
+
+```text
+$ is known os id
+ubuntu
+```
+
+```text
+$ is known os id-like
+debian
+```
+
+```text
+$ is known os version
+22.04
+```
+
+```text
+$ is known os version-codename
+jammy
 ```
 
 ```text
 $ is known os name
 darwin
+```
+
+```text
+$ is known command-version tmux
+3.3a
 ```
 
 ## `--debug`: Get Hints in Debug Mode
