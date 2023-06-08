@@ -12,6 +12,8 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
+const osReleaseFile = "/etc/os-release"
+
 // Run logic for CLI checks
 func (r *CommandCmd) Run(ctx *Context, info *meta) error {
 	output, err := cliOutput(ctx, r.Name.Name)
@@ -74,17 +76,83 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 	switch r.Name.Name {
 	case "os":
 		switch r.Name.Val {
+		case "arch":
+			fmt.Println(runtime.GOARCH)
+			info.Success = true
+		case "id":
+			if runtime.GOOS == "linux" {
+				if ctx.Debug {
+					fmt.Println("Trying to parse " + osReleaseFile)
+				}
+				release, err := maybeReadINI(osReleaseFile)
+				if err == nil && release != nil && release.ID != "" {
+					fmt.Printf("%s\n", release.ID)
+					info.Success = true
+				}
+			}
+		case "id-like":
+			if runtime.GOOS == "linux" {
+				if ctx.Debug {
+					fmt.Println("Trying to parse " + osReleaseFile)
+				}
+				release, err := maybeReadINI(osReleaseFile)
+				if err == nil && release != nil && release.IDLike != "" {
+					fmt.Printf("%s\n", release.IDLike)
+					info.Success = true
+				}
+			}
+		case "pretty-name":
+			if runtime.GOOS == "linux" {
+				if ctx.Debug {
+					fmt.Println("Trying to parse " + osReleaseFile)
+				}
+				release, err := maybeReadINI(osReleaseFile)
+				if err == nil && release != nil && release.PrettyName != "" {
+					fmt.Printf("%s\n", release.PrettyName)
+					info.Success = true
+				}
+			}
 		case "name":
 			info.Success = true
 			fmt.Printf("%s\n", runtime.GOOS)
 		case "version":
 			if runtime.GOOS == "darwin" {
-				o, err := exec.Command("sw_vers", "-productVersion").Output()
+				o, err := macVersion()
 				if err != nil {
 					return err
 				}
-				fmt.Printf("%s\n", strings.TrimRight(string(o), "\n"))
+				fmt.Printf("%s\n", o)
 				info.Success = true
+			} else if runtime.GOOS == "linux" {
+				if ctx.Debug {
+					fmt.Println("Trying to parse " + osReleaseFile)
+				}
+				release, err := maybeReadINI(osReleaseFile)
+				if err == nil && release != nil && release.VersionID != "" {
+					fmt.Printf("%s\n", release.VersionID)
+					info.Success = true
+				}
+			}
+		case "version-codename":
+			if runtime.GOOS == "darwin" {
+				if ctx.Debug {
+					fmt.Println("Trying to parse " + osReleaseFile)
+				}
+				release, err := maybeReadINI(osReleaseFile)
+				if err == nil && release != nil && release.VersionCodeName != "" {
+					fmt.Printf("%s\n", release.VersionCodeName)
+					info.Success = true
+				}
+			} else if runtime.GOOS == "darwin" {
+				o, err := macVersion()
+				if err != nil {
+					return err
+				}
+				name := macCodeName(o)
+				if name != "" {
+					fmt.Println(name)
+					info.Success = true
+				}
 			}
 		}
 	case "command-version":
@@ -130,4 +198,50 @@ func (r *ThereCmd) Run(ctx *Context, info *meta) error {
 	}
 	info.Success = true
 	return nil
+}
+
+func macCodeName(osVersion string) string {
+	got, err := version.NewVersion(osVersion)
+	if err != nil {
+		return ""
+	}
+	// https://en.wikipedia.org/wiki/List_of_Apple_codenames
+	segments := got.Segments()
+	name := ""
+	switch segments[0] {
+	case 13:
+		name = "ventura"
+	case 12:
+		name = "monterey"
+	case 11:
+		name = "big sur"
+	case 10:
+		switch segments[1] {
+		case 15:
+			name = "catalina"
+		case 14:
+			name = "mojave"
+		case 13:
+			name = "high sierra"
+		case 12:
+			name = "sierra"
+		case 11:
+			name = "el capitan"
+		case 10:
+			name = "yosemite"
+		case 9:
+			name = "mavericks"
+		case 8:
+			name = "mountain lion" // released 2012
+		}
+	}
+	return name
+}
+
+func macVersion() (string, error) {
+	o, err := exec.Command("sw_vers", "-productVersion").Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimRight(string(o), "\n"), nil
 }
