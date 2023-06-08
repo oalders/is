@@ -83,8 +83,8 @@ func TestCommandCmd(t *testing.T) {
 		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
-		cmd.Name.Val = "1"
 		cmd.Name.Op = "ne"
+		cmd.Name.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
@@ -94,8 +94,8 @@ func TestCommandCmd(t *testing.T) {
 		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmuxzzz"
-		cmd.Name.Val = "1"
 		cmd.Name.Op = "ne"
+		cmd.Name.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
@@ -105,8 +105,8 @@ func TestCommandCmd(t *testing.T) {
 		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
-		cmd.Name.Val = "1"
 		cmd.Name.Op = "eq"
+		cmd.Name.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success)
