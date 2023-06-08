@@ -44,6 +44,12 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 			`This is perl 5, version 36, subversion 0 (v5.36.0) built for darwin-2level`,
 		},
 		{"oh-my-posh", "16.9.1", "16.9.1"},
+		{
+			"pihole", "v5.17.1",
+			`  Pi-hole version is v5.17.1 (Latest: v5.17.1)
+  AdminLTE version is v5.20.1 (Latest: v5.20.1)
+  FTL version is v5.23 (Latest: v5.23)`,
+		},
 		{"plenv", "2.3.1-8-gd908472", "plenv 2.3.1-8-gd908472"},
 		{"python", "3.11.3", "Python 3.11.3"},
 		{"python3", "3.11.3", "Python 3.11.3"},

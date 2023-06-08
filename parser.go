@@ -9,10 +9,11 @@ import (
 
 func cliOutput(ctx *Context, cliName string) (string, error) {
 	versionArg := map[string]string{
-		"go":   "version",
-		"lua":  "-v",
-		"ssh":  "-V",
-		"tmux": "-V",
+		"go":     "version",
+		"lua":    "-v",
+		"pihole": "-v",
+		"ssh":    "-V",
+		"tmux":   "-V",
 	}
 	arg := "--version"
 	if v, exists := versionArg[cliName]; exists {
@@ -62,6 +63,7 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"lua":     fmt.Sprintf(`Lua (%s)\b`, floatRegex),
 		"md5sum":  fmt.Sprintf(`md5sum \(GNU coreutils\) (%s)\b`, floatRegex),
 		"perl":    fmt.Sprintf(`This is perl .* \((%s)\)\s`, vStringRegex),
+		"pihole":  fmt.Sprintf(`Pi-hole version is (%s)`, vStringRegex),
 		"plenv":   `plenv ([\d\w\-\.]*)\b`,
 		"python":  fmt.Sprintf(`Python (%s)\b`, floatRegex),
 		"python3": fmt.Sprintf(`Python (%s)\b`, floatRegex),
