@@ -73,90 +73,13 @@ func (r *OSCmd) Run(ctx *Context, info *meta) error {
 
 // Run logic for printing
 func (r *KnownCmd) Run(ctx *Context, info *meta) error {
+	result := ""
+	var err error
 	switch r.Name.Name {
 	case "os":
-		switch r.Name.Val {
-		case "arch":
-			fmt.Println(runtime.GOARCH)
-			info.Success = true
-		case "id":
-			if runtime.GOOS == "linux" {
-				if ctx.Debug {
-					fmt.Println("Trying to parse " + osReleaseFile)
-				}
-				release, err := maybeReadINI(osReleaseFile)
-				if err == nil && release != nil && release.ID != "" {
-					fmt.Printf("%s\n", release.ID)
-					info.Success = true
-				}
-			}
-		case "id-like":
-			if runtime.GOOS == "linux" {
-				if ctx.Debug {
-					fmt.Println("Trying to parse " + osReleaseFile)
-				}
-				release, err := maybeReadINI(osReleaseFile)
-				if err == nil && release != nil && release.IDLike != "" {
-					fmt.Printf("%s\n", release.IDLike)
-					info.Success = true
-				}
-			}
-		case "pretty-name":
-			if runtime.GOOS == "linux" {
-				if ctx.Debug {
-					fmt.Println("Trying to parse " + osReleaseFile)
-				}
-				release, err := maybeReadINI(osReleaseFile)
-				if err == nil && release != nil && release.PrettyName != "" {
-					fmt.Printf("%s\n", release.PrettyName)
-					info.Success = true
-				}
-			}
-		case "name":
-			info.Success = true
-			fmt.Printf("%s\n", runtime.GOOS)
-		case "version":
-			if runtime.GOOS == "darwin" {
-				o, err := macVersion()
-				if err != nil {
-					return err
-				}
-				fmt.Printf("%s\n", o)
-				info.Success = true
-			} else if runtime.GOOS == "linux" {
-				if ctx.Debug {
-					fmt.Println("Trying to parse " + osReleaseFile)
-				}
-				release, err := maybeReadINI(osReleaseFile)
-				if err == nil && release != nil && release.VersionID != "" {
-					fmt.Printf("%s\n", release.VersionID)
-					info.Success = true
-				}
-			}
-		case "version-codename":
-			if runtime.GOOS == "darwin" {
-				if ctx.Debug {
-					fmt.Println("Trying to parse " + osReleaseFile)
-				}
-				release, err := maybeReadINI(osReleaseFile)
-				if err == nil && release != nil && release.VersionCodeName != "" {
-					fmt.Printf("%s\n", release.VersionCodeName)
-					info.Success = true
-				}
-			} else if runtime.GOOS == "darwin" {
-				o, err := macVersion()
-				if err != nil {
-					return err
-				}
-				name := macCodeName(o)
-				if name != "" {
-					fmt.Println(name)
-					info.Success = true
-				}
-			}
-		}
+		result, err = osInfo(ctx, r.Name.Val)
 	case "command-version":
-		output, err := cliOutput(ctx, r.Name.Val)
+		result, err = cliOutput(ctx, r.Name.Val)
 		if err != nil {
 			re := regexp.MustCompile(`executable file not found`)
 			if re.MatchString(err.Error()) {
@@ -167,11 +90,17 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 			}
 			return err
 		}
-		if len(output) > 0 {
-			info.Success = true
-			fmt.Printf("%s\n", strings.TrimRight(string(output), "\n"))
+		if len(result) > 0 {
+			if err != nil {
+				result = strings.TrimRight(string(result), "\n")
+			}
 		}
 	}
+	if err != nil {
+		return err
+	}
+	fmt.Println(result)
+	info.Success = true
 
 	return nil
 }
