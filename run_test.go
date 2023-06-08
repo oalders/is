@@ -111,6 +111,17 @@ func TestCommandCmd(t *testing.T) {
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success)
 	}
+
+	{
+		ctx := Context{Debug: true, Verbose: true}
+		cmd := CommandCmd{}
+		cmd.Name.Name = "tmux"
+		cmd.Name.Op = "eq"
+		cmd.Name.Val = "zzz"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
 }
 
 func TestMacCodeName(t *testing.T) {
