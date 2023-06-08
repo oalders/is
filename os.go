@@ -60,7 +60,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 			}
 		}
 	case "version-codename":
-		if runtime.GOOS == "darwin" {
+		if runtime.GOOS == "linux" {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -78,6 +78,9 @@ func osInfo(ctx *Context, argName string) (string, error) {
 				result = name
 			}
 		}
+	}
+	if result != "" {
+		ctx.Success = true
 	}
 	return result, nil
 }
