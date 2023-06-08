@@ -17,10 +17,6 @@ var cli struct {
 	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
-type meta struct {
-	Success bool
-}
-
 // Context type tracks top level debugging flag
 type Context struct {
 	Debug   bool
@@ -67,11 +63,11 @@ func main() {
 		kong.Vars{
 			"version": "0.0.5",
 		})
-	var info meta
-	err := ctx.Run(&Context{Debug: cli.Debug, Verbose: cli.Verbose}, &info)
+	runContext := Context{Debug: cli.Debug, Verbose: cli.Verbose}
+	err := ctx.Run(&runContext)
 	ctx.FatalIfErrorf(err)
 
-	if info.Success {
+	if runContext.Success {
 		os.Exit(0)
 	}
 	os.Exit(1)

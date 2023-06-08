@@ -15,7 +15,7 @@ import (
 const osReleaseFile = "/etc/os-release"
 
 // Run logic for CLI checks
-func (r *CommandCmd) Run(ctx *Context, info *meta) error {
+func (r *CommandCmd) Run(ctx *Context) error {
 	output, err := cliOutput(ctx, r.Name.Name)
 	if err != nil {
 		return err
@@ -37,8 +37,8 @@ func (r *CommandCmd) Run(ctx *Context, info *meta) error {
 		return err
 	}
 
-	info.Success = compareCLIVersions(r.Name.Op, got, want)
-	if !info.Success {
+	ctx.Success = compareCLIVersions(r.Name.Op, got, want)
+	if !ctx.Success {
 		if ctx.Debug {
 			fmt.Printf("Comparison failed: %s %s %s\n", output, r.Name.Op, want)
 		}
@@ -51,20 +51,20 @@ func (r *CommandCmd) Run(ctx *Context, info *meta) error {
 }
 
 // Run logic for OS checks
-func (r *OSCmd) Run(ctx *Context, info *meta) error {
+func (r *OSCmd) Run(ctx *Context) error {
 	got := runtime.GOOS
 	want := r.Name.Val
 
 	switch r.Name.Op {
 	case "eq":
-		info.Success = got == want
+		ctx.Success = got == want
 		if ctx.Debug {
-			fmt.Printf("Comparison %s == %s %t\n", got, want, info.Success)
+			fmt.Printf("Comparison %s == %s %t\n", got, want, ctx.Success)
 		}
 	case "ne":
-		info.Success = got != want
+		ctx.Success = got != want
 		if ctx.Debug {
-			fmt.Printf("Comparison %s != %s %t\n", got, want, info.Success)
+			fmt.Printf("Comparison %s != %s %t\n", got, want, ctx.Success)
 		}
 	}
 
@@ -72,7 +72,7 @@ func (r *OSCmd) Run(ctx *Context, info *meta) error {
 }
 
 // Run logic for printing
-func (r *KnownCmd) Run(ctx *Context, info *meta) error {
+func (r *KnownCmd) Run(ctx *Context) error {
 	result := ""
 	var err error
 	switch r.Name.Name {
@@ -100,13 +100,13 @@ func (r *KnownCmd) Run(ctx *Context, info *meta) error {
 		return err
 	}
 	fmt.Println(result)
-	info.Success = true
+	ctx.Success = true
 
 	return nil
 }
 
 // Run logic for There checks
-func (r *ThereCmd) Run(ctx *Context, info *meta) error {
+func (r *ThereCmd) Run(ctx *Context) error {
 	cmd := exec.Command("command", "-v", r.Name)
 	if ctx.Debug {
 		fmt.Printf("Running \"command -v %s\"\n", r.Name)
@@ -125,7 +125,7 @@ func (r *ThereCmd) Run(ctx *Context, info *meta) error {
 			return err
 		}
 	}
-	info.Success = true
+	ctx.Success = true
 	return nil
 }
 

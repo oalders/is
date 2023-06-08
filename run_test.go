@@ -8,46 +8,42 @@ import (
 )
 
 func TestThereCmd(t *testing.T) {
-	ctx := Context{Debug: true}
-
 	{
+		ctx := Context{Debug: true}
 		cmd := ThereCmd{Name: "cat"}
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.True(t, info.Success)
+		assert.True(t, ctx.Success)
 	}
 	{
+		ctx := Context{Debug: true}
 		cmd := ThereCmd{Name: "catzzzzz"}
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.False(t, info.Success)
+		assert.False(t, ctx.Success)
 	}
 }
 
 // func (r *OSCmd) Run(ctx *Context, info *meta) error {
 
 func TestOSCmd(t *testing.T) {
-	ctx := Context{Debug: true}
-
 	{
+		ctx := Context{Debug: true}
 		cmd := OSCmd{}
 		cmd.Name.Op = "eq"
 		cmd.Name.Val = "zzz"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.False(t, info.Success)
+		assert.False(t, ctx.Success)
 	}
 	{
+		ctx := Context{Debug: true}
 		cmd := OSCmd{}
 		cmd.Name.Op = "ne"
 		cmd.Name.Val = "zzz"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.True(t, info.Success)
+		assert.True(t, ctx.Success)
 	}
 }
 
@@ -58,67 +54,62 @@ func TestKnownCmd(t *testing.T) {
 		cmd := KnownCmd{}
 		cmd.Name.Name = "os"
 		cmd.Name.Val = "name"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.True(t, info.Success)
+		assert.True(t, ctx.Success)
 	}
 	if runtime.GOOS == "darwin" {
 		{
 			cmd := KnownCmd{}
 			cmd.Name.Name = "os"
 			cmd.Name.Val = "version"
-			info := meta{}
-			err := cmd.Run(&ctx, &info)
+			err := cmd.Run(&ctx)
 			assert.NoError(t, err)
-			assert.True(t, info.Success)
+			assert.True(t, ctx.Success)
 		}
 	}
 	{
 		cmd := KnownCmd{}
 		cmd.Name.Name = "command-version"
 		cmd.Name.Val = "tmux"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.True(t, info.Success)
+		assert.True(t, ctx.Success)
 	}
 }
 
 func TestCommandCmd(t *testing.T) {
-	ctx := Context{Debug: true, Verbose: true}
-
 	{
+		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
 		cmd.Name.Val = "1"
 		cmd.Name.Op = "ne"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.True(t, info.Success)
+		assert.True(t, ctx.Success)
 	}
 
 	{
+		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmuxzzz"
 		cmd.Name.Val = "1"
 		cmd.Name.Op = "ne"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.Error(t, err)
-		assert.False(t, info.Success)
+		assert.False(t, ctx.Success)
 	}
 
 	{
+		ctx := Context{Debug: true, Verbose: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
 		cmd.Name.Val = "1"
 		cmd.Name.Op = "eq"
-		info := meta{}
-		err := cmd.Run(&ctx, &info)
+		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.False(t, info.Success)
+		assert.False(t, ctx.Success)
 	}
 }
 
