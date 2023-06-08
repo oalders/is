@@ -23,25 +23,24 @@ func (r *CommandCmd) Run(ctx *Context) error {
 
 	got, err := version.NewVersion(output)
 	if err != nil {
-		if ctx.Debug {
-			fmt.Printf("Could not parse %s %v", output, err)
-		}
-		return err
+		return errors.Join(fmt.Errorf(
+			"Could not parse the version (%s) found for (%s)",
+			output,
+			got,
+		), err)
 	}
 
 	want, err := version.NewVersion(r.Name.Val)
 	if err != nil {
-		if ctx.Debug {
-			fmt.Printf("Could not parse %s %v", r.Name.Val, err)
-		}
-		return err
+		return errors.Join(fmt.Errorf(
+			"Could not parse the version (%s) which you provided",
+			r.Name.Val,
+		), err)
 	}
 
 	ctx.Success = compareCLIVersions(r.Name.Op, got, want)
-	if !ctx.Success {
-		if ctx.Debug {
-			fmt.Printf("Comparison failed: %s %s %s\n", output, r.Name.Op, want)
-		}
+	if !ctx.Success && ctx.Debug {
+		fmt.Printf("Comparison failed: %s %s %s\n", output, r.Name.Op, want)
 	}
 
 	if ctx.Verbose {
