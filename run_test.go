@@ -138,3 +138,14 @@ func TestMacCodeName(t *testing.T) {
 	assert.Equal(t, "mountain lion", macCodeName("10.8"))
 	assert.Equal(t, "", macCodeName("10.7"))
 }
+
+func TestMacVersion(t *testing.T) {
+	version, err := macVersion()
+	if runtime.GOOS == "darwin" {
+		assert.NotEmpty(t, version)
+		assert.NoError(t, err)
+	} else {
+		assert.Empty(t, version)
+		assert.Error(t, err)
+	}
+}
