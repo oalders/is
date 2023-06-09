@@ -51,8 +51,7 @@ func TestKnownCmd(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
-		cmd.Name.Name = "os"
-		cmd.Name.Val = "name"
+		cmd.OS.Attr = "name"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
@@ -60,8 +59,7 @@ func TestKnownCmd(t *testing.T) {
 	if runtime.GOOS == "darwin" {
 		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
-		cmd.Name.Name = "os"
-		cmd.Name.Val = "version"
+		cmd.OS.Attr = "version"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
@@ -69,8 +67,8 @@ func TestKnownCmd(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
-		cmd.Name.Name = "command-version"
-		cmd.Name.Val = "tmux"
+		cmd.CLI.Attr = "version"
+		cmd.CLI.Name = "tmux"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
@@ -79,21 +77,21 @@ func TestKnownCmd(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
-		cmd.Name.Name = "command-version"
-		cmd.Name.Val = "tmuxxx"
+		cmd.CLI.Attr = "version"
+		cmd.CLI.Name = "tmuxxx"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
+		assert.False(t, ctx.Success, "No success")
 	}
 }
 
 func TestCommandCmd(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
-		cmd := CommandCmd{}
-		cmd.Name.Name = "tmux"
-		cmd.Name.Op = "ne"
-		cmd.Name.Val = "1"
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "ne"
+		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
@@ -101,10 +99,10 @@ func TestCommandCmd(t *testing.T) {
 
 	{
 		ctx := Context{Debug: true}
-		cmd := CommandCmd{}
-		cmd.Name.Name = "tmuxzzz"
-		cmd.Name.Op = "ne"
-		cmd.Name.Val = "1"
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmuxzzz"
+		cmd.Version.Op = "ne"
+		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
@@ -112,10 +110,10 @@ func TestCommandCmd(t *testing.T) {
 
 	{
 		ctx := Context{Debug: true}
-		cmd := CommandCmd{}
-		cmd.Name.Name = "tmux"
-		cmd.Name.Op = "eq"
-		cmd.Name.Val = "1"
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "eq"
+		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success)
@@ -123,10 +121,10 @@ func TestCommandCmd(t *testing.T) {
 
 	{
 		ctx := Context{Debug: true}
-		cmd := CommandCmd{}
-		cmd.Name.Name = "tmux"
-		cmd.Name.Op = "eq"
-		cmd.Name.Val = "zzz"
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "eq"
+		cmd.Version.Val = "zzz"
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)

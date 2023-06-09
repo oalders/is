@@ -15,8 +15,8 @@ import (
 const osReleaseFile = "/etc/os-release"
 
 // Run logic for CLI checks
-func (r *CommandCmd) Run(ctx *Context) error {
-	output, err := cliOutput(ctx, r.Name.Name)
+func (r *CLICmd) Run(ctx *Context) error {
+	output, err := cliOutput(ctx, r.Version.Name)
 	if err != nil {
 		return err
 	}
@@ -30,17 +30,17 @@ func (r *CommandCmd) Run(ctx *Context) error {
 		), err)
 	}
 
-	want, err := version.NewVersion(r.Name.Val)
+	want, err := version.NewVersion(r.Version.Val)
 	if err != nil {
 		return errors.Join(fmt.Errorf(
 			"Could not parse the version (%s) which you provided",
-			r.Name.Val,
+			r.Version.Val,
 		), err)
 	}
 
-	ctx.Success = compareCLIVersions(r.Name.Op, got, want)
+	ctx.Success = compareCLIVersions(r.Version.Op, got, want)
 	if !ctx.Success && ctx.Debug {
-		fmt.Printf("Comparison failed: %s %s %s\n", output, r.Name.Op, want)
+		fmt.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
 	}
 
 	return nil
@@ -71,16 +71,15 @@ func (r *OSCmd) Run(ctx *Context) error {
 func (r *KnownCmd) Run(ctx *Context) error {
 	result := ""
 	var err error
-	switch r.Name.Name {
-	case "os":
-		result, err = osInfo(ctx, r.Name.Val)
-	case "command-version":
-		result, err = cliOutput(ctx, r.Name.Val)
+	if r.OS.Attr != "" {
+		result, err = osInfo(ctx, r.OS.Attr)
+	} else if r.CLI.Attr != "" {
+		result, err = cliOutput(ctx, r.CLI.Name)
 		if err != nil {
 			re := regexp.MustCompile(`executable file not found`)
 			if re.MatchString(err.Error()) {
 				if ctx.Debug {
-					fmt.Printf("executable file \"%s\" not found", r.Name.Val)
+					fmt.Printf("executable file \"%s\" not found", r.CLI.Name)
 				}
 				return nil
 			}

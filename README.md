@@ -72,7 +72,7 @@ is there go && nvim +':GoUpdateBinaries' +qa
 ### What's the version of bash?
 
 ```text
-$ is known command-version bash
+$ is known cli version bash
 5.2.15
 ```
 
@@ -99,12 +99,12 @@ is os name ne darwin && echo "this is not a mac"
 
 ## Top Level Commands
 
-### command
+### cli
 
 Compare versions of available commands. Returns exit code of 0 if condition is true and exit code of 1 if condition is false.
 
 ```text
-is command go gte 1.20.4 || bash upgrade-go.sh
+is cli version go gte 1.20.4 || bash upgrade-go.sh
 ```
 
 Supported comparisons are:
@@ -248,10 +248,10 @@ $ is known os version-codename
 jammy
 ```
 
-#### command-version
+#### cli version
 
 ```text
-$ is known command-version tmux
+$ is known cli version tmux
 3.3a
 ```
 
