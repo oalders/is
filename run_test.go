@@ -76,6 +76,15 @@ func TestKnownCmd(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
+
+	{
+		cmd := KnownCmd{}
+		cmd.Name.Name = "command-version"
+		cmd.Name.Val = "tmuxxx"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
 }
 
 func TestCommandCmd(t *testing.T) {
