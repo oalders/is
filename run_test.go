@@ -80,7 +80,7 @@ func TestKnownCmd(t *testing.T) {
 
 func TestCommandCmd(t *testing.T) {
 	{
-		ctx := Context{Debug: true, Verbose: true}
+		ctx := Context{Debug: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
 		cmd.Name.Op = "ne"
@@ -91,7 +91,7 @@ func TestCommandCmd(t *testing.T) {
 	}
 
 	{
-		ctx := Context{Debug: true, Verbose: true}
+		ctx := Context{Debug: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmuxzzz"
 		cmd.Name.Op = "ne"
@@ -102,7 +102,7 @@ func TestCommandCmd(t *testing.T) {
 	}
 
 	{
-		ctx := Context{Debug: true, Verbose: true}
+		ctx := Context{Debug: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
 		cmd.Name.Op = "eq"
@@ -113,7 +113,7 @@ func TestCommandCmd(t *testing.T) {
 	}
 
 	{
-		ctx := Context{Debug: true, Verbose: true}
+		ctx := Context{Debug: true}
 		cmd := CommandCmd{}
 		cmd.Name.Name = "tmux"
 		cmd.Name.Op = "eq"

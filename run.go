@@ -43,9 +43,6 @@ func (r *CommandCmd) Run(ctx *Context) error {
 		fmt.Printf("Comparison failed: %s %s %s\n", output, r.Name.Op, want)
 	}
 
-	if ctx.Verbose {
-		fmt.Println(output)
-	}
 	return nil
 }
 

@@ -13,7 +13,6 @@ var cli struct {
 	Command CommandCmd       `cmd:""`
 	Known   KnownCmd         `cmd:""`
 	There   ThereCmd         `cmd:"" help:"Check if command exists"`
-	Verbose bool             `help:"Print output to screen"`
 	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
@@ -21,7 +20,6 @@ var cli struct {
 type Context struct {
 	Debug   bool
 	Success bool
-	Verbose bool
 }
 
 // CommandCmd type is configuration for CLI level checks
@@ -63,7 +61,7 @@ func main() {
 		kong.Vars{
 			"version": "0.0.5",
 		})
-	runContext := Context{Debug: cli.Debug, Verbose: cli.Verbose}
+	runContext := Context{Debug: cli.Debug}
 	err := ctx.Run(&runContext)
 	ctx.FatalIfErrorf(err)
 
