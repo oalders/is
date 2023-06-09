@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "X3v"
+exit 0

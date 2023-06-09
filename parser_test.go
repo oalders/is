@@ -80,6 +80,15 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 			ctx, test[0], test[2],
 		))
 	}
+
+	{
+		ctx := &Context{Debug: true}
+		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
+		assert.NoError(t, err)
+		assert.Equal(t, "X3v\n", o)
+		got := cliVersion(ctx, "testdata/bin/bad-version", o)
+		assert.Equal(t, "X3v\n", got)
+	}
 }
 
 func TestCLIOutput(t *testing.T) {
@@ -101,5 +110,12 @@ func TestCLIOutput(t *testing.T) {
 		o, err := (cliOutput(ctx, "tmuxxx"))
 		assert.Error(t, err)
 		assert.Empty(t, o)
+	}
+
+	{
+		ctx := &Context{Debug: true}
+		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
+		assert.NoError(t, err)
+		assert.Equal(t, "X3v\n", o)
 	}
 }
