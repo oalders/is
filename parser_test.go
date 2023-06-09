@@ -83,19 +83,21 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 }
 
 func TestCLIOutput(t *testing.T) {
-	ctx := &Context{}
 	{
+		ctx := &Context{Debug: true}
 		o, err := (cliOutput(ctx, "ssh"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 	{
+		ctx := &Context{}
 		o, err := (cliOutput(ctx, "tmux"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 
 	{
+		ctx := &Context{}
 		o, err := (cliOutput(ctx, "tmuxxx"))
 		assert.Error(t, err)
 		assert.Empty(t, o)

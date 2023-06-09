@@ -48,9 +48,8 @@ func TestOSCmd(t *testing.T) {
 }
 
 func TestKnownCmd(t *testing.T) {
-	ctx := Context{Debug: true}
-
 	{
+		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.Name.Name = "os"
 		cmd.Name.Val = "name"
@@ -59,16 +58,16 @@ func TestKnownCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	if runtime.GOOS == "darwin" {
-		{
-			cmd := KnownCmd{}
-			cmd.Name.Name = "os"
-			cmd.Name.Val = "version"
-			err := cmd.Run(&ctx)
-			assert.NoError(t, err)
-			assert.True(t, ctx.Success)
-		}
+		ctx := Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.Name.Name = "os"
+		cmd.Name.Val = "version"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
 	}
 	{
+		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.Name.Name = "command-version"
 		cmd.Name.Val = "tmux"
@@ -78,6 +77,7 @@ func TestKnownCmd(t *testing.T) {
 	}
 
 	{
+		ctx := Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.Name.Name = "command-version"
 		cmd.Name.Val = "tmuxxx"
