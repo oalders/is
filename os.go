@@ -6,6 +6,8 @@ import (
 	"runtime"
 )
 
+const osReleaseFile = "/etc/os-release"
+
 func osInfo(ctx *Context, argName string) (string, error) {
 	result := ""
 	switch argName {

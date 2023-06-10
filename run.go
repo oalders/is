@@ -12,8 +12,6 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
-const osReleaseFile = "/etc/os-release"
-
 // Run logic for CLI checks
 func (r *CLICmd) Run(ctx *Context) error {
 	output, err := cliOutput(ctx, r.Version.Name)

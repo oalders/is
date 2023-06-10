@@ -50,7 +50,7 @@ type KnownCmd struct {
 		Attr string `arg:"" required:"" enum:"arch,id,id-like,pretty-name,name,version,version-codename"`
 	} `cmd:"" help:"Print without testing condition. e.g. \"is known os name\""`
 	CLI struct {
-		Attr string `arg:"" name="attribute" required:"" enum:"version"`
+		Attr string `arg:"" name:"attribute" required:"" enum:"version"`
 		Name string `arg:"" required:""`
 	} `cmd:"" help:"Print without testing condition. e.g. \"is known cli version git\""`
 }
