@@ -3,11 +3,70 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"runtime"
+
+	"github.com/hashicorp/go-version"
 )
 
 const osReleaseFile = "/etc/os-release"
+
+func (r *OSCmd) Run(ctx *Context) error {
+	want := r.Val
+
+	attr, err := osInfo(ctx, r.Attr)
+	if err != nil {
+		return err
+	}
+
+	switch r.Attr {
+	case "version":
+		got, err := version.NewVersion(attr)
+		if err != nil {
+			return errors.Join(fmt.Errorf(
+				"Could not parse the version (%s) found for (%s)",
+				attr,
+				got,
+			), err)
+		}
+
+		want, err := version.NewVersion(r.Val)
+		if err != nil {
+			return errors.Join(fmt.Errorf(
+				"Could not parse the version (%s) which you provided",
+				r.Val,
+			), err)
+		}
+
+		ctx.Success = compareCLIVersions(r.Op, got, want)
+		if !ctx.Success && ctx.Debug {
+			fmt.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
+		}
+	default:
+		switch r.Op {
+		case "eq":
+			ctx.Success = attr == want
+			if ctx.Debug {
+				fmt.Printf("Comparison %s == %s %t\n", attr, want, ctx.Success)
+			}
+		case "ne":
+			ctx.Success = attr != want
+			if ctx.Debug {
+				fmt.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
+			}
+		}
+	}
+
+	if ctx.Debug {
+		os, err := aggregatedOS()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s\n", os)
+	}
+	return nil
+}
 
 func osInfo(ctx *Context, argName string) (string, error) {
 	result := ""

@@ -30,3 +30,46 @@ func TestOSInfo(t *testing.T) {
 		}
 	}
 }
+
+func TestOSCmd(t *testing.T) {
+	{
+		ctx := Context{Debug: true}
+		cmd := OSCmd{}
+		cmd.Attr = "name"
+		cmd.Op = "eq"
+		cmd.Val = "zzz"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := OSCmd{}
+		cmd.Attr = "name"
+		cmd.Op = "ne"
+		cmd.Val = "zzz"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := OSCmd{}
+		cmd.Attr = "version"
+		cmd.Op = "eq"
+		cmd.Val = "1"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := OSCmd{}
+		cmd.Attr = "version"
+		cmd.Op = "ne"
+		cmd.Val = "1"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+}
