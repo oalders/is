@@ -1,6 +1,6 @@
 [commands.golangci-lint]
 type = "lint"
-include = ["**/*.go", "foo"]
+include = ["**/*.go",]
 run_mode = "dirs"
 cmd = [
     "golangci-lint",
@@ -24,13 +24,13 @@ ignore_stderr = [
     "The .+ file is not unique",
 ]
 
-[commands.ppath]
-type = "lint"
-exclude = [
-  "this-does-not-exist.txt",
-  "nope*",
-]
-include = ["precious.toml"]
-run_mode = "files"
-cmd = ["go", "run", "main.go"]
-ok_exit_codes = 0
+# [commands.ppath]
+# type = "lint"
+# exclude = [
+  # "this-does-not-exist.txt",
+  # "nope*",
+# ]
+# include = ["precious.toml"]
+# run_mode = "files"
+# cmd = ["ppath"]
+# ok_exit_codes = 0
