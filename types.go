@@ -1,7 +1,7 @@
 // package main contains types used by this library
 package main
 
-type OSRelease struct {
+type osRelease struct {
 	ID              string `json:"id"`
 	IDLike          string `json:"id-like,omitempty"`
 	Name            string `json:"name"`

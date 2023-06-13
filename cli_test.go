@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCommandCmd(t *testing.T) {
+func TestCliCmd(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := CLICmd{}

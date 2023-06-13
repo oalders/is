@@ -12,6 +12,7 @@ import (
 
 const osReleaseFile = "/etc/os-release"
 
+// Run "is os ..."
 func (r *OSCmd) Run(ctx *Context) error {
 	want := r.Val
 
@@ -153,7 +154,7 @@ func aggregatedOS() (string, error) {
 		return "", err
 	}
 	if release == nil {
-		release = &OSRelease{}
+		release = &osRelease{}
 	}
 	release.Name = runtime.GOOS
 

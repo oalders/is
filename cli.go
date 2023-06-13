@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
-// Run logic for CLI checks
+// Run "is cli ..."
 func (r *CLICmd) Run(ctx *Context) error {
 	output, err := cliOutput(ctx, r.Version.Name)
 	if err != nil {

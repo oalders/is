@@ -8,17 +8,7 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-// OSRelease contains parsed data from /etc/os-release files
-type OSRelease struct {
-	ID              string `json:"id"`
-	IDLike          string `json:"id-like,omitempty"`
-	Name            string `json:"name"`
-	PrettyName      string `json:"pretty-name,omitempty"`
-	Version         string `json:"version,omitempty"`
-	VersionCodeName string `json:"version-codename,omitempty"`
-}
-
-func maybeReadINI(path string) (*OSRelease, error) {
+func maybeReadINI(path string) (*osRelease, error) {
 	_, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -33,7 +23,7 @@ func maybeReadINI(path string) (*OSRelease, error) {
 	}
 
 	section := cfg.Section("")
-	release := OSRelease{
+	release := osRelease{
 		ID:              section.Key("ID").String(),
 		IDLike:          section.Key("ID_LIKE").String(),
 		Name:            section.Key("NAME").String(),

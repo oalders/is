@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-// Run logic for There checks
+// Run "is there ..."
 func (r *ThereCmd) Run(ctx *Context) error {
 	cmd := exec.Command("command", "-v", r.Name)
 	if ctx.Debug {

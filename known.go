@@ -1,3 +1,4 @@
+// package main contains the logic for the "known" command
 package main
 
 import (
@@ -6,7 +7,7 @@ import (
 	"strings"
 )
 
-// Run logic for printing
+// Run "is known ..."
 func (r *KnownCmd) Run(ctx *Context) error {
 	result := ""
 	var err error

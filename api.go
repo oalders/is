@@ -1,4 +1,4 @@
-// package main has the api for the CLI
+// package main contains the api for the CLI
 package main
 
 import "github.com/alecthomas/kong"
