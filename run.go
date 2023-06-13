@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
-	"runtime"
 	"strings"
 
 	"github.com/hashicorp/go-version"
@@ -46,19 +45,48 @@ func (r *CLICmd) Run(ctx *Context) error {
 
 // Run logic for OS checks
 func (r *OSCmd) Run(ctx *Context) error {
-	got := runtime.GOOS
-	want := r.Name.Val
+	want := r.Val
 
-	switch r.Name.Op {
-	case "eq":
-		ctx.Success = got == want
-		if ctx.Debug {
-			fmt.Printf("Comparison %s == %s %t\n", got, want, ctx.Success)
+	attr, err := osInfo(ctx, r.Attr)
+	if err != nil {
+		return err
+	}
+
+	switch r.Val {
+	case "version":
+		got, err := version.NewVersion(attr)
+		if err != nil {
+			return errors.Join(fmt.Errorf(
+				"Could not parse the version (%s) found for (%s)",
+				attr,
+				got,
+			), err)
 		}
-	case "ne":
-		ctx.Success = got != want
-		if ctx.Debug {
-			fmt.Printf("Comparison %s != %s %t\n", got, want, ctx.Success)
+
+		want, err := version.NewVersion(r.Val)
+		if err != nil {
+			return errors.Join(fmt.Errorf(
+				"Could not parse the version (%s) which you provided",
+				r.Val,
+			), err)
+		}
+
+		ctx.Success = compareCLIVersions(r.Op, got, want)
+		if !ctx.Success && ctx.Debug {
+			fmt.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
+		}
+	default:
+		switch r.Op {
+		case "eq":
+			ctx.Success = attr == want
+			if ctx.Debug {
+				fmt.Printf("Comparison %s == %s %t\n", attr, want, ctx.Success)
+			}
+		case "ne":
+			ctx.Success = attr != want
+			if ctx.Debug {
+				fmt.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
+			}
 		}
 	}
 

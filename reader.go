@@ -3,7 +3,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"gopkg.in/ini.v1"
@@ -30,7 +29,6 @@ func maybeReadINI(path string) (*OSRelease, error) {
 
 	cfg, err := ini.Load(path)
 	if err != nil {
-		fmt.Printf("Fail to read file: %v", err)
 		return nil, err
 	}
 

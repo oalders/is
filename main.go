@@ -33,15 +33,9 @@ type CLICmd struct {
 
 // OSCmd type is configuration for OS level checks
 type OSCmd struct {
-	Name struct {
-		Name string `arg:"" required:""`
-		Op   string `arg:"" required:"" enum:"eq,ne"`
-		Val  string `arg:"" required:""`
-	} `cmd:"" help:"Check OS name"`
-	Version struct {
-		Op  string `arg:"" required:"" enum:"eq,ne"`
-		Val string `arg:"" required:""`
-	} `cmd:"" help:"Check OS version"`
+	Attr string `arg:"" required:"" name:"attribute"`
+	Op   string `arg:"" required:"" enum:"eq,ne"`
+	Val  string `arg:"" required:""`
 }
 
 // KnownCmd type is configuration for printing environment info
