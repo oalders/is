@@ -10,12 +10,12 @@ import (
 
 // OSRelease contains parsed data from /etc/os-release files
 type OSRelease struct {
-	ID              string
-	IDLike          string
-	Name            string
-	PrettyName      string
-	VersionID       string
-	VersionCodeName string
+	ID              string `json:"id"`
+	IDLike          string `json:"id-like,omitempty"`
+	Name            string `json:"name"`
+	PrettyName      string `json:"pretty-name,omitempty"`
+	Version         string `json:"version,omitempty"`
+	VersionCodeName string `json:"version-codename,omitempty"`
 }
 
 func maybeReadINI(path string) (*OSRelease, error) {
@@ -39,7 +39,7 @@ func maybeReadINI(path string) (*OSRelease, error) {
 		Name:            section.Key("NAME").String(),
 		PrettyName:      section.Key("PRETTY_NAME").String(),
 		VersionCodeName: section.Key("VERSION_CODENAME").String(),
-		VersionID:       section.Key("VERSION_ID").String(),
+		Version:         section.Key("VERSION_ID").String(),
 	}
 	return &release, nil
 }

@@ -10,7 +10,7 @@ func TestMaybeReadINI(t *testing.T) {
 	{
 		release, err := maybeReadINI("testdata/etc/os-release")
 		assert.NoError(t, err)
-		assert.Equal(t, "18.04", release.VersionID)
+		assert.Equal(t, "18.04", release.Version)
 	}
 	{
 		// if the file does not exist on this system, that's not an error

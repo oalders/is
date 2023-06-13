@@ -2,6 +2,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"runtime"
 )
@@ -57,8 +58,8 @@ func osInfo(ctx *Context, argName string) (string, error) {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
-			if err == nil && release != nil && release.VersionID != "" {
-				result = release.VersionID
+			if err == nil && release != nil && release.Version != "" {
+				result = release.Version
 			}
 		}
 	case "version-codename":
@@ -85,4 +86,25 @@ func osInfo(ctx *Context, argName string) (string, error) {
 		ctx.Success = true
 	}
 	return result, nil
+}
+
+func aggregatedOS() (string, error) {
+	release, err := maybeReadINI(osReleaseFile)
+	if err != nil {
+		return "", err
+	}
+	release.Name = runtime.GOOS
+
+	if runtime.GOOS == "darwin" {
+		v, err := macVersion()
+		if err != nil {
+			return "", err
+		}
+		release.Version = v
+	}
+	data, err := json.MarshalIndent(release, "", "    ")
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }

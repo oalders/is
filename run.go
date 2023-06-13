@@ -52,7 +52,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 		return err
 	}
 
-	switch r.Val {
+	switch r.Attr {
 	case "version":
 		got, err := version.NewVersion(attr)
 		if err != nil {
@@ -90,6 +90,13 @@ func (r *OSCmd) Run(ctx *Context) error {
 		}
 	}
 
+	if ctx.Debug {
+		os, err := aggregatedOS()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s\n", os)
+	}
 	return nil
 }
 
@@ -97,8 +104,16 @@ func (r *OSCmd) Run(ctx *Context) error {
 func (r *KnownCmd) Run(ctx *Context) error {
 	result := ""
 	var err error
+
 	if r.OS.Attr != "" {
 		result, err = osInfo(ctx, r.OS.Attr)
+		if ctx.Debug {
+			os, err := aggregatedOS()
+			if err != nil {
+				return err
+			}
+			fmt.Printf("%s\n", os)
+		}
 	} else if r.CLI.Attr != "" {
 		result, err = cliOutput(ctx, r.CLI.Name)
 		if err != nil {
@@ -117,6 +132,7 @@ func (r *KnownCmd) Run(ctx *Context) error {
 			}
 		}
 	}
+
 	if err != nil {
 		return err
 	}
