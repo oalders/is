@@ -1,42 +1,5 @@
 # is (is) an inspector for your environment
 
-<!-- vim-markdown-toc GFM -->
-
-* [Introduction](#introduction)
-    * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
-    * [Is this the target Operating System?](#is-this-the-target-operating-system)
-    * [Do we have go? Then update go binaries used by vim-go](#do-we-have-go-then-update-go-binaries-used-by-vim-go)
-    * [What's the version of bash?](#whats-the-version-of-bash)
-* [Exit Codes are Everything](#exit-codes-are-everything)
-* [Top Level Commands](#top-level-commands)
-    * [cli](#cli)
-    * [os](#os)
-        * [name](#name)
-            * [Equality](#equality)
-            * [Inequality](#inequality)
-    * [there](#there)
-    * [known](#known)
-        * [os](#os-1)
-            * [name](#name-1)
-            * [pretty-name](#pretty-name)
-            * [arch](#arch)
-            * [id](#id)
-            * [id-like](#id-like)
-            * [version](#version)
-            * [version-codename](#version-codename)
-        * [cli version](#cli-version)
-    * [--debug](#--debug)
-    * [--help](#--help)
-        * [subcommand --help](#subcommand---help)
-    * [--version](#--version)
-* [Installation](#installation)
-* [Extracting Versions of Available Tools](#extracting-versions-of-available-tools)
-    * [Go (version)](#go-version)
-    * [Perl (--version)](#perl---version)
-    * [tmux (-V)](#tmux--v)
-
-<!-- vim-markdown-toc -->
-
 ## Introduction
 
 `is` is an inspector for your environment. `is` tries to make it just a little bit
@@ -44,13 +7,13 @@ easier to run commands which rely on a specific OS or a specific CLI version.
 
 ### Is the minimum version of this tool available?
 
-```bash
-is command git gt 2.40.0 && echo 🥳 || echo 😢
+```text
+is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ```
 
 ### Is this the target Operating System?
 
-```bash
+```text
 (is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧)
 ```
 
@@ -120,6 +83,21 @@ Supported comparisons are:
 
 Information specific to the current operating system
 
+
+##### version
+
+```text
+is os version gt 22
+```
+Supported comparisons are:
+
+* `lt`
+* `lte`
+* `eq`
+* `gte`
+* `gt`
+* `ne`
+
 #### name
 
 Available comparisons are:
@@ -139,6 +117,110 @@ is os name eq darwin
 is os name ne linux
 ```
 
+Possible values for `name`:
+
+```text
+aix
+android
+darwin
+dragonfly
+freebsd
+illumos
+ios
+js
+linux
+netbsd
+openbsd
+plan9
+solaris
+windows
+```
+
+##### pretty-name
+
+Linux only.
+
+```text
+is os pretty-name eq "Ubuntu 22.04.2 LTS"
+```
+
+Available comparisons are:
+
+* `eq`
+* `ne`
+
+##### arch
+
+```text
+is os arch ne "amd64"
+```
+
+Possible values for `arch`:
+
+```text
+386
+amd64
+arm
+arm64
+loong64
+mips
+mips64
+mips64le
+mipsle
+ppc64
+ppc64le
+riscv64
+s390x
+wasm
+```
+
+Available comparisons are:
+
+* `eq`
+* `ne`
+
+##### id
+
+Linux only.
+
+```text
+is os id eq ubuntu
+ubuntu
+```
+
+Available comparisons are:
+
+* `eq`
+* `ne`
+
+##### id-like
+
+Linux only.
+
+```text
+$ is os id-like eq debian
+debian
+```
+
+Available comparisons are:
+
+* `eq`
+* `ne`
+
+##### version-codename
+
+```text
+is os version-codename eq jammy
+```
+
+```text
+is os version-codename ne ventura
+```
+
+Available comparisons are:
+
+* `eq`
+* `ne`
 
 ### there
 
@@ -150,7 +232,7 @@ is there tmux && echo "we have tmux"
 
 ### known
 
-Prints known information about resource to `STDOUT. Returns 0 on success and 1 if info cannot be found.
+Prints known information about resource to `STDOUT`. Returns 0 on success and 1 if info cannot be found.
 
 #### os
 
@@ -277,20 +359,20 @@ Flags:
       --version    Print version to screen
 
 Commands:
-  os name <op> <val>
-    Check OS name
+  os <attribute> <op> <val>
+    Check OS attributes. e.g. "is os name eq darwin"
 
-  os version <op> <val>
-    Check OS version
+  cli version <name> <op> <val>
+    Check version of command. e.g. "is cli version tmux gte 3"
 
-  command <name> <op> <val>
-    Check version of command
+  known os <attribute>
+    Print without check. e.g. "is known os name"
 
-  known <name> <val>
-    Print without testing condition. e.g. "is known os name"
+  known cli <attribute> <name>
+    Print without check. e.g. "is known cli version git"
 
   there <name>
-    Check if command exists
+    Check if command exists. e.g. "is there git"
 
 Run "is <command> --help" for more information on a command.
 ```
@@ -298,19 +380,19 @@ Run "is <command> --help" for more information on a command.
 #### subcommand --help
 
 ```text
-Usage: is os <command>
+Usage: is os <attribute> <op> <val>
+
+Check OS attributes. e.g. "is os name eq darwin"
+
+Arguments:
+  <attribute>    [arch|id|id-like|pretty-name|name|version|version-codename]
+  <op>           [eq|ne|gt|gte|lt|lte]
+  <val>
 
 Flags:
   -h, --help       Show context-sensitive help.
       --debug      turn on debugging statements
       --version    Print version to screen
-
-Commands:
-  os name <op> <val>
-    Check OS name
-
-  os version <op> <val>
-    Check OS version
 ```
 
 ### --version
@@ -345,7 +427,7 @@ fi
 ubi --project oalders/is --in "$INSTALL_DIR"
 ```
 
-## Extracting Versions of Available Tools
+## Bonus: Easier Version Parsing of Available Tools
 
 Forget about the remembering the different `version` incantations of command
 line tools. Don't make up regexes to extract the actual version number.
@@ -354,12 +436,16 @@ line tools. Don't make up regexes to extract the actual version number.
 
 ```text
 $ go version
-go version go1.20.4 darwin/arm64
+go version go1.20.4 darwin/amd64
 ```
 
 ```text
-$ is known command-version go
+$ is known cli version go
 1.20.4
+$ is known os name
+darwin
+$ is known os arch
+amd64
 ```
 
 ### Perl (--version)
@@ -380,7 +466,7 @@ Internet, point your browser at https://www.perl.org/, the Perl Home Page.
 ```
 
 ```text
-$ is known command-version perl
+$ is known cli version perl
 v5.36.1
 ```
 
@@ -392,7 +478,7 @@ tmux 3.3a
 ```
 
 ```text
-$ is known command-version tmux
+$ is known cli version tmux
 3.3a
 ```
 
