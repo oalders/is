@@ -25,7 +25,7 @@ type Context struct {
 // CLICmd type is configuration for CLI checks
 type CLICmd struct {
 	Version struct {
-		Name string `arg:"" required:""`
+		Name string `arg:"" required:"" help:"[name of command or path to command]"`
 		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte"`
 		Val  string `arg:"" required:""`
 	} `cmd:"" help:"Check OS version"`
@@ -33,15 +33,15 @@ type CLICmd struct {
 
 // OSCmd type is configuration for OS level checks
 type OSCmd struct {
-	Attr string `arg:"" required:"" name:"attribute"`
-	Op   string `arg:"" required:"" enum:"eq,ne"`
+	Attr string `arg:"" required:"" name:"attribute" help:"[arch|id|id-like|pretty-name|name|version|version-codename]"`
+	Op   string `arg:"" required:"" enum:"eq,ne" help:"[eq|ne|gt|gte|lt|lte]"`
 	Val  string `arg:"" required:""`
 }
 
 // KnownCmd type is configuration for printing environment info
 type KnownCmd struct {
 	OS struct {
-		Attr string `arg:"" required:"" enum:"arch,id,id-like,pretty-name,name,version,version-codename"`
+		Attr string `arg:"" required:"" name:"attribute" help:"[arch|id|id-like|pretty-name|name|version|version-codename]"`
 	} `cmd:"" help:"Print without testing condition. e.g. \"is known os name\""`
 	CLI struct {
 		Attr string `arg:"" name:"attribute" required:"" enum:"version"`
