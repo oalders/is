@@ -93,6 +93,9 @@ func aggregatedOS() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if release == nil {
+		release = &OSRelease{}
+	}
 	release.Name = runtime.GOOS
 
 	if runtime.GOOS == "darwin" {
