@@ -164,7 +164,9 @@ func aggregatedOS() (string, error) {
 			return "", err
 		}
 		release.Version = v
+		release.VersionCodeName = macCodeName(release.Version)
 	}
+	release.Arch = runtime.GOARCH
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
 		return "", err

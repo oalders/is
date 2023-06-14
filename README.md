@@ -39,6 +39,26 @@ $ is known cli version bash
 5.2.15
 ```
 
+### echo the OS name
+
+```text
+$ echo "i'm on $(is known os name) for sure"
+i'm on darwin for sure
+```
+
+### Get some debugging information about the OS
+
+```text
+$ is known os name --debug
+{
+    "arch": "amd64",
+    "name": "darwin",
+    "version": "13.4",
+    "version-codename": "ventura"
+}
+darwin
+```
+
 ## Exit Codes are Everything
 
 `is` returns an exit code of `0` on success and non-zero (usually `1`) on failure. You can leverage this in shell scripting:
