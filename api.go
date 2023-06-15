@@ -30,7 +30,7 @@ type CLICmd struct {
 // OSCmd type is configuration for OS level checks
 type OSCmd struct {
 	Attr string `arg:"" required:"" name:"attribute" help:"[arch|id|id-like|pretty-name|name|version|version-codename]"`
-	Op   string `arg:"" required:"" enum:"eq,ne" help:"[eq|ne|gt|gte|lt|lte]"`
+	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
 	Val  string `arg:"" required:""`
 }
 
