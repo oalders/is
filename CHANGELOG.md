@@ -1,3 +1,8 @@
+## 0.0.6 - 2023-06-14
+
+- "command-version" is now "cli version"
+- Add more os attributes and attribute comparisons
+
 ## 0.0.5 - 2023-05-29
 
 - Silence error output when a command is not found
