@@ -72,4 +72,14 @@ func TestOSCmd(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{}
+		cmd.Attr = "name"
+		cmd.Op = "gte"
+		cmd.Val = "1"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
 }

@@ -59,6 +59,20 @@ $ is known os name --debug
 darwin
 ```
 
+```text
+is known os name --debug
+{
+    "arch": "amd64",
+    "id": "ubuntu",
+    "id-like": "debian",
+    "name": "linux",
+    "pretty-name": "Ubuntu 22.04.2 LTS",
+    "version": "22.04",
+    "version-codename": "jammy"
+}
+linux
+```
+
 ## Exit Codes are Everything
 
 `is` returns an exit code of `0` on success and non-zero (usually `1`) on failure. You can leverage this in shell scripting:
