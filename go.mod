@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/assert/v2 v2.1.0
 	github.com/alecthomas/kong v0.7.1
 	github.com/hashicorp/go-version v1.6.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	gopkg.in/ini.v1 v1.67.0
 )
 
