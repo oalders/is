@@ -56,6 +56,13 @@ func (r *OSCmd) Run(ctx *Context) error {
 			if ctx.Debug {
 				fmt.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
 			}
+		default:
+			ctx.Success = false
+			return fmt.Errorf(
+				"The \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute",
+				r.Op,
+				r.Attr,
+			)
 		}
 	}
 
