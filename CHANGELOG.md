@@ -1,3 +1,7 @@
+## 0.0.7 - 2023-06-15
+
+- Remove "os arch" which was badly named and not necessarily correct
+
 ## 0.0.6 - 2023-06-14
 
 - "command-version" is now "cli version"
