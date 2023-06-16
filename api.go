@@ -29,7 +29,7 @@ type CLICmd struct {
 
 // OSCmd type is configuration for OS level checks
 type OSCmd struct {
-	Attr string `arg:"" required:"" name:"attribute" help:"[arch|id|id-like|pretty-name|name|version|version-codename]"`
+	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
 	Val  string `arg:"" required:""`
 }
@@ -37,7 +37,7 @@ type OSCmd struct {
 // KnownCmd type is configuration for printing environment info
 type KnownCmd struct {
 	OS struct {
-		Attr string `arg:"" required:"" name:"attribute" help:"[arch|id|id-like|pretty-name|name|version|version-codename]"`
+		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	} `cmd:"" help:"Print without check. e.g. \"is known os name\""`
 	CLI struct {
 		Attr string `arg:"" name:"attribute" required:"" enum:"version"`

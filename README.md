@@ -51,7 +51,6 @@ i'm on darwin for sure
 ```text
 $ is known os name --debug
 {
-    "arch": "amd64",
     "name": "darwin",
     "version": "13.4",
     "version-codename": "ventura"
@@ -62,7 +61,6 @@ darwin
 ```text
 is known os name --debug
 {
-    "arch": "amd64",
     "id": "ubuntu",
     "id-like": "debian",
     "name": "linux",
@@ -183,36 +181,6 @@ Available comparisons are:
 * `eq`
 * `ne`
 
-##### arch
-
-```text
-is os arch ne "amd64"
-```
-
-Possible values for `arch`:
-
-```text
-386
-amd64
-arm
-arm64
-loong64
-mips
-mips64
-mips64le
-mipsle
-ppc64
-ppc64le
-riscv64
-s390x
-wasm
-```
-
-Available comparisons are:
-
-* `eq`
-* `ne`
-
 ##### id
 
 Linux only.
@@ -307,31 +275,6 @@ $ is known os pretty-name
 Ubuntu 22.04.2 LTS
 ```
 
-##### arch
-
-```text
-$ is known os arch
-amd64
-```
-
-Possible values for `arch`:
-
-```text
-386
-amd64
-arm
-arm64
-loong64
-mips
-mips64
-mips64le
-mipsle
-ppc64
-ppc64le
-riscv64
-s390x
-wasm
-```
 ##### id
 
 Linux only.
@@ -478,8 +421,6 @@ $ is known cli version go
 1.20.4
 $ is known os name
 darwin
-$ is known os arch
-amd64
 ```
 
 ### Perl (--version)

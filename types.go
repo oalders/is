@@ -2,7 +2,6 @@
 package main
 
 type osRelease struct {
-	Arch            string `json:"arch"`
 	ID              string `json:"id,omitempty"`
 	IDLike          string `json:"id-like,omitempty"`
 	Name            string `json:"name"`

@@ -79,8 +79,6 @@ func (r *OSCmd) Run(ctx *Context) error {
 func osInfo(ctx *Context, argName string) (string, error) {
 	result := ""
 	switch argName {
-	case "arch":
-		result = runtime.GOARCH
 	case "id":
 		if runtime.GOOS == "linux" {
 			if ctx.Debug {
@@ -173,7 +171,6 @@ func aggregatedOS() (string, error) {
 		release.Version = v
 		release.VersionCodeName = macCodeName(release.Version)
 	}
-	release.Arch = runtime.GOARCH
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
 		return "", err

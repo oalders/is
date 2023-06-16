@@ -8,7 +8,7 @@ import (
 )
 
 func TestOSInfo(t *testing.T) {
-	tests := []string{"arch", "name", "version", "version-codename"}
+	tests := []string{"name", "version", "version-codename"}
 
 	for _, v := range tests {
 		ctx := Context{Debug: true}
