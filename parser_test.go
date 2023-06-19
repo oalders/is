@@ -39,6 +39,8 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 		{"md5sum", "9.3", "md5sum (GNU coreutils) 9.3"},
 		{"node", "v20.2.0", "v20.2.0"},
 		{"npx", "9.6.6", "9.6.6"},
+		{"openssl", "3.3.6", "LibreSSL 3.3.6"},
+		{"openssl", "1.1.1f", "OpenSSL 1.1.1f  31 Mar 2020"},
 		{
 			"perl", "v5.36.0",
 			`This is perl 5, version 36, subversion 0 (v5.36.0) built for darwin-2level`,
