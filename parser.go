@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
+	"strings"
 )
 
 func cliOutput(ctx *Context, cliName string) (string, error) {
@@ -91,5 +92,6 @@ func cliVersion(ctx *Context, cliName, output string) string {
 	} else if ctx.Debug {
 		fmt.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
 	}
+	output = strings.TrimRight(output, "\n")
 	return output
 }

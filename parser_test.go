@@ -85,9 +85,9 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 		ctx := &Context{Debug: true}
 		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
 		assert.NoError(t, err)
-		assert.Equal(t, "X3v\n", o)
+		assert.Equal(t, "X3v", o)
 		got := cliVersion(ctx, "testdata/bin/bad-version", o)
-		assert.Equal(t, "X3v\n", got)
+		assert.Equal(t, "X3v", got)
 	}
 }
 
@@ -116,6 +116,6 @@ func TestCLIOutput(t *testing.T) {
 		ctx := &Context{Debug: true}
 		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
 		assert.NoError(t, err)
-		assert.Equal(t, "X3v\n", o)
+		assert.Equal(t, "X3v", o)
 	}
 }
