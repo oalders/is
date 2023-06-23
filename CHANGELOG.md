@@ -1,3 +1,10 @@
+# Changes
+
+## 0.0.8 - 2023-06-23
+
+- Parse openssl versions
+- Add a linux release for arm 7
+
 ## 0.0.7 - 2023-06-15
 
 - Remove "os arch" which was badly named and not necessarily correct
