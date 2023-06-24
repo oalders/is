@@ -22,7 +22,7 @@ is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ```bash
 #!/bin/bash
 
-if eval is there go; then
+if is there go; then
     nvim +':GoUpdateBinaries' +qa || true
 fi
 ```
@@ -80,7 +80,7 @@ In a script:
 ```bash
 #!/bin/bash
 
-if eval is os name eq darwin; then
+if is os name eq darwin; then
   # This is a Mac. Creating karabiner config dir."
   mkdir -p "$HOME/.config/karabiner"
 fi
