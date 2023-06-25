@@ -16,12 +16,11 @@ builds:
       - arm
       - arm64
     goarm:
-      - 7
+      - "7"
     ignore:
       - goos: darwin
         goarch: arm
       - goos: windows
-        goarch: arm
 
 archives:
   - format: tar.gz
