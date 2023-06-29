@@ -132,6 +132,8 @@ Supported comparisons are:
 
 #### name
 
+Under the hood, this returns the value of `runtime.GOOS`, a constant which is set at compile time. So, `is` reports on on the OS name which is the target of build rather than running `uname` or something like that. This is "good enough" for my purposes. If it's not good enough for yours, we probably need to add more build targets.
+
 Available comparisons are:
 
 * `eq`
@@ -152,20 +154,8 @@ is os name ne linux
 Possible values for `name`:
 
 ```text
-aix
-android
 darwin
-dragonfly
-freebsd
-illumos
-ios
-js
 linux
-netbsd
-openbsd
-plan9
-solaris
-windows
 ```
 
 ##### pretty-name
@@ -242,6 +232,8 @@ Details specific to the current operating system.
 
 ##### name
 
+Under the hood, this returns the value of `runtime.GOOS`, a constant which is set at compile time. So, `is` reports on on the OS name which is the target of build rather than running `uname` or something like that. This is "good enough" for my purposes. If it's not good enough for yours, we probably need to add more build targets.
+
 ```text
 $ is known os name
 linux
@@ -250,20 +242,8 @@ linux
 Possible values for `name`:
 
 ```text
-aix
-android
 darwin
-dragonfly
-freebsd
-illumos
-ios
-js
 linux
-netbsd
-openbsd
-plan9
-solaris
-windows
 ```
 
 ##### pretty-name
