@@ -39,6 +39,13 @@ $ is known cli version bash
 5.2.15
 ```
 
+### Has gofumpt been modified in the last week?
+
+```text
+$ is cli age gofumpt lt 7 d
+5.2.15
+```
+
 ### echo the OS name
 
 ```text

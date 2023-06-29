@@ -1,5 +1,7 @@
 # Changes
 
+- Add "cli age"
+
 ## 0.0.8 - 2023-06-23
 
 - Parse openssl versions
