@@ -74,7 +74,10 @@ func (r *CLICmd) Run(ctx *Context) error {
 
 		value, err := strconv.Atoi(r.Age.Val)
 		if err != nil {
-			return err
+			return errors.Join(fmt.Errorf(
+				"The value (%s) does not appear to be an integer",
+				r.Age.Val,
+			), err)
 		}
 		durationString := fmt.Sprintf("%d%s", value*unitMultiplier, unit)
 		dur, err := time.ParseDuration(durationString)

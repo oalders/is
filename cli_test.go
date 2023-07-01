@@ -75,4 +75,26 @@ func TestCliAge(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "1.1"
+		cmd.Age.Unit = "d"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmuxxx"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "1"
+		cmd.Age.Unit = "d"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
 }
