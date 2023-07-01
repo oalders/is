@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCliCmd(t *testing.T) {
+func TestCliVersion(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := CLICmd{}
@@ -49,5 +49,30 @@ func TestCliCmd(t *testing.T) {
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
+	}
+}
+
+func TestCliAge(t *testing.T) {
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "gt"
+		cmd.Age.Val = "1"
+		cmd.Age.Unit = "s"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "100000"
+		cmd.Age.Unit = "days"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
 	}
 }
