@@ -18,8 +18,9 @@ func TestOSInfo(t *testing.T) {
 		assert.NotEmpty(t, found, v)
 	}
 
+	// id-like not present in Debian 11, so can't be in a blanket Linux test
 	if runtime.GOOS == "linux" {
-		tests := []string{"id", "id-like", "pretty-name"}
+		tests := []string{"id", "pretty-name"}
 
 		for _, v := range tests {
 			ctx := Context{Debug: true}
