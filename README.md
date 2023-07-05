@@ -101,6 +101,20 @@ At the command line:
 is os name ne darwin && echo "this is not a mac"
 ```
 
+### Debugging error Codes
+
+In `bash` and `zsh` (and possibly other shells), `$?` contains the value of the
+last command's exit code.
+
+
+```text
+$ is os name eq x
+$ echo $?
+1
+$ is os name eq darwin
+0
+```
+
 ## Top Level Commands
 
 ### cli
@@ -117,6 +131,18 @@ Don't let `goimports` get more than a week out of date.
 
 ```text
 is cli age goimports gt 7 days && go install golang.org/x/tools/cmd/goimports@latest
+```
+
+Update `shfmt` basically daily, but only if `go` is installed.
+
+```bash
+if is there go; then
+    if is cli age shfmt gt 18 hours; then
+        go install mvdan.cc/sh/v3/cmd/shfmt@latest
+    fi
+else
+    echo "Go not found. Not installing shfmt or gofumpt"
+fi
 ```
 
 Supported comparisons are:
@@ -227,13 +253,12 @@ Available comparisons are:
 * `eq`
 * `ne`
 
-##### fd
+##### id
 
 Linux only.
 
 ```text
 is os id eq ubuntu
-ubuntu
 ```
 
 Available comparisons are:
@@ -243,11 +268,8 @@ Available comparisons are:
 
 ##### id-like
 
-Linux only.
-
 ```text
 $ is os id-like eq debian
-debian
 ```
 
 Available comparisons are:
@@ -261,14 +283,27 @@ Available comparisons are:
 is os version-codename eq jammy
 ```
 
-```text
-is os version-codename ne ventura
-```
-
 Available comparisons are:
 
 * `eq`
 * `ne`
+
+On Linux, the value for `version-codename` is taken from `/etc/os-release`. For
+Macs, the values are mapped inside this application.
+
+Possible values for Mac:
+
+* ventura
+* monterey
+* big sur
+* catalina
+* mojave
+* high sierra
+* sierra
+* el capitan
+* yosemite
+* mavericks
+* mountain lion
 
 ### there
 
@@ -281,8 +316,8 @@ is there tmux && echo "we have tmux"
 
 ### known
 
-Prints known information about resource to `STDOUT`. Returns 0 on success and 1
-if info cannot be found.
+Prints known information about a resource to `STDOUT`. Returns `0` on success
+and `1` if info cannot be found.
 
 #### os
 
