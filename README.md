@@ -26,6 +26,7 @@ if is there go; then
     nvim +':GoUpdateBinaries' +qa || true
 fi
 ```
+
 Or, as a one-liner:
 
 ```text
@@ -80,7 +81,8 @@ linux
 
 ## Exit Codes are Everything
 
-`is` returns an exit code of `0` on success and non-zero (usually `1`) on failure. You can leverage this in shell scripting:
+`is` returns an exit code of `0` on success and non-zero (usually `1`) on
+failure. You can leverage this in shell scripting:
 
 In a script:
 
@@ -103,7 +105,50 @@ is os name ne darwin && echo "this is not a mac"
 
 ### cli
 
-Compare versions of available commands. Returns exit code of 0 if condition is true and exit code of 1 if condition is false.
+#### age
+
+Compare against the last modified date of a command's file.
+
+```text
+is cli age tmux lt 18 hours
+```
+
+Don't let `goimports` get more than a week out of date.
+
+```text
+is cli age goimports gt 7 days && go install golang.org/x/tools/cmd/goimports@latest
+```
+
+Supported comparisons are:
+
+* `lt`
+* `gt`
+
+Supported units are:
+
+* `s`
+* `second`
+* `seconds`
+* `m`
+* `minute`
+* `minutes`
+* `h`
+* `hour`
+* `hours`
+* `d`
+* `day`
+* `days`
+
+Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
+into account here.
+
+The `--debug` flag can give you some helpful information when troubleshooting
+date math.
+
+#### version
+
+Compare versions of available commands. Returns exit code of 0 if condition is
+true and exit code of 1 if condition is false.
 
 ```text
 is cli version go gte 1.20.4 || bash upgrade-go.sh
@@ -122,12 +167,12 @@ Supported comparisons are:
 
 Information specific to the current operating system
 
-
-##### version
+#### version
 
 ```text
 is os version gt 22
 ```
+
 Supported comparisons are:
 
 * `lt`
@@ -139,7 +184,11 @@ Supported comparisons are:
 
 #### name
 
-Under the hood, this returns the value of `runtime.GOOS`, a constant which is set at compile time. So, `is` reports on on the OS name which is the target of build rather than running `uname` or something like that. This is "good enough" for my purposes. If it's not good enough for yours, we probably need to add more build targets.
+Under the hood, this returns the value of `runtime.GOOS`, a constant which is
+set at compile time. So, `is` reports on on the OS name which is the target of
+build rather than running `uname` or something like that. This is "good enough"
+for my purposes. If it's not good enough for yours, we probably need to add
+more build targets.
 
 Available comparisons are:
 
@@ -178,7 +227,7 @@ Available comparisons are:
 * `eq`
 * `ne`
 
-##### id
+##### fd
 
 Linux only.
 
@@ -223,7 +272,8 @@ Available comparisons are:
 
 ### there
 
-Returns exit code of 0 if command exists and exit code of 1 if command cannot be found.
+Returns exit code of 0 if command exists and exit code of 1 if command cannot
+be found.
 
 ```text
 is there tmux && echo "we have tmux"
@@ -231,7 +281,8 @@ is there tmux && echo "we have tmux"
 
 ### known
 
-Prints known information about resource to `STDOUT`. Returns 0 on success and 1 if info cannot be found.
+Prints known information about resource to `STDOUT`. Returns 0 on success and 1
+if info cannot be found.
 
 #### os
 
@@ -239,7 +290,11 @@ Details specific to the current operating system.
 
 ##### name
 
-Under the hood, this returns the value of `runtime.GOOS`, a constant which is set at compile time. So, `is` reports on on the OS name which is the target of build rather than running `uname` or something like that. This is "good enough" for my purposes. If it's not good enough for yours, we probably need to add more build targets.
+Under the hood, this returns the value of `runtime.GOOS`, a constant which is
+set at compile time. So, `is` reports on on the OS name which is the target of
+build rather than running `uname` or something like that. This is "good enough"
+for my purposes. If it's not good enough for yours, we probably need to add
+more build targets.
 
 ```text
 $ is known os name
@@ -443,5 +498,3 @@ tmux 3.3a
 $ is known cli version tmux
 3.3a
 ```
-
-
