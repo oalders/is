@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCliCmd(t *testing.T) {
+func TestCliVersion(t *testing.T) {
 	{
 		ctx := Context{Debug: true}
 		cmd := CLICmd{}
@@ -46,6 +46,53 @@ func TestCliCmd(t *testing.T) {
 		cmd.Version.Name = "tmux"
 		cmd.Version.Op = "eq"
 		cmd.Version.Val = "zzz"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+}
+
+func TestCliAge(t *testing.T) {
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "gt"
+		cmd.Age.Val = "1"
+		cmd.Age.Unit = "s"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "100000"
+		cmd.Age.Unit = "days"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmux"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "1.1"
+		cmd.Age.Unit = "d"
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: true}
+		cmd := CLICmd{}
+		cmd.Age.Name = "tmuxxx"
+		cmd.Age.Op = "lt"
+		cmd.Age.Val = "1"
+		cmd.Age.Unit = "d"
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)

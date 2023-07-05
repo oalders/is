@@ -25,6 +25,12 @@ type CLICmd struct {
 		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
 		Val  string `arg:"" required:""`
 	} `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
+	Age struct {
+		Name string `arg:"" required:"" help:"[name of command or path to command]"`
+		Op   string `arg:"" required:"" enum:"gt,lt" help:"[gt|lt]"`
+		Val  string `arg:"" required:""`
+		Unit string `arg:"" required:"" enum:"s,second,seconds,m,minute,minutes,h,hour,hours,d,day,days"`
+	} `cmd:"" help:"Check last modified time of cli (2h, 4d). e.g. \"is cli age tmux gt 1 d\""`
 }
 
 // OSCmd type is configuration for OS level checks
