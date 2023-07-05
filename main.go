@@ -10,7 +10,7 @@ import (
 func main() {
 	ctx := kong.Parse(&api,
 		kong.Vars{
-			"version": "0.0.9",
+			"version": "0.1.0",
 		})
 	runContext := Context{Debug: api.Debug}
 	err := ctx.Run(&runContext)

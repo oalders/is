@@ -1,5 +1,9 @@
 # Changes
 
+## 0.1.0 - 2023-07-05
+
+- Add h|hour|hours to cli age units
+
 ## 0.0.9 - 2023-07-04
 
 - Add "cli age"
