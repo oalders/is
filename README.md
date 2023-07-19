@@ -1,4 +1,8 @@
-# is (is) an inspector for your environment
+# is: an inspector for your environment
+
+<p align="center">
+  <img src="logo.png" />
+</p>
 
 ## Introduction
 
