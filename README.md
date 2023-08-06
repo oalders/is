@@ -144,7 +144,7 @@ if is there go; then
         go install mvdan.cc/sh/v3/cmd/shfmt@latest
     fi
 else
-    echo "Go not found. Not installing shfmt or gofumpt"
+    echo "Go not found. Not installing shfmt"
 fi
 ```
 
