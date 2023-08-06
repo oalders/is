@@ -11,13 +11,13 @@ easier to run commands which rely on a specific OS or a specific CLI version.
 
 ### Is the minimum version of this tool available?
 
-```text
+```bash
 is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ```
 
 ### Is this the target Operating System?
 
-```text
+```bash
 (is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧)
 ```
 
@@ -33,7 +33,7 @@ fi
 
 Or, as a one-liner:
 
-```text
+```bash
 is there go && nvim +:GoUpdateBinaries +qa
 ```
 
@@ -126,13 +126,13 @@ $ is os name eq darwin
 
 Compare against the last modified date of a command's file.
 
-```text
+```bash
 is cli age tmux lt 18 hours
 ```
 
 Don't let `goimports` get more than a week out of date.
 
-```text
+```bash
 is cli age goimports gt 7 days && go install golang.org/x/tools/cmd/goimports@latest
 ```
 
@@ -179,7 +179,7 @@ date math.
 Compare versions of available commands. Returns exit code of 0 if condition is
 true and exit code of 1 if condition is false.
 
-```text
+```bash
 is cli version go gte 1.20.4 || bash upgrade-go.sh
 ```
 
@@ -198,7 +198,7 @@ Information specific to the current operating system
 
 #### version
 
-```text
+```bash
 is os version gt 22
 ```
 
@@ -226,13 +226,13 @@ Available comparisons are:
 
 ##### Equality
 
-```text
+```bash
 is os name eq darwin
 ```
 
 ##### Inequality
 
-```text
+```bash
 is os name ne linux
 ```
 
@@ -247,7 +247,7 @@ linux
 
 Linux only.
 
-```text
+```bash
 is os pretty-name eq "Ubuntu 22.04.2 LTS"
 ```
 
@@ -260,7 +260,7 @@ Available comparisons are:
 
 Linux only.
 
-```text
+```bash
 is os id eq ubuntu
 ```
 
@@ -271,7 +271,7 @@ Available comparisons are:
 
 ##### id-like
 
-```text
+```bash
 is os id-like eq debian
 ```
 
@@ -282,7 +282,7 @@ Available comparisons are:
 
 ##### version-codename
 
-```text
+```bash
 is os version-codename eq jammy
 ```
 
@@ -313,7 +313,7 @@ Possible values for Mac:
 Returns exit code of 0 if command exists and exit code of 1 if command cannot
 be found.
 
-```text
+```bash
 is there tmux && echo "we have tmux"
 ```
 
@@ -456,7 +456,7 @@ Flags:
 
 Print current version of `is`
 
-```text
+```bash
 is --version
 ```
 
