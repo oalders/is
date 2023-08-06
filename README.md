@@ -27,14 +27,14 @@ is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 #!/bin/bash
 
 if is there go; then
-    nvim +':GoUpdateBinaries' +qa || true
+    nvim +:GoUpdateBinaries +qa || true
 fi
 ```
 
 Or, as a one-liner:
 
 ```text
-is there go && nvim +':GoUpdateBinaries' +qa
+is there go && nvim +:GoUpdateBinaries +qa
 ```
 
 ### What's the version of bash?
@@ -109,7 +109,6 @@ is os name ne darwin && echo "this is not a mac"
 
 In `bash` and `zsh` (and possibly other shells), `$?` contains the value of the
 last command's exit code.
-
 
 ```text
 $ is os name eq x
@@ -273,7 +272,7 @@ Available comparisons are:
 ##### id-like
 
 ```text
-$ is os id-like eq debian
+is os id-like eq debian
 ```
 
 Available comparisons are:
