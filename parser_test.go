@@ -35,7 +35,13 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 		{"jq", "1.6", "jq-1.6"},
 		{"less", "633", "less 633 (PCRE2 regular expressions)"},
 		{"lua", "5.4.6", "Lua 5.4.6  Copyright (C) 1994-2023 Lua.org, PUC-Rio"},
-		{"make", "3.81", "GNU Make 3.81"},
+		{"make", "3.81", `GNU Make 3.81
+Copyright (C) 2006  Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+This program built for i386-apple-darwin11.3.0`},
 		{"md5sum", "9.3", "md5sum (GNU coreutils) 9.3"},
 		{"node", "v20.2.0", "v20.2.0"},
 		{"npx", "9.6.6", "9.6.6"},
@@ -46,6 +52,17 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 			`This is perl 5, version 36, subversion 0 (v5.36.0) built for darwin-2level`,
 		},
 		{"oh-my-posh", "16.9.1", "16.9.1"},
+		// the trailing newline is in perltidy's output, so this test should preserve it
+		{"perltidy", "v20230701", `This is perltidy, v20230701 
+
+Copyright 2000-2023, Steve Hancock
+
+Perltidy is free software and may be copied under the terms of the GNU
+General Public License, which is included in the distribution files.
+
+Complete documentation for perltidy can be found using 'man perltidy'
+or on the internet at http://perltidy.sourceforge.net.
+`},
 		{
 			"pihole", "v5.17.1",
 			`  Pi-hole version is v5.17.1 (Latest: v5.17.1)

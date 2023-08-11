@@ -82,8 +82,13 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		"zsh":     fmt.Sprintf(`zsh (%s)\b`, floatRegex),
 	}
 	var re *regexp.Regexp
+	hasNewLines := regexp.MustCompile("\n")
 	if v, exists := regexen[cliName]; exists {
 		re = regexp.MustCompile(v)
+	} else if found := len(hasNewLines.FindAllStringIndex(output, -1)); found > 1 {
+		// If --version returns more than one line, the actual version will
+		// generally be the last thing on the first line
+		re = regexp.MustCompile(fmt.Sprintf(`(?:\s)(%s|%s|%s|%s)\s*\n`, vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex, vStringRegex, floatRegex))
 	} else {
 		re = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
 	}
