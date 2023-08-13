@@ -394,6 +394,12 @@ $ is known cli version tmux
 3.3a
 ```
 
+### user
+
+#### sudoer
+
+Returns true if passwordless `sudo` is enabled for this user.
+
 ### --debug
 
 Print some debugging information to `STDOUT`.
