@@ -9,6 +9,7 @@ var api struct {
 	CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 	Known   KnownCmd         `cmd:""`
 	There   ThereCmd         `cmd:"" help:"Check if command exists. e.g. \"is there git\""`
+	User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
@@ -38,6 +39,11 @@ type OSCmd struct {
 	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
 	Val  string `arg:"" required:""`
+}
+
+// UserCmd type is configuration for user level checks
+type UserCmd struct {
+	Sudoer string `arg:"" required:"" default:"1" enum="sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
 // KnownCmd type is configuration for printing environment info
