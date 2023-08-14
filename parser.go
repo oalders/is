@@ -54,6 +54,7 @@ func cliVersion(ctx *Context, cliName, output string) string {
 	regexen := map[string]string{
 		"ansible": fmt.Sprintf(`ansible \[core (%s)\b`, floatRegex),
 		"bash":    fmt.Sprintf(`version (%s)\b`, floatRegex),
+		"bat":     fmt.Sprintf(`bat (%s)\b`, floatRegex),
 		"curl":    fmt.Sprintf(`curl (%s)\b`, floatRegex),
 		"docker":  fmt.Sprintf(`version (%s),`, floatRegex),
 		"gcc":     fmt.Sprintf(`clang version (%s)\b`, floatRegex),

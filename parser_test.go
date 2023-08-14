@@ -21,6 +21,7 @@ func TestCLIVersion(t *testing.T) {
 	This is free software; you are free to change and redistribute it.
 	There is NO WARRANTY, to the extent permitted by law.`,
 		},
+		{"bat", "0.23.0", "bat 0.23.0 (871abd2)"},
 		{
 			"curl", "7.88.1",
 			`curl 7.88.1 (x86_64-apple-darwin22.0) libcurl/7.88.1 (SecureTransport) LibreSSL/3.3.6 zlib/1.2.11 nghttp2/1.51.0
