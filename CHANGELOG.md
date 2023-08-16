@@ -1,5 +1,10 @@
 # Changes
 
+## 0.1.1 - 2023-08-16
+
+- Add better fallback version parsing
+- Add "is user sudoer"
+
 ## 0.1.0 - 2023-07-05
 
 - Add h|hour|hours to cli age units
