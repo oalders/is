@@ -317,6 +317,16 @@ be found.
 is there tmux && echo "we have tmux"
 ```
 
+### user
+
+#### sudoer
+
+Returns 1 if the current appears to be able to `sudo` without being prompted for a password.
+
+This is useful for scripts where you want to install via `sudo`, but you don't
+want the script to be interactive. That means you can skip installing things
+that require `sudo` and handle them in some other place.
+
 ### known
 
 Prints known information about a resource to `STDOUT`. Returns `0` on success
@@ -394,12 +404,6 @@ $ is known cli version tmux
 3.3a
 ```
 
-### user
-
-#### sudoer
-
-Returns true if passwordless `sudo` is enabled for this user.
-
 ### --debug
 
 Print some debugging information to `STDOUT`.
@@ -428,6 +432,9 @@ Commands:
   cli version <name> <op> <val>
     Check version of command. e.g. "is cli version tmux gte 3"
 
+  cli age <name> <op> <val> <unit>
+    Check last modified time of cli (2h, 4d). e.g. "is cli age tmux gt 1 d"
+
   known os <attribute>
     Print without check. e.g. "is known os name"
 
@@ -436,6 +443,9 @@ Commands:
 
   there <name>
     Check if command exists. e.g. "is there git"
+
+  user [<sudoer>]
+    Info about current user. e.g. "is user sudoer"
 
 Run "is <command> --help" for more information on a command.
 ```
