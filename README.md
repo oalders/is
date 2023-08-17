@@ -83,6 +83,12 @@ is known os name --debug
 linux
 ```
 
+### Can user sudo without a password?
+
+```bash
+is user sudoer || echo 😭
+```
+
 ## Exit Codes are Everything
 
 `is` returns an exit code of `0` on success and non-zero (usually `1`) on
@@ -321,7 +327,12 @@ is there tmux && echo "we have tmux"
 
 #### sudoer
 
-Returns 1 if the current appears to be able to `sudo` without being prompted for a password.
+```bash
+is user sudoer && sudo apt-get install ripgrep
+```
+
+Returns 1 if the current appears to be able to `sudo` without being prompted
+for a password.
 
 This is useful for scripts where you want to install via `sudo`, but you don't
 want the script to be interactive. That means you can skip installing things
