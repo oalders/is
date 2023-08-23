@@ -1,7 +1,11 @@
 // package compare compares versions
 package compare
 
-import "github.com/hashicorp/go-version"
+import (
+	"regexp"
+
+	"github.com/hashicorp/go-version"
+)
 
 func CLIVersions(op string, got, want *version.Version) bool {
 	var success bool
@@ -21,4 +25,20 @@ func CLIVersions(op string, got, want *version.Version) bool {
 	}
 
 	return success
+}
+
+func Strings(op, got, want string) (bool, error) {
+	var success bool
+
+	switch op {
+	case "like":
+
+		return regexp.MatchString(want, got)
+	case "unlike":
+		match, err := regexp.MatchString(want, got)
+
+		return !match, err
+	}
+
+	return success, nil
 }

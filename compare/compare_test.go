@@ -53,3 +53,37 @@ func TestCompareCLIVersions(t *testing.T) {
 		assert.False(t, CLIVersions("lt", got, want))
 	}
 }
+
+func TestStrings(t *testing.T) {
+	t.Parallel()
+	{
+		ok, err := Strings("like", "delboy trotter", "delboy")
+		assert.True(t, ok)
+		assert.NoError(t, err)
+	}
+	{
+		ok, err := Strings("unlike", "delboy trotter", "delboy")
+		assert.False(t, ok)
+		assert.NoError(t, err)
+	}
+	{
+		ok, err := Strings("like", "delboy trotter", "Zdelboy")
+		assert.False(t, ok)
+		assert.NoError(t, err)
+	}
+	{
+		ok, err := Strings("unlike", "delboy trotter", "Zdelboy")
+		assert.True(t, ok)
+		assert.NoError(t, err)
+	}
+	{
+		ok, err := Strings("like", "delboy trotter", "/[/")
+		assert.False(t, ok)
+		assert.Error(t, err)
+	}
+	{
+		ok, err := Strings("unlike", "delboy trotter", "/[/")
+		assert.True(t, ok)
+		assert.Error(t, err)
+	}
+}
