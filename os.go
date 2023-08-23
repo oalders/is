@@ -73,6 +73,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 		}
 		fmt.Printf("%s\n", os)
 	}
+
 	return nil
 }
 
@@ -150,6 +151,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 	if result != "" {
 		ctx.Success = true
 	}
+
 	return result, nil
 }
 
@@ -175,5 +177,6 @@ func aggregatedOS() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(data), nil
 }

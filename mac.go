@@ -43,6 +43,7 @@ func macCodeName(osVersion string) string {
 			name = "mountain lion" // released 2012
 		}
 	}
+
 	return name
 }
 
@@ -51,5 +52,6 @@ func macVersion() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return strings.TrimRight(string(o), "\n"), nil
 }

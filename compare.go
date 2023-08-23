@@ -19,5 +19,6 @@ func compareCLIVersions(op string, got, want *version.Version) bool {
 	case "gte":
 		success = got.Compare(want) >= 0
 	}
+
 	return success
 }

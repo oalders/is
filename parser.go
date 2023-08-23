@@ -101,5 +101,6 @@ func cliVersion(ctx *Context, cliName, output string) string {
 		fmt.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
 	}
 	output = strings.TrimRight(output, "\n")
+
 	return output
 }

@@ -110,5 +110,6 @@ func (r *CLICmd) Run(ctx *Context) error {
 			)
 		}
 	}
+
 	return nil
 }
