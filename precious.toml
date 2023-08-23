@@ -6,7 +6,7 @@ cmd = [
     "golangci-lint",
     "run",
     "-c",
-    "$PRECIOUS_ROOT/golangci.yml",
+    "$PRECIOUS_ROOT/.golangci.yaml",
     "--allow-parallel-runners",
 ]
 ok_exit_codes = 0
