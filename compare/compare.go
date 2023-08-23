@@ -32,11 +32,9 @@ func Strings(op, got, want string) (bool, error) {
 
 	switch op {
 	case "like":
-
 		return regexp.MatchString(want, got)
 	case "unlike":
 		match, err := regexp.MatchString(want, got)
-
 		return !match, err
 	}
 

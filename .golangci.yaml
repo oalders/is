@@ -1,6 +1,7 @@
 ---
 linters:
   disable:
+    - nlreturn
     - typecheck
     - wsl
   enable:
@@ -69,7 +70,6 @@ linters:
     - nestif
     - nilerr
     - nilnil
-    - nlreturn
     - noctx
     - nolintlint
     - nonamedreturns
