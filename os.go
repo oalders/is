@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	"github.com/hashicorp/go-version"
+	"github.com/oalders/is/compare"
 )
 
 const osReleaseFile = "/etc/os-release"
@@ -40,7 +41,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 			), err)
 		}
 
-		ctx.Success = compareCLIVersions(r.Op, got, want)
+		ctx.Success = compare.CLIVersions(r.Op, got, want)
 		if !ctx.Success && ctx.Debug {
 			fmt.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
 		}

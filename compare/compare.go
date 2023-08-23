@@ -1,9 +1,9 @@
-// This file contains comparison logic
-package main
+// package compare compares versions
+package compare
 
 import "github.com/hashicorp/go-version"
 
-func compareCLIVersions(op string, got, want *version.Version) bool {
+func CLIVersions(op string, got, want *version.Version) bool {
 	var success bool
 	switch op {
 	case "eq":

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-version"
+	"github.com/oalders/is/compare"
 )
 
 // Run "is cli ..."
@@ -37,7 +38,7 @@ func (r *CLICmd) Run(ctx *Context) error {
 			), err)
 		}
 
-		ctx.Success = compareCLIVersions(r.Version.Op, got, want)
+		ctx.Success = compare.CLIVersions(r.Version.Op, got, want)
 		if !ctx.Success && ctx.Debug {
 			fmt.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
 		}
