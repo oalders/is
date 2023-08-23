@@ -86,4 +86,8 @@ func TestStrings(t *testing.T) {
 		assert.True(t, ok)
 		assert.Error(t, err)
 	}
+	{
+		_, err := Strings("Zunlike", "x", "x")
+		assert.Error(t, err)
+	}
 }

@@ -2,6 +2,7 @@
 package compare
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/hashicorp/go-version"
@@ -38,5 +39,8 @@ func Strings(op, got, want string) (bool, error) {
 		return !match, err
 	}
 
-	return success, nil
+	return success, fmt.Errorf(
+		"%s is not a string comparison operator",
+		op,
+	)
 }
