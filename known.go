@@ -29,13 +29,15 @@ func (r *KnownCmd) Run(ctx *Context) error {
 				if ctx.Debug {
 					fmt.Printf("executable file \"%s\" not found", r.CLI.Name)
 				}
+
 				return nil
 			}
+
 			return err
 		}
 		if len(result) > 0 {
 			if err != nil {
-				result = strings.TrimRight(string(result), "\n")
+				result = strings.TrimRight(result, "\n")
 			}
 		}
 	}
