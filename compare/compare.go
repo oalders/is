@@ -28,19 +28,25 @@ func CLIVersions(op string, got, want *version.Version) bool {
 	return success
 }
 
-func Strings(op, got, want string) (bool, error) {
+func Strings(operator, got, want string) (bool, error) {
+	var err error
 	var success bool
 
-	switch op {
+	switch operator {
 	case "like":
-		return regexp.MatchString(want, got)
+		success, err = regexp.MatchString(want, got)
 	case "unlike":
-		match, err := regexp.MatchString(want, got)
-		return !match, err
+		success, err = regexp.MatchString(want, got)
+		if err == nil {
+			success = !success
+		} else {
+			success = false
+		}
+	default:
+		err = fmt.Errorf(
+			"%s is not a string comparison operator",
+			operator,
+		)
 	}
-
-	return success, fmt.Errorf(
-		"%s is not a string comparison operator",
-		op,
-	)
+	return success, err
 }

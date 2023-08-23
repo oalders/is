@@ -21,6 +21,11 @@ func (r *CLICmd) Run(ctx *Context) error {
 			return err
 		}
 
+		if r.Version.Op == "like" || r.Version.Op == "unlike" {
+			ctx.Success, err = compare.Strings(r.Version.Op, output, r.Version.Val)
+			return err
+		}
+
 		got, err := version.NewVersion(output)
 		if err != nil {
 			return errors.Join(fmt.Errorf(

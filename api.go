@@ -23,7 +23,7 @@ type Context struct {
 type CLICmd struct {
 	Version struct {
 		Name string `arg:"" required:"" help:"[name of command or path to command]"`
-		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
+		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
 		Val  string `arg:"" required:""`
 	} `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
 	Age struct {
@@ -37,7 +37,7 @@ type CLICmd struct {
 // OSCmd type is configuration for OS level checks
 type OSCmd struct {
 	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
-	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte" help:"[eq|ne|gt|gte|lt|lte]"`
+	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
 	Val  string `arg:"" required:""`
 }
 

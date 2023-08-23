@@ -83,7 +83,7 @@ func TestStrings(t *testing.T) {
 	}
 	{
 		ok, err := Strings("unlike", "delboy trotter", "/[/")
-		assert.True(t, ok)
+		assert.False(t, ok)
 		assert.Error(t, err)
 	}
 	{

@@ -7,6 +7,7 @@ import (
 )
 
 func TestCliVersion(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := Context{Debug: true}
 		cmd := CLICmd{}
@@ -49,6 +50,39 @@ func TestCliVersion(t *testing.T) {
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
+	}
+
+	{
+		ctx := Context{Debug: false}
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "unlike"
+		cmd.Version.Val = "zzz"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+
+	{
+		ctx := Context{Debug: false}
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "like"
+		cmd.Version.Val = ""
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+
+	{
+		ctx := Context{Debug: false}
+		cmd := CLICmd{}
+		cmd.Version.Name = "tmux"
+		cmd.Version.Op = "like"
+		cmd.Version.Val = "3.*"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
 	}
 }
 

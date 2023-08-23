@@ -8,6 +8,7 @@ import (
 )
 
 func TestOSInfo(t *testing.T) {
+	t.Parallel()
 	tests := []string{"name", "version", "version-codename"}
 
 	for _, v := range tests {
@@ -33,52 +34,179 @@ func TestOSInfo(t *testing.T) {
 }
 
 func TestOSCmd(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := Context{Debug: true}
-		cmd := OSCmd{}
-		cmd.Attr = "name"
-		cmd.Op = "eq"
-		cmd.Val = "zzz"
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "eq",
+			Val:  "zzz",
+		}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success)
 	}
 	{
 		ctx := Context{Debug: true}
-		cmd := OSCmd{}
-		cmd.Attr = "name"
-		cmd.Op = "ne"
-		cmd.Val = "zzz"
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "ne",
+			Val:  "zzz",
+		}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
 		ctx := Context{Debug: true}
-		cmd := OSCmd{}
-		cmd.Attr = "version"
-		cmd.Op = "eq"
-		cmd.Val = "1"
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "eq",
+			Val:  "1",
+		}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success)
 	}
 	{
 		ctx := Context{Debug: true}
-		cmd := OSCmd{}
-		cmd.Attr = "version"
-		cmd.Op = "ne"
-		cmd.Val = "1"
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "ne",
+			Val:  "1",
+		}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
 		ctx := Context{Debug: false}
-		cmd := OSCmd{}
-		cmd.Attr = "name"
-		cmd.Op = "gte"
-		cmd.Val = "1"
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "gte",
+			Val:  "1",
+		}
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "like",
+			Val:  "zzzzz",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "like",
+			Val:  ".*",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "unlike",
+			Val:  "zzzzz",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "unlike",
+			Val:  ".*",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "name",
+			Op:   "unlike",
+			Val:  "/[/",
+		}
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "like",
+			Val:  "xxX",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "like",
+			Val:  ".*",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "like",
+			Val:  "[+",
+		}
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "unlike",
+			Val:  "xxX",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "unlike",
+			Val:  ".*",
+		}
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := Context{Debug: false}
+		cmd := OSCmd{
+			Attr: "version",
+			Op:   "unlike",
+			Val:  "[+",
+		}
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)

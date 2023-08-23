@@ -197,6 +197,8 @@ Supported comparisons are:
 * `gte`
 * `gt`
 * `ne`
+* `like`
+* `unlike`
 
 ### os
 
@@ -208,6 +210,10 @@ Information specific to the current operating system
 is os version gt 22
 ```
 
+```bash
+is os version like "13.4.\d"
+```
+
 Supported comparisons are:
 
 * `lt`
@@ -216,6 +222,8 @@ Supported comparisons are:
 * `gte`
 * `gt`
 * `ne`
+* `like`
+* `unlike`
 
 #### name
 
@@ -229,6 +237,8 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `like`
+* `unlike`
 
 ##### Equality
 
@@ -240,6 +250,20 @@ is os name eq darwin
 
 ```bash
 is os name ne linux
+```
+
+##### Regex
+
+```bash
+is os name like darw
+```
+
+```bash
+is os name like "dar\w{3}"
+```
+
+```bash
+is os name unlike "foo\d"
 ```
 
 Possible values for `name`:
@@ -261,6 +285,8 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `like`
+* `unlike`
 
 ##### id
 
@@ -274,6 +300,8 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `like`
+* `unlike`
 
 ##### id-like
 
@@ -285,6 +313,8 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `like`
+* `unlike``
 
 ##### version-codename
 
@@ -296,6 +326,8 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `like`
+* `unlike`
 
 On Linux, the value for `version-codename` is taken from `/etc/os-release`. For
 Macs, the values are mapped inside this application.
