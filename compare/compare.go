@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/go-version"
+	"github.com/oalders/is/types"
 )
 
 func CLIVersions(op string, got, want *version.Version) bool {
@@ -28,7 +29,7 @@ func CLIVersions(op string, got, want *version.Version) bool {
 	return success
 }
 
-func Strings(operator, got, want string) (bool, error) {
+func Strings(ctx *types.Context, operator, got, want string) error {
 	var err error
 	var success bool
 
@@ -48,5 +49,6 @@ func Strings(operator, got, want string) (bool, error) {
 			operator,
 		)
 	}
-	return success, err
+	ctx.Success = success
+	return err
 }

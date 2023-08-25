@@ -6,10 +6,12 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+
+	"github.com/oalders/is/types"
 )
 
 // Run "is user ..."
-func (r *UserCmd) Run(ctx *Context) error {
+func (r *UserCmd) Run(ctx *types.Context) error {
 	if r.Sudoer != "" {
 		if ctx.Debug {
 			fmt.Printf("Running \"sudo -n true\"\n")

@@ -5,10 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+
+	"github.com/oalders/is/types"
 )
 
 // Run "is there ..."
-func (r *ThereCmd) Run(ctx *Context) error {
+func (r *ThereCmd) Run(ctx *types.Context) error {
 	cmd := exec.Command("command", "-v", r.Name)
 	if ctx.Debug {
 		fmt.Printf("Running \"command -v %s\"\n", r.Name)

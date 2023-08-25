@@ -4,12 +4,13 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestKnownCmd(t *testing.T) {
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.OS.Attr = "name"
 		err := cmd.Run(&ctx)
@@ -17,7 +18,7 @@ func TestKnownCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	if runtime.GOOS == "darwin" {
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.OS.Attr = "version"
 		err := cmd.Run(&ctx)
@@ -25,7 +26,7 @@ func TestKnownCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.CLI.Attr = "version"
 		cmd.CLI.Name = "tmux"
@@ -35,7 +36,7 @@ func TestKnownCmd(t *testing.T) {
 	}
 
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.CLI.Attr = "version"
 		cmd.CLI.Name = "tmuxxx"

@@ -4,6 +4,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +13,7 @@ func TestOSInfo(t *testing.T) {
 	tests := []string{"name", "version", "version-codename"}
 
 	for _, v := range tests {
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		found, err := osInfo(&ctx, v)
 		assert.NoError(t, err, v)
 		assert.True(t, ctx.Success, v)
@@ -24,7 +25,7 @@ func TestOSInfo(t *testing.T) {
 		tests := []string{"id", "pretty-name"}
 
 		for _, v := range tests {
-			ctx := Context{Debug: true}
+			ctx := types.Context{Debug: true}
 			found, err := osInfo(&ctx, v)
 			assert.NoError(t, err, v)
 			assert.True(t, ctx.Success, v)
@@ -36,7 +37,7 @@ func TestOSInfo(t *testing.T) {
 func TestOSCmd(t *testing.T) {
 	t.Parallel()
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "eq",
@@ -47,7 +48,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "ne",
@@ -58,7 +59,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "eq",
@@ -69,7 +70,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: true}
+		ctx := types.Context{Debug: true}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "ne",
@@ -80,7 +81,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "gte",
@@ -91,7 +92,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "like",
@@ -102,7 +103,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "like",
@@ -113,7 +114,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "unlike",
@@ -124,7 +125,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "unlike",
@@ -135,7 +136,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "unlike",
@@ -146,7 +147,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "like",
@@ -157,7 +158,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "like",
@@ -168,7 +169,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "like",
@@ -179,7 +180,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "unlike",
@@ -190,7 +191,7 @@ func TestOSCmd(t *testing.T) {
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "unlike",
@@ -201,7 +202,7 @@ func TestOSCmd(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := Context{Debug: false}
+		ctx := types.Context{Debug: false}
 		cmd := OSCmd{
 			Attr: "version",
 			Op:   "unlike",

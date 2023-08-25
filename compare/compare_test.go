@@ -5,6 +5,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/hashicorp/go-version"
+	"github.com/oalders/is/types"
 )
 
 func TestCompareCLIVersions(t *testing.T) {
@@ -56,38 +57,39 @@ func TestCompareCLIVersions(t *testing.T) {
 
 func TestStrings(t *testing.T) {
 	t.Parallel()
+	ctx := &types.Context{}
 	{
-		ok, err := Strings("like", "delboy trotter", "delboy")
-		assert.True(t, ok)
+		err := Strings(ctx, "like", "delboy trotter", "delboy")
+		assert.True(t, ctx.Success)
 		assert.NoError(t, err)
 	}
 	{
-		ok, err := Strings("unlike", "delboy trotter", "delboy")
-		assert.False(t, ok)
+		err := Strings(ctx, "unlike", "delboy trotter", "delboy")
+		assert.False(t, ctx.Success)
 		assert.NoError(t, err)
 	}
 	{
-		ok, err := Strings("like", "delboy trotter", "Zdelboy")
-		assert.False(t, ok)
+		err := Strings(ctx, "like", "delboy trotter", "Zdelboy")
+		assert.False(t, ctx.Success)
 		assert.NoError(t, err)
 	}
 	{
-		ok, err := Strings("unlike", "delboy trotter", "Zdelboy")
-		assert.True(t, ok)
+		err := Strings(ctx, "unlike", "delboy trotter", "Zdelboy")
+		assert.True(t, ctx.Success)
 		assert.NoError(t, err)
 	}
 	{
-		ok, err := Strings("like", "delboy trotter", "/[/")
-		assert.False(t, ok)
+		err := Strings(ctx, "like", "delboy trotter", "/[/")
+		assert.False(t, ctx.Success)
 		assert.Error(t, err)
 	}
 	{
-		ok, err := Strings("unlike", "delboy trotter", "/[/")
-		assert.False(t, ok)
+		err := Strings(ctx, "unlike", "delboy trotter", "/[/")
+		assert.False(t, ctx.Success)
 		assert.Error(t, err)
 	}
 	{
-		_, err := Strings("Zunlike", "x", "x")
+		err := Strings(ctx, "Zunlike", "x", "x")
 		assert.Error(t, err)
 	}
 }

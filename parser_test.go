@@ -3,11 +3,12 @@ package main
 import (
 	"testing"
 
+	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCLIVersion(t *testing.T) {
-	ctx := &Context{}
+	ctx := &types.Context{}
 
 	tests := [][]string{
 		{"ansible", "2.14.2", "ansible [core 2.14.2]"},
@@ -102,7 +103,7 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 	}
 
 	{
-		ctx := &Context{Debug: true}
+		ctx := &types.Context{Debug: true}
 		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
@@ -113,27 +114,27 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 
 func TestCLIOutput(t *testing.T) {
 	{
-		ctx := &Context{Debug: true}
+		ctx := &types.Context{Debug: true}
 		o, err := (cliOutput(ctx, "ssh"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 	{
-		ctx := &Context{}
+		ctx := &types.Context{}
 		o, err := (cliOutput(ctx, "tmux"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 
 	{
-		ctx := &Context{}
+		ctx := &types.Context{}
 		o, err := (cliOutput(ctx, "tmuxxx"))
 		assert.Error(t, err)
 		assert.Empty(t, o)
 	}
 
 	{
-		ctx := &Context{Debug: true}
+		ctx := &types.Context{Debug: true}
 		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)

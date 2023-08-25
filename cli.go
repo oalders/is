@@ -11,10 +11,11 @@ import (
 
 	"github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/types"
 )
 
 // Run "is cli ..."
-func (r *CLICmd) Run(ctx *Context) error {
+func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Version.Name != "" {
 		output, err := cliOutput(ctx, r.Version.Name)
 		if err != nil {
@@ -22,7 +23,7 @@ func (r *CLICmd) Run(ctx *Context) error {
 		}
 
 		if r.Version.Op == "like" || r.Version.Op == "unlike" {
-			ctx.Success, err = compare.Strings(r.Version.Op, output, r.Version.Val)
+			err = compare.Strings(ctx, r.Version.Op, output, r.Version.Val)
 			return err
 		}
 

@@ -9,6 +9,7 @@ import (
 
 	goversion "github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/types"
 )
 
 const darwin = "darwin"
@@ -17,7 +18,7 @@ const linux = "linux"
 const osReleaseFile = "/etc/os-release"
 
 // Run "is os ..."
-func (r *OSCmd) Run(ctx *Context) error {
+func (r *OSCmd) Run(ctx *types.Context) error {
 	want := r.Val
 
 	attr, err := osInfo(ctx, r.Attr)
@@ -28,8 +29,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 	switch r.Attr {
 	case "version":
 		if r.Op == "like" || r.Op == "unlike" {
-			success, err := compare.Strings(r.Op, attr, r.Val)
-			ctx.Success = success
+			err := compare.Strings(ctx, r.Op, attr, r.Val)
 			if err != nil {
 				return errors.Join(fmt.Errorf(
 					"could not compare the version (%s) using (%s)",
@@ -63,8 +63,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 		}
 	default:
 		if r.Op == "like" || r.Op == "unlike" {
-			success, err := compare.Strings(r.Op, attr, r.Val)
-			ctx.Success = success
+			err := compare.Strings(ctx, r.Op, attr, r.Val)
 			if err != nil {
 				return errors.Join(fmt.Errorf(
 					"could not compare the version (%s) using (%s)",
@@ -108,7 +107,7 @@ func (r *OSCmd) Run(ctx *Context) error {
 	return nil
 }
 
-func osInfo(ctx *Context, argName string) (string, error) {
+func osInfo(ctx *types.Context, argName string) (string, error) {
 	result := ""
 	switch argName {
 	case "id":

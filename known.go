@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/oalders/is/types"
 )
 
 // Run "is known ..."
-func (r *KnownCmd) Run(ctx *Context) error {
+func (r *KnownCmd) Run(ctx *types.Context) error {
 	result := ""
 	var err error
 

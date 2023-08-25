@@ -13,12 +13,6 @@ var api struct {
 	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
-// Context type tracks top level debugging flag
-type Context struct {
-	Debug   bool
-	Success bool
-}
-
 // CLICmd type is configuration for CLI checks
 type CLICmd struct {
 	Version struct {
