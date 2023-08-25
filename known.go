@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/oalders/is/os"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 )
@@ -16,9 +17,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	var err error
 
 	if r.OS.Attr != "" {
-		result, err = Info(ctx, r.OS.Attr)
+		result, err = os.Info(ctx, r.OS.Attr)
 		if ctx.Debug {
-			os, err := Aggregated()
+			os, err := os.Aggregated()
 			if err != nil {
 				return err
 			}

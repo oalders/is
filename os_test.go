@@ -4,6 +4,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +15,7 @@ func TestOSInfo(t *testing.T) {
 
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}
-		found, err := Info(&ctx, v)
+		found, err := os.Info(&ctx, v)
 		assert.NoError(t, err, v)
 		assert.True(t, ctx.Success, v)
 		assert.NotEmpty(t, found, v)
@@ -26,7 +27,7 @@ func TestOSInfo(t *testing.T) {
 
 		for _, v := range tests {
 			ctx := types.Context{Debug: true}
-			found, err := Info(&ctx, v)
+			found, err := os.Info(&ctx, v)
 			assert.NoError(t, err, v)
 			assert.True(t, ctx.Success, v)
 			assert.NotEmpty(t, found, v)
