@@ -26,7 +26,7 @@ const (
 func (r *OSCmd) Run(ctx *types.Context) error {
 	want := r.Val
 
-	attr, err := osInfo(ctx, r.Attr)
+	attr, err := Info(ctx, r.Attr)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 	}
 
 	if ctx.Debug {
-		os, err := aggregatedOS()
+		os, err := Aggregated()
 		if err != nil {
 			return err
 		}
@@ -112,7 +112,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 	return nil
 }
 
-func osInfo(ctx *types.Context, argName string) (string, error) {
+func Info(ctx *types.Context, argName string) (string, error) {
 	result := ""
 	switch argName {
 	case "id":
@@ -190,7 +190,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 	return result, nil
 }
 
-func aggregatedOS() (string, error) {
+func Aggregated() (string, error) {
 	release, err := reader.MaybeReadINI(osReleaseFile)
 	if err != nil {
 		return "", err

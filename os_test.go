@@ -14,7 +14,7 @@ func TestOSInfo(t *testing.T) {
 
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}
-		found, err := osInfo(&ctx, v)
+		found, err := Info(&ctx, v)
 		assert.NoError(t, err, v)
 		assert.True(t, ctx.Success, v)
 		assert.NotEmpty(t, found, v)
@@ -26,7 +26,7 @@ func TestOSInfo(t *testing.T) {
 
 		for _, v := range tests {
 			ctx := types.Context{Debug: true}
-			found, err := osInfo(&ctx, v)
+			found, err := Info(&ctx, v)
 			assert.NoError(t, err, v)
 			assert.True(t, ctx.Success, v)
 			assert.NotEmpty(t, found, v)

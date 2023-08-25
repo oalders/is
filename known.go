@@ -16,9 +16,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	var err error
 
 	if r.OS.Attr != "" {
-		result, err = osInfo(ctx, r.OS.Attr)
+		result, err = Info(ctx, r.OS.Attr)
 		if ctx.Debug {
-			os, err := aggregatedOS()
+			os, err := Aggregated()
 			if err != nil {
 				return err
 			}
