@@ -11,6 +11,7 @@ import (
 	goversion "github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/mac"
+	"github.com/oalders/is/reader"
 	"github.com/oalders/is/types"
 )
 
@@ -119,7 +120,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			if ctx.Debug {
 				log.Println("Trying to parse " + osReleaseFile)
 			}
-			release, err := maybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.ID != "" {
 				result = release.ID
 			}
@@ -129,7 +130,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			if ctx.Debug {
 				log.Println("Trying to parse " + osReleaseFile)
 			}
-			release, err := maybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.IDLike != "" {
 				result = release.IDLike
 			}
@@ -139,7 +140,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			if ctx.Debug {
 				log.Println("Trying to parse " + osReleaseFile)
 			}
-			release, err := maybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.PrettyName != "" {
 				result = release.PrettyName
 			}
@@ -157,7 +158,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			if ctx.Debug {
 				log.Println("Trying to parse " + osReleaseFile)
 			}
-			release, err := maybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.Version != "" {
 				result = release.Version
 			}
@@ -167,7 +168,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			if ctx.Debug {
 				log.Println("Trying to parse " + osReleaseFile)
 			}
-			release, err := maybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.VersionCodeName != "" {
 				result = release.VersionCodeName
 			}
@@ -190,7 +191,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 }
 
 func aggregatedOS() (string, error) {
-	release, err := maybeReadINI(osReleaseFile)
+	release, err := reader.MaybeReadINI(osReleaseFile)
 	if err != nil {
 		return "", err
 	}

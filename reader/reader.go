@@ -1,5 +1,5 @@
-// This package contains file reader logic
-package main
+// package reader contains ini file reader logic
+package reader
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-func maybeReadINI(path string) (*types.OSRelease, error) {
+func MaybeReadINI(path string) (*types.OSRelease, error) {
 	_, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
