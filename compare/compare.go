@@ -33,6 +33,9 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	var err error
 	var success bool
 
+	if ctx.Debug {
+		fmt.Printf(`comparing regex "%s" with %s`+"\n", want, got)
+	}
 	switch operator {
 	case "like":
 		success, err = regexp.MatchString(want, got)
