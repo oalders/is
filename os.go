@@ -12,10 +12,12 @@ import (
 	"github.com/oalders/is/types"
 )
 
-const darwin = "darwin"
-const name = "name"
-const linux = "linux"
-const osReleaseFile = "/etc/os-release"
+const (
+	darwin        = "darwin"
+	name          = "name"
+	linux         = "linux"
+	osReleaseFile = "/etc/os-release"
+)
 
 // Run "is os ..."
 func (r *OSCmd) Run(ctx *types.Context) error {
