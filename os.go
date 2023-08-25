@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"runtime"
 
 	goversion "github.com/hashicorp/go-version"
@@ -61,7 +62,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 
 		ctx.Success = compare.CLIVersions(r.Op, got, want)
 		if !ctx.Success && ctx.Debug {
-			fmt.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
+			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
 		}
 	default:
 		if r.Op == "like" || r.Op == "unlike" {
@@ -79,12 +80,12 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		case "eq":
 			ctx.Success = attr == want
 			if ctx.Debug {
-				fmt.Printf("Comparison %s == %s %t\n", attr, want, ctx.Success)
+				log.Printf("Comparison %s == %s %t\n", attr, want, ctx.Success)
 			}
 		case "ne":
 			ctx.Success = attr != want
 			if ctx.Debug {
-				fmt.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
+				log.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
 			}
 		case "like":
 		case "unlike":
@@ -103,7 +104,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%s\n", os)
+		log.Printf("%s\n", os)
 	}
 
 	return nil
@@ -115,7 +116,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 	case "id":
 		if runtime.GOOS == linux {
 			if ctx.Debug {
-				fmt.Println("Trying to parse " + osReleaseFile)
+				log.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.ID != "" {
@@ -125,7 +126,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 	case "id-like":
 		if runtime.GOOS == linux {
 			if ctx.Debug {
-				fmt.Println("Trying to parse " + osReleaseFile)
+				log.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.IDLike != "" {
@@ -135,7 +136,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 	case "pretty-name":
 		if runtime.GOOS == linux {
 			if ctx.Debug {
-				fmt.Println("Trying to parse " + osReleaseFile)
+				log.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.PrettyName != "" {
@@ -153,7 +154,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 			result = o
 		} else if runtime.GOOS == linux {
 			if ctx.Debug {
-				fmt.Println("Trying to parse " + osReleaseFile)
+				log.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.Version != "" {
@@ -163,7 +164,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 	case "version-codename":
 		if runtime.GOOS == linux {
 			if ctx.Debug {
-				fmt.Println("Trying to parse " + osReleaseFile)
+				log.Println("Trying to parse " + osReleaseFile)
 			}
 			release, err := maybeReadINI(osReleaseFile)
 			if err == nil && release != nil && release.VersionCodeName != "" {
@@ -207,7 +208,7 @@ func aggregatedOS() (string, error) {
 	}
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
-		return "", err
+		return "", errors.Join(fmt.Errorf("could not marshal indented JSON (%+v)", release), err)
 	}
 
 	return string(data), nil

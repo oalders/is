@@ -4,6 +4,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -46,7 +47,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 
 		ctx.Success = compare.CLIVersions(r.Version.Op, got, want)
 		if !ctx.Success && ctx.Debug {
-			fmt.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
+			log.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
 		}
 
 	} else if r.Age.Name != "" {
@@ -108,7 +109,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 
 		if ctx.Debug {
 			translate := map[string]string{"gt": "before", "lt": "after"}
-			fmt.Printf(
+			log.Printf(
 				"Comparison:\n%s (%s last modification)\n%s\n%s\n",
 				info.ModTime().Format("2006-01-02 15:04:05"),
 				path,

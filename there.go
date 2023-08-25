@@ -3,7 +3,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"os/exec"
 
 	"github.com/oalders/is/types"
@@ -13,12 +13,12 @@ import (
 func (r *ThereCmd) Run(ctx *types.Context) error {
 	cmd := exec.Command("command", "-v", r.Name)
 	if ctx.Debug {
-		fmt.Printf("Running \"command -v %s\"\n", r.Name)
+		log.Printf("Running \"command -v %s\"\n", r.Name)
 	}
 	err := cmd.Run()
 	if err != nil {
 		if ctx.Debug {
-			fmt.Printf("Running \"which %s\"\n", r.Name)
+			log.Printf("Running \"which %s\"\n", r.Name)
 		}
 		cmd := exec.Command("which", r.Name)
 		err := cmd.Run()

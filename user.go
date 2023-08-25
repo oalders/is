@@ -2,8 +2,8 @@
 package main
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"os/exec"
 	"strings"
 
@@ -14,7 +14,7 @@ import (
 func (r *UserCmd) Run(ctx *types.Context) error {
 	if r.Sudoer != "" {
 		if ctx.Debug {
-			fmt.Printf("Running \"sudo -n true\"\n")
+			log.Printf("Running \"sudo -n true\"\n")
 		}
 		cmd := exec.Command("sudo", "-n", "true")
 		stderr, err := cmd.StderrPipe()
@@ -28,7 +28,7 @@ func (r *UserCmd) Run(ctx *types.Context) error {
 
 		slurp, _ := io.ReadAll(stderr)
 		if ctx.Debug {
-			fmt.Printf("STDERR: %s", string(slurp))
+			log.Printf("STDERR: %s", string(slurp))
 		}
 		if strings.Contains(string(slurp), "password") {
 			return nil

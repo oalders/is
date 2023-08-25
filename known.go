@@ -2,7 +2,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -21,7 +21,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s\n", os)
+			log.Printf("%s\n", os)
 		}
 	} else if r.CLI.Attr != "" {
 		result, err = cliOutput(ctx, r.CLI.Name)
@@ -29,7 +29,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			re := regexp.MustCompile(`executable file not found`)
 			if re.MatchString(err.Error()) {
 				if ctx.Debug {
-					fmt.Printf("executable file \"%s\" not found", r.CLI.Name)
+					log.Printf("executable file \"%s\" not found", r.CLI.Name)
 				}
 
 				return nil
@@ -47,7 +47,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(result)
+	log.Println(result)
 	ctx.Success = true
 
 	return nil

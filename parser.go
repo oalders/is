@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -26,7 +27,7 @@ func cliOutput(ctx *types.Context, cliName string) (string, error) {
 
 	args := []string{cliName, arg}
 	if ctx.Debug {
-		fmt.Printf("Running: %s %s\n", args[0], args[1])
+		log.Printf("Running: %s %s\n", args[0], args[1])
 	}
 	cmd := exec.Command(cliName, arg)
 	o, err := cmd.Output()
@@ -34,7 +35,7 @@ func cliOutput(ctx *types.Context, cliName string) (string, error) {
 	// ssh -V doesn't print to STDOUT?
 	if len(o) == 0 && err == nil {
 		if ctx.Debug {
-			fmt.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
+			log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 		}
 		cmd = exec.Command(cliName, arg)
 		o, err = cmd.CombinedOutput()
@@ -100,7 +101,7 @@ func cliVersion(ctx *types.Context, cliName, output string) string {
 	if len(matches) > 0 {
 		output = matches[0][1]
 	} else if ctx.Debug {
-		fmt.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
+		log.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
 	}
 	output = strings.TrimRight(output, "\n")
 

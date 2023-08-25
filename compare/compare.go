@@ -3,6 +3,7 @@ package compare
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 
 	"github.com/hashicorp/go-version"
@@ -34,7 +35,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	var success bool
 
 	if ctx.Debug {
-		fmt.Printf(`comparing regex "%s" with %s`+"\n", want, got)
+		log.Printf(`comparing regex "%s" with %s`+"\n", want, got)
 	}
 	switch operator {
 	case "like":
