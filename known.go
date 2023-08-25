@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 )
 
@@ -24,7 +25,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			log.Printf("%s\n", os)
 		}
 	} else if r.CLI.Attr != "" {
-		result, err = cliOutput(ctx, r.CLI.Name)
+		result, err = parser.CLIOutput(ctx, r.CLI.Name)
 		if err != nil {
 			re := regexp.MustCompile(`executable file not found`)
 			if re.MatchString(err.Error()) {

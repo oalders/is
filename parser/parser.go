@@ -1,5 +1,5 @@
-// This file contains output parsers
-package main
+// Package parser contains output parsers
+package parser
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/oalders/is/types"
 )
 
-func cliOutput(ctx *types.Context, cliName string) (string, error) {
+func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"go":      "version",
 		"lua":     "-v",
@@ -45,10 +45,10 @@ func cliOutput(ctx *types.Context, cliName string) (string, error) {
 		return "", err
 	}
 
-	return cliVersion(ctx, cliName, string(o)), nil
+	return CLIVersion(ctx, cliName, string(o)), nil
 }
 
-func cliVersion(ctx *types.Context, cliName, output string) string {
+func CLIVersion(ctx *types.Context, cliName, output string) string {
 	floatRegex := `[\d.]*`
 	floatWithTrailingLetterRegex := `[\d.]*\w`
 	intRegex := `\d*`

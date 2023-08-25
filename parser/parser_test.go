@@ -1,8 +1,9 @@
-package main
+package parser_test
 
 import (
 	"testing"
 
+	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -97,17 +98,17 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test[1], cliVersion(
+		assert.Equal(t, test[1], parser.CLIVersion(
 			ctx, test[0], test[2],
 		))
 	}
 
 	{
 		ctx := &types.Context{Debug: true}
-		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
+		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
-		got := cliVersion(ctx, "testdata/bin/bad-version", o)
+		got := parser.CLIVersion(ctx, "../testdata/bin/bad-version", o)
 		assert.Equal(t, "X3v", got)
 	}
 }
@@ -115,27 +116,27 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 func TestCLIOutput(t *testing.T) {
 	{
 		ctx := &types.Context{Debug: true}
-		o, err := (cliOutput(ctx, "ssh"))
+		o, err := (parser.CLIOutput(ctx, "ssh"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 	{
 		ctx := &types.Context{}
-		o, err := (cliOutput(ctx, "tmux"))
+		o, err := (parser.CLIOutput(ctx, "tmux"))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 
 	{
 		ctx := &types.Context{}
-		o, err := (cliOutput(ctx, "tmuxxx"))
+		o, err := (parser.CLIOutput(ctx, "tmuxxx"))
 		assert.Error(t, err)
 		assert.Empty(t, o)
 	}
 
 	{
 		ctx := &types.Context{Debug: true}
-		o, err := (cliOutput(ctx, "./testdata/bin/bad-version"))
+		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
 	}

@@ -12,13 +12,14 @@ import (
 
 	"github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 )
 
 // Run "is cli ..."
 func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Version.Name != "" {
-		output, err := cliOutput(ctx, r.Version.Name)
+		output, err := parser.CLIOutput(ctx, r.Version.Name)
 		if err != nil {
 			return err
 		}
