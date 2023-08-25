@@ -1,5 +1,5 @@
 // package main contains macOS logic
-package main
+package mac
 
 import (
 	"os/exec"
@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
-func macCodeName(osVersion string) string {
+func CodeName(osVersion string) string {
 	got, err := version.NewVersion(osVersion)
 	if err != nil {
 		return ""
@@ -47,7 +47,7 @@ func macCodeName(osVersion string) string {
 	return name
 }
 
-func macVersion() (string, error) {
+func Version() (string, error) {
 	o, err := exec.Command("sw_vers", "-productVersion").Output()
 	if err != nil {
 		return "", err

@@ -10,6 +10,7 @@ import (
 
 	goversion "github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/mac"
 	"github.com/oalders/is/types"
 )
 
@@ -147,7 +148,7 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 		result = runtime.GOOS
 	case "version":
 		if runtime.GOOS == darwin {
-			o, err := macVersion()
+			o, err := mac.Version()
 			if err != nil {
 				return result, err
 			}
@@ -171,11 +172,11 @@ func osInfo(ctx *types.Context, argName string) (string, error) {
 				result = release.VersionCodeName
 			}
 		} else if runtime.GOOS == darwin {
-			o, err := macVersion()
+			o, err := mac.Version()
 			if err != nil {
 				return result, err
 			}
-			name := macCodeName(o)
+			name := mac.CodeName(o)
 			if name != "" {
 				result = name
 			}
@@ -199,12 +200,12 @@ func aggregatedOS() (string, error) {
 	release.Name = runtime.GOOS
 
 	if runtime.GOOS == darwin {
-		v, err := macVersion()
+		v, err := mac.Version()
 		if err != nil {
 			return "", err
 		}
 		release.Version = v
-		release.VersionCodeName = macCodeName(release.Version)
+		release.VersionCodeName = mac.CodeName(release.Version)
 	}
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
