@@ -5,10 +5,11 @@ import (
 	"errors"
 	"os"
 
+	"github.com/oalders/is/types"
 	"gopkg.in/ini.v1"
 )
 
-func maybeReadINI(path string) (*osRelease, error) {
+func maybeReadINI(path string) (*types.OSRelease, error) {
 	_, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -23,7 +24,7 @@ func maybeReadINI(path string) (*osRelease, error) {
 	}
 
 	section := cfg.Section("")
-	release := osRelease{
+	release := types.OSRelease{
 		ID:              section.Key("ID").String(),
 		IDLike:          section.Key("ID_LIKE").String(),
 		Name:            section.Key("NAME").String(),
