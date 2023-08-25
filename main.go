@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/alecthomas/kong"
+	"github.com/oalders/is/types"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 		kong.Vars{
 			"version": "0.1.1",
 		})
-	runContext := Context{Debug: api.Debug}
+	runContext := types.Context{Debug: api.Debug}
 	err := ctx.Run(&runContext)
 	ctx.FatalIfErrorf(err)
 

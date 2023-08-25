@@ -6,9 +6,11 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+
+	"github.com/oalders/is/types"
 )
 
-func cliOutput(ctx *Context, cliName string) (string, error) {
+func cliOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"go":      "version",
 		"lua":     "-v",
@@ -45,7 +47,7 @@ func cliOutput(ctx *Context, cliName string) (string, error) {
 	return cliVersion(ctx, cliName, string(o)), nil
 }
 
-func cliVersion(ctx *Context, cliName, output string) string {
+func cliVersion(ctx *types.Context, cliName, output string) string {
 	floatRegex := `[\d.]*`
 	floatWithTrailingLetterRegex := `[\d.]*\w`
 	intRegex := `\d*`

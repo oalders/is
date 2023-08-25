@@ -7,13 +7,18 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/hashicorp/go-version"
+	goversion "github.com/hashicorp/go-version"
+	"github.com/oalders/is/compare"
+	"github.com/oalders/is/types"
 )
 
+const darwin = "darwin"
+const name = "name"
+const linux = "linux"
 const osReleaseFile = "/etc/os-release"
 
 // Run "is os ..."
-func (r *OSCmd) Run(ctx *Context) error {
+func (r *OSCmd) Run(ctx *types.Context) error {
 	want := r.Val
 
 	attr, err := osInfo(ctx, r.Attr)
@@ -23,28 +28,51 @@ func (r *OSCmd) Run(ctx *Context) error {
 
 	switch r.Attr {
 	case "version":
-		got, err := version.NewVersion(attr)
+		if r.Op == "like" || r.Op == "unlike" {
+			err := compare.Strings(ctx, r.Op, attr, r.Val)
+			if err != nil {
+				return errors.Join(fmt.Errorf(
+					"could not compare the version (%s) using (%s)",
+					attr,
+					r.Val,
+				), err)
+			}
+			return nil
+		}
+
+		got, err := goversion.NewVersion(attr)
 		if err != nil {
 			return errors.Join(fmt.Errorf(
-				"Could not parse the version (%s) found for (%s)",
+				"could not parse the version (%s) found for (%s)",
 				attr,
 				got,
 			), err)
 		}
 
-		want, err := version.NewVersion(r.Val)
+		want, err := goversion.NewVersion(r.Val)
 		if err != nil {
 			return errors.Join(fmt.Errorf(
-				"Could not parse the version (%s) which you provided",
+				"could not parse the version (%s) which you provided",
 				r.Val,
 			), err)
 		}
 
-		ctx.Success = compareCLIVersions(r.Op, got, want)
+		ctx.Success = compare.CLIVersions(r.Op, got, want)
 		if !ctx.Success && ctx.Debug {
 			fmt.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
 		}
 	default:
+		if r.Op == "like" || r.Op == "unlike" {
+			err := compare.Strings(ctx, r.Op, attr, r.Val)
+			if err != nil {
+				return errors.Join(fmt.Errorf(
+					"could not compare the version (%s) using (%s)",
+					attr,
+					r.Val,
+				), err)
+			}
+			return nil
+		}
 		switch r.Op {
 		case "eq":
 			ctx.Success = attr == want
@@ -56,6 +84,8 @@ func (r *OSCmd) Run(ctx *Context) error {
 			if ctx.Debug {
 				fmt.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
 			}
+		case "like":
+		case "unlike":
 		default:
 			ctx.Success = false
 			return fmt.Errorf(
@@ -77,11 +107,11 @@ func (r *OSCmd) Run(ctx *Context) error {
 	return nil
 }
 
-func osInfo(ctx *Context, argName string) (string, error) {
+func osInfo(ctx *types.Context, argName string) (string, error) {
 	result := ""
 	switch argName {
 	case "id":
-		if runtime.GOOS == "linux" {
+		if runtime.GOOS == linux {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -91,7 +121,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 			}
 		}
 	case "id-like":
-		if runtime.GOOS == "linux" {
+		if runtime.GOOS == linux {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -101,7 +131,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 			}
 		}
 	case "pretty-name":
-		if runtime.GOOS == "linux" {
+		if runtime.GOOS == linux {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -110,16 +140,16 @@ func osInfo(ctx *Context, argName string) (string, error) {
 				result = release.PrettyName
 			}
 		}
-	case "name":
+	case name:
 		result = runtime.GOOS
 	case "version":
-		if runtime.GOOS == "darwin" {
+		if runtime.GOOS == darwin {
 			o, err := macVersion()
 			if err != nil {
 				return result, err
 			}
 			result = o
-		} else if runtime.GOOS == "linux" {
+		} else if runtime.GOOS == linux {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -129,7 +159,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 			}
 		}
 	case "version-codename":
-		if runtime.GOOS == "linux" {
+		if runtime.GOOS == linux {
 			if ctx.Debug {
 				fmt.Println("Trying to parse " + osReleaseFile)
 			}
@@ -137,7 +167,7 @@ func osInfo(ctx *Context, argName string) (string, error) {
 			if err == nil && release != nil && release.VersionCodeName != "" {
 				result = release.VersionCodeName
 			}
-		} else if runtime.GOOS == "darwin" {
+		} else if runtime.GOOS == darwin {
 			o, err := macVersion()
 			if err != nil {
 				return result, err
@@ -161,11 +191,11 @@ func aggregatedOS() (string, error) {
 		return "", err
 	}
 	if release == nil {
-		release = &osRelease{}
+		release = &types.OSRelease{}
 	}
 	release.Name = runtime.GOOS
 
-	if runtime.GOOS == "darwin" {
+	if runtime.GOOS == darwin {
 		v, err := macVersion()
 		if err != nil {
 			return "", err

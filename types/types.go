@@ -1,7 +1,12 @@
-// package main contains types used by this library
-package main
+package types
 
-type osRelease struct {
+// Context type tracks top level debugging flag.
+type Context struct {
+	Debug   bool
+	Success bool
+}
+
+type OSRelease struct {
 	ID              string `json:"id,omitempty"`
 	IDLike          string `json:"id-like,omitempty"`
 	Name            string `json:"name"`
