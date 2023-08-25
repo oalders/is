@@ -21,6 +21,12 @@ is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 (is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧)
 ```
 
+### Check the OS with a Regex
+
+```bash
+is os name like "da\w{4}" && echo 🍏
+```
+
 ### Do we have go? Then update go binaries used by vim-go
 
 ```bash
@@ -122,6 +128,35 @@ $ echo $?
 1
 $ is os name eq darwin
 0
+```
+
+### Using a Regex
+
+The `like` and `unlike` operators accept a regular expression. You may need to quote your regex. For instance:
+
+```bash
+is os name like darw\w
+```
+
+should be
+
+```bash
+is os name like "darw\w"
+```
+
+Use the debug flag to see how your regex may have been changed by your shell:
+
+```text
+$ is os name like darw\w --debug
+comparing regex "darww" with darwin
+```
+
+In this case we can see that the unquoted `\w` is turned into `w` by the shell because it was not quoted.
+
+You can also use regexes with no special characters at all:
+
+```bash
+is os version-codename unlike ventura
 ```
 
 ## Top Level Commands
