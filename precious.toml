@@ -1,3 +1,12 @@
+[commands.gofumpt]
+type = "tidy"
+include = ["**/*.go",]
+cmd = [
+    "gofumpt",
+    "-w",
+]
+ok_exit_codes = 0
+
 [commands.golangci-lint]
 type = "lint"
 include = ["**/*.go",]
