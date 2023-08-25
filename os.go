@@ -91,7 +91,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		default:
 			ctx.Success = false
 			return fmt.Errorf(
-				"The \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute",
+				"the \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute",
 				r.Op,
 				r.Attr,
 			)

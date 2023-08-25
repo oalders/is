@@ -32,7 +32,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		got, err := version.NewVersion(output)
 		if err != nil {
 			return errors.Join(fmt.Errorf(
-				"Could not parse the version (%s) found for (%s)",
+				"could not parse the version (%s) found for (%s)",
 				output,
 				got,
 			), err)
@@ -41,7 +41,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		want, err := version.NewVersion(r.Version.Val)
 		if err != nil {
 			return errors.Join(fmt.Errorf(
-				"Could not parse the version (%s) which you provided",
+				"could not parse the version (%s) which you provided",
 				r.Version.Val,
 			), err)
 		}
@@ -50,7 +50,6 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		if !ctx.Success && ctx.Debug {
 			log.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
 		}
-
 	} else if r.Age.Name != "" {
 		path, err := exec.LookPath(r.Age.Name)
 		if err != nil {
@@ -87,7 +86,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		value, err := strconv.Atoi(r.Age.Val)
 		if err != nil {
 			return errors.Join(fmt.Errorf(
-				"The value (%s) does not appear to be an integer",
+				"the value (%s) does not appear to be an integer",
 				r.Age.Val,
 			), err)
 		}
