@@ -33,22 +33,14 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		if r.Op == "like" || r.Op == "unlike" {
 			err := compare.Strings(ctx, r.Op, attr, r.Val)
 			if err != nil {
-				return errors.Join(fmt.Errorf(
-					"could not compare the version (%s) using (%s)",
-					attr,
-					r.Val,
-				), err)
+				return errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", attr, r.Val), err)
 			}
-			return nil
+			return err
 		}
 
 		got, err := goversion.NewVersion(attr)
 		if err != nil {
-			return errors.Join(fmt.Errorf(
-				"could not parse the version (%s) found for (%s)",
-				attr,
-				got,
-			), err)
+			return errors.Join(fmt.Errorf("could not parse the version (%s) found for (%s)", attr, got), err)
 		}
 
 		want, err := goversion.NewVersion(r.Val)
@@ -64,17 +56,6 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
 		}
 	default:
-		if r.Op == "like" || r.Op == "unlike" {
-			err := compare.Strings(ctx, r.Op, attr, r.Val)
-			if err != nil {
-				return errors.Join(fmt.Errorf(
-					"could not compare the version (%s) using (%s)",
-					attr,
-					r.Val,
-				), err)
-			}
-			return nil
-		}
 		switch r.Op {
 		case "eq":
 			ctx.Success = attr == want
@@ -86,15 +67,11 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 			if ctx.Debug {
 				log.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
 			}
-		case "like":
-		case "unlike":
+		case "like", "unlike":
+			err = compare.Strings(ctx, r.Op, attr, r.Val)
 		default:
 			ctx.Success = false
-			return fmt.Errorf(
-				"the \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute",
-				r.Op,
-				r.Attr,
-			)
+			return fmt.Errorf("the \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute", r.Op, r.Attr)
 		}
 	}
 
@@ -106,5 +83,5 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		log.Printf("%s\n", os)
 	}
 
-	return nil
+	return err
 }

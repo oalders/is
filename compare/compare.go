@@ -2,6 +2,7 @@
 package compare
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"regexp"
@@ -38,20 +39,27 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 		log.Printf(`comparing regex "%s" with %s`+"\n", want, got)
 	}
 	switch operator {
-	case "like":
+	case "like", "unlike":
 		success, err = regexp.MatchString(want, got)
-	case "unlike":
-		success, err = regexp.MatchString(want, got)
-		if err == nil {
-			success = !success
-		} else {
-			success = false
-		}
 	default:
 		err = fmt.Errorf(
 			"%s is not a string comparison operator",
 			operator,
 		)
+	}
+
+	switch operator {
+	case "like":
+		if err != nil {
+			err = errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", got, want), err)
+		}
+	case "unlike":
+		if err != nil {
+			err = errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", got, want), err)
+			success = false
+		} else {
+			success = !success
+		}
 	}
 	ctx.Success = success
 	return err

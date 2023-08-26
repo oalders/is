@@ -141,7 +141,7 @@ func TestOSCmd(t *testing.T) {
 		cmd := OSCmd{
 			Attr: "name",
 			Op:   "unlike",
-			Val:  "/[/",
+			Val:  "[",
 		}
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
