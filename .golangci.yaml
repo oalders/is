@@ -27,7 +27,7 @@ linters:
     - execinquery
     - exhaustive
     # - exhaustivestruct
-    - exhaustruct
+    # - exhaustruct
     - exportloopref
     - forbidigo
     - forcetypeassert
