@@ -108,3 +108,6 @@ linters-settings:
     statements: 40
   lll:
     line-length: 100
+  wrapcheck:
+    ignorePackageGlobs:
+    - github.com/oalders/is/*
