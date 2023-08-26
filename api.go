@@ -13,7 +13,7 @@ var api struct {
 	Version kong.VersionFlag `help:"Print version to screen"`
 }
 
-// CLICmd type is configuration for CLI checks
+// CLICmd type is configuration for CLI checks.
 type CLICmd struct {
 	Version struct {
 		Name string `arg:"" required:"" help:"[name of command or path to command]"`
@@ -28,19 +28,19 @@ type CLICmd struct {
 	} `cmd:"" help:"Check last modified time of cli (2h, 4d). e.g. \"is cli age tmux gt 1 d\""`
 }
 
-// OSCmd type is configuration for OS level checks
+// OSCmd type is configuration for OS level checks.
 type OSCmd struct {
 	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
 	Val  string `arg:"" required:""`
 }
 
-// UserCmd type is configuration for user level checks
+// UserCmd type is configuration for user level checks.
 type UserCmd struct {
 	Sudoer string `arg:"" required:"" default:"1" enum="sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
-// KnownCmd type is configuration for printing environment info
+// KnownCmd type is configuration for printing environment info.
 type KnownCmd struct {
 	OS struct {
 		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
@@ -51,7 +51,7 @@ type KnownCmd struct {
 	} `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
 }
 
-// ThereCmd is configuration for finding executables
+// ThereCmd is configuration for finding executables.
 type ThereCmd struct {
 	Name string `arg:"" required:""`
 }
