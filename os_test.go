@@ -37,180 +37,107 @@ func TestOSInfo(t *testing.T) {
 
 func TestOSCmd(t *testing.T) {
 	t.Parallel()
-	{
-		ctx := types.Context{Debug: true}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "eq",
-			Val:  "zzz",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
+	type OSTest struct {
+		Cmd     OSCmd
+		Error   bool
+		Success bool
 	}
-	{
-		ctx := types.Context{Debug: true}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "ne",
-			Val:  "zzz",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
+
+	tests := []OSTest{
+		{
+			Cmd:     OSCmd{"name", "eq", "zzz"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"name", "ne", "zzz"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"version", "eq", "1"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"version", "ne", "1"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"name", "gte", "1"},
+			Error:   true,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"name", "like", "zzzzz"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"name", "like", ".*"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"name", "unlike", "zzzzz"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"name", "unlike", ".*"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"name", "unlike", "["},
+			Error:   true,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"version", "like", "xxx"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"version", "like", ".*"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"version", "like", "[+"},
+			Error:   true,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"version", "unlike", "xxX"},
+			Error:   false,
+			Success: true,
+		},
+		{
+			Cmd:     OSCmd{"version", "unlike", ".*"},
+			Error:   false,
+			Success: false,
+		},
+		{
+			Cmd:     OSCmd{"version", "unlike", "[+"},
+			Error:   true,
+			Success: false,
+		},
 	}
-	{
-		ctx := types.Context{Debug: true}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "eq",
-			Val:  "1",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: true}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "ne",
-			Val:  "1",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-	{
+
+	for _, test := range tests {
 		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "gte",
-			Val:  "1",
+		err := test.Cmd.Run(&ctx)
+		if test.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
 		}
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "like",
-			Val:  "zzzzz",
+		if test.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success)
 		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "like",
-			Val:  ".*",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "unlike",
-			Val:  "zzzzz",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "unlike",
-			Val:  ".*",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "name",
-			Op:   "unlike",
-			Val:  "[",
-		}
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "like",
-			Val:  "xxX",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "like",
-			Val:  ".*",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "like",
-			Val:  "[+",
-		}
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "unlike",
-			Val:  "xxX",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "unlike",
-			Val:  ".*",
-		}
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-	{
-		ctx := types.Context{Debug: false}
-		cmd := OSCmd{
-			Attr: "version",
-			Op:   "unlike",
-			Val:  "[+",
-		}
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
 	}
 }
