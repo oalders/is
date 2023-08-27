@@ -2,6 +2,7 @@
 package mac
 
 import (
+	"errors"
 	"os/exec"
 	"strings"
 
@@ -50,7 +51,7 @@ func CodeName(osVersion string) string {
 func Version() (string, error) {
 	o, err := exec.Command("sw_vers", "-productVersion").Output()
 	if err != nil {
-		return "", err
+		return "", errors.Join(errors.New("could not run sw_vers -productVersion"), err)
 	}
 
 	return strings.TrimRight(string(o), "\n"), nil
