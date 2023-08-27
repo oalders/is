@@ -12,17 +12,8 @@ import (
 	"github.com/oalders/is/types"
 )
 
-const (
-	darwin        = "darwin"
-	name          = "name"
-	linux         = "linux"
-	osReleaseFile = "/etc/os-release"
-)
-
-// Run "is os ..."
+// Run "is os ...".
 func (r *OSCmd) Run(ctx *types.Context) error {
-	want := r.Val
-
 	attr, err := os.Info(ctx, r.Attr)
 	if err != nil {
 		return err
@@ -57,21 +48,8 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		}
 	default:
 		switch r.Op {
-		case "eq":
-			ctx.Success = attr == want
-			if ctx.Debug {
-				log.Printf("Comparison %s == %s %t\n", attr, want, ctx.Success)
-			}
-		case "ne":
-			ctx.Success = attr != want
-			if ctx.Debug {
-				log.Printf("Comparison %s != %s %t\n", attr, want, ctx.Success)
-			}
-		case "like", "unlike":
+		case "eq", "ne", "like", "unlike":
 			err = compare.Strings(ctx, r.Op, attr, r.Val)
-		default:
-			ctx.Success = false
-			return fmt.Errorf("the \"os\" command cannot perform the \"%s\" comparison on the \"%s\" attribute", r.Op, r.Attr)
 		}
 	}
 

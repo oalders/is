@@ -35,31 +35,23 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	var err error
 	var success bool
 
+	comparison := fmt.Sprintf(`comparison "%s" %s "%s"`, want, operator, got)
 	if ctx.Debug {
-		log.Printf(`comparing regex "%s" with %s`+"\n", want, got)
+		log.Printf(comparison)
 	}
 	switch operator {
+	case "eq":
+		success = got == want
+	case "ne":
+		success = got != want
 	case "like", "unlike":
 		success, err = regexp.MatchString(want, got)
-	default:
-		err = fmt.Errorf(
-			"%s is not a string comparison operator",
-			operator,
-		)
 	}
 
-	switch operator {
-	case "like":
-		if err != nil {
-			err = errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", got, want), err)
-		}
-	case "unlike":
-		if err != nil {
-			err = errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", got, want), err)
-			success = false
-		} else {
-			success = !success
-		}
+	if err != nil {
+		err = errors.Join(fmt.Errorf("error in comparison: %s", comparison), err)
+	} else if operator == "unlike" {
+		success = !success
 	}
 	ctx.Success = success
 	return err

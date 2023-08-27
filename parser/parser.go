@@ -30,22 +30,22 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		log.Printf("Running: %s %s\n", args[0], args[1])
 	}
 	cmd := exec.Command(cliName, arg)
-	o, err := cmd.Output()
+	output, err := cmd.Output()
 
 	// ssh -V doesn't print to STDOUT?
-	if len(o) == 0 && err == nil {
+	if len(output) == 0 && err == nil {
 		if ctx.Debug {
 			log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 		}
 		cmd = exec.Command(cliName, arg)
-		o, err = cmd.CombinedOutput()
+		output, err = cmd.CombinedOutput()
 	}
 
 	if err != nil {
 		return "", err
 	}
 
-	return CLIVersion(ctx, cliName, string(o)), nil
+	return CLIVersion(ctx, cliName, string(output)), nil
 }
 
 func CLIVersion(ctx *types.Context, cliName, output string) string {
@@ -85,23 +85,23 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"vim":     fmt.Sprintf(`VIM - Vi IMproved (%s)\b`, floatRegex),
 		"zsh":     fmt.Sprintf(`zsh (%s)\b`, floatRegex),
 	}
-	var re *regexp.Regexp
+	var versionRegex *regexp.Regexp
 	hasNewLines := regexp.MustCompile("\n")
 	if v, exists := regexen[cliName]; exists {
-		re = regexp.MustCompile(v)
+		versionRegex = regexp.MustCompile(v)
 	} else if found := len(hasNewLines.FindAllStringIndex(output, -1)); found > 1 {
 		// If --version returns more than one line, the actual version will
 		// generally be the last thing on the first line
-		re = regexp.MustCompile(fmt.Sprintf(`(?:\s)(%s|%s|%s|%s)\s*\n`, vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex, vStringRegex, floatRegex))
+		versionRegex = regexp.MustCompile(fmt.Sprintf(`(?:\s)(%s|%s|%s|%s)\s*\n`, vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex, vStringRegex, floatRegex))
 	} else {
-		re = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
+		versionRegex = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
 	}
 
-	matches := re.FindAllStringSubmatch(output, -1)
+	matches := versionRegex.FindAllStringSubmatch(output, -1)
 	if len(matches) > 0 {
 		output = matches[0][1]
 	} else if ctx.Debug {
-		log.Printf("output \"%s\" does not match regex \"%s\"\n", output, re)
+		log.Printf("output \"%s\" does not match regex \"%s\"\n", output, versionRegex)
 	}
 	output = strings.TrimRight(output, "\n")
 

@@ -89,8 +89,4 @@ func TestStrings(t *testing.T) {
 		assert.Error(t, err)
 	}
 	ctx.Debug = true
-	{
-		err := Strings(ctx, "Zunlike", "x", "x")
-		assert.Error(t, err)
-	}
 }

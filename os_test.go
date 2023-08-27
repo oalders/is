@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"runtime"
 	"testing"
 
@@ -65,11 +66,6 @@ func TestOSCmd(t *testing.T) {
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"name", "gte", "1"},
-			Error:   true,
-			Success: false,
-		},
-		{
 			Cmd:     OSCmd{"name", "like", "zzzzz"},
 			Error:   false,
 			Success: false,
@@ -129,15 +125,16 @@ func TestOSCmd(t *testing.T) {
 	for _, test := range tests {
 		ctx := types.Context{Debug: false}
 		err := test.Cmd.Run(&ctx)
+		name := fmt.Sprintf("%s %s %s", test.Cmd.Attr, test.Cmd.Op, test.Cmd.Val)
 		if test.Error {
-			assert.Error(t, err)
+			assert.Error(t, err, name)
 		} else {
-			assert.NoError(t, err)
+			assert.NoError(t, err, name)
 		}
 		if test.Success {
-			assert.True(t, ctx.Success)
+			assert.True(t, ctx.Success, name)
 		} else {
-			assert.False(t, ctx.Success)
+			assert.False(t, ctx.Success, name)
 		}
 	}
 }
