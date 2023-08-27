@@ -34,9 +34,6 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		}
 
 		ctx.Success = compare.CLIVersions(r.Op, got, want)
-		if !ctx.Success && ctx.Debug {
-			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, want)
-		}
 	default:
 		switch r.Op {
 		case "eq", "ne", like, unlike:
@@ -45,6 +42,9 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 	}
 
 	if ctx.Debug {
+		if !ctx.Success {
+			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, r.Val)
+		}
 		os, err := os.Aggregated()
 		if err != nil {
 			return err
