@@ -13,14 +13,14 @@ func MaybeReadINI(path string) (*types.OSRelease, error) {
 	_, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, nil
+			return nil, nil //nolint:nilnil
 		}
-		return nil, err
+		return nil, errors.Join(errors.New("could not stat file"), err)
 	}
 
 	cfg, err := ini.Load(path)
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(errors.New("could not load file"), err)
 	}
 
 	section := cfg.Section("")

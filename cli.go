@@ -16,7 +16,7 @@ import (
 	"github.com/oalders/is/types"
 )
 
-// Run "is cli ..."
+// Run "is cli ...".
 func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Version.Name != "" {
 		output, err := parser.CLIOutput(ctx, r.Version.Name)
@@ -24,7 +24,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 			return err
 		}
 
-		if r.Version.Op == "like" || r.Version.Op == "unlike" {
+		if r.Version.Op == like || r.Version.Op == unlike {
 			err = compare.Strings(ctx, r.Version.Op, output, r.Version.Val)
 			return err
 		}

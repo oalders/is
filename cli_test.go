@@ -7,12 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const tmux = "tmux"
+
 func TestCliVersion(t *testing.T) {
 	t.Parallel()
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
+		cmd.Version.Name = tmux
 		cmd.Version.Op = "ne"
 		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
@@ -34,7 +36,7 @@ func TestCliVersion(t *testing.T) {
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
+		cmd.Version.Name = tmux
 		cmd.Version.Op = "eq"
 		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
@@ -45,7 +47,7 @@ func TestCliVersion(t *testing.T) {
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
+		cmd.Version.Name = tmux
 		cmd.Version.Op = "eq"
 		cmd.Version.Val = "zzz"
 		err := cmd.Run(&ctx)
@@ -56,8 +58,8 @@ func TestCliVersion(t *testing.T) {
 	{
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
-		cmd.Version.Op = "unlike"
+		cmd.Version.Name = tmux
+		cmd.Version.Op = unlike
 		cmd.Version.Val = "zzz"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -67,8 +69,8 @@ func TestCliVersion(t *testing.T) {
 	{
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
-		cmd.Version.Op = "like"
+		cmd.Version.Name = tmux
+		cmd.Version.Op = like
 		cmd.Version.Val = ""
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -78,8 +80,8 @@ func TestCliVersion(t *testing.T) {
 	{
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
-		cmd.Version.Name = "tmux"
-		cmd.Version.Op = "like"
+		cmd.Version.Name = tmux
+		cmd.Version.Op = like
 		cmd.Version.Val = "3.*"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -88,10 +90,11 @@ func TestCliVersion(t *testing.T) {
 }
 
 func TestCliAge(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Age.Name = "tmux"
+		cmd.Age.Name = tmux
 		cmd.Age.Op = "gt"
 		cmd.Age.Val = "1"
 		cmd.Age.Unit = "s"
@@ -102,7 +105,7 @@ func TestCliAge(t *testing.T) {
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Age.Name = "tmux"
+		cmd.Age.Name = tmux
 		cmd.Age.Op = "lt"
 		cmd.Age.Val = "100000"
 		cmd.Age.Unit = "days"
@@ -113,7 +116,7 @@ func TestCliAge(t *testing.T) {
 	{
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
-		cmd.Age.Name = "tmux"
+		cmd.Age.Name = tmux
 		cmd.Age.Op = "lt"
 		cmd.Age.Val = "1.1"
 		cmd.Age.Unit = "d"

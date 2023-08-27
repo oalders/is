@@ -3,7 +3,7 @@ package main
 
 import "github.com/alecthomas/kong"
 
-var api struct {
+var API struct {
 	Debug   bool             `help:"turn on debugging statements"`
 	OS      OSCmd            `cmd:"" help:"Check OS attributes. e.g. \"is os name eq darwin\""`
 	CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
@@ -14,6 +14,8 @@ var api struct {
 }
 
 // CLICmd type is configuration for CLI checks.
+//
+//nolint:lll
 type CLICmd struct {
 	Version struct {
 		Name string `arg:"" required:"" help:"[name of command or path to command]"`
@@ -29,6 +31,8 @@ type CLICmd struct {
 }
 
 // OSCmd type is configuration for OS level checks.
+//
+//nolint:lll
 type OSCmd struct {
 	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
@@ -36,11 +40,15 @@ type OSCmd struct {
 }
 
 // UserCmd type is configuration for user level checks.
+//
+//nolint:lll
 type UserCmd struct {
-	Sudoer string `arg:"" required:"" default:"1" enum="sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
+	Sudoer string `arg:"" required:"" default:"1" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
 // KnownCmd type is configuration for printing environment info.
+//
+//nolint:lll
 type KnownCmd struct {
 	OS struct {
 		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`

@@ -8,7 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//nolint:lll
 func TestCLIVersion(t *testing.T) {
+	t.Parallel()
 	ctx := &types.Context{}
 
 	tests := [][]string{
@@ -114,6 +116,7 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 }
 
 func TestCLIOutput(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := &types.Context{Debug: true}
 		o, err := (parser.CLIOutput(ctx, "ssh"))

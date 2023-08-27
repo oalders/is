@@ -8,6 +8,7 @@ import (
 )
 
 func TestSudoer(t *testing.T) {
+	t.Parallel()
 	ctx := types.Context{Debug: true}
 	cmd := UserCmd{}
 	cmd.Sudoer = "sudoer"

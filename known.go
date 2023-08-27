@@ -11,7 +11,7 @@ import (
 	"github.com/oalders/is/types"
 )
 
-// Run "is known ..."
+// Run "is known ...".
 func (r *KnownCmd) Run(ctx *types.Context) error {
 	result := ""
 	var err error

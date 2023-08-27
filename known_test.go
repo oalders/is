@@ -9,6 +9,7 @@ import (
 )
 
 func TestKnownCmd(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}

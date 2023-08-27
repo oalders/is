@@ -10,7 +10,7 @@ import (
 	"github.com/oalders/is/types"
 )
 
-// Run "is user ..."
+// Run "is user ...".
 func (r *UserCmd) Run(ctx *types.Context) error {
 	if r.Sudoer != "" {
 		if ctx.Debug {

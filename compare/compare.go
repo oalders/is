@@ -37,7 +37,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 
 	comparison := fmt.Sprintf(`comparison "%s" %s "%s"`, want, operator, got)
 	if ctx.Debug {
-		log.Printf(comparison)
+		log.Print(comparison)
 	}
 	switch operator {
 	case "eq":

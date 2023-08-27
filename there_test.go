@@ -8,6 +8,7 @@ import (
 )
 
 func TestThereCmd(t *testing.T) {
+	t.Parallel()
 	{
 		ctx := types.Context{Debug: true}
 		cmd := ThereCmd{Name: "cat"}

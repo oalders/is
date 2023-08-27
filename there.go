@@ -9,9 +9,9 @@ import (
 	"github.com/oalders/is/types"
 )
 
-// Run "is there ..."
+// Run "is there ...".
 func (r *ThereCmd) Run(ctx *types.Context) error {
-	cmd := exec.Command("command", "-v", r.Name)
+	cmd := exec.Command("command", "-v", r.Name) //nolint:gosec
 	if ctx.Debug {
 		log.Printf("Running \"command -v %s\"\n", r.Name)
 	}
@@ -20,13 +20,13 @@ func (r *ThereCmd) Run(ctx *types.Context) error {
 		if ctx.Debug {
 			log.Printf("Running \"which %s\"\n", r.Name)
 		}
-		cmd := exec.Command("which", r.Name)
+		cmd := exec.Command("which", r.Name) //nolint:gosec
 		err := cmd.Run()
 		if err != nil {
 			if e := (&exec.ExitError{}); errors.As(err, &e) {
 				return nil
 			}
-			return err
+			return errors.Join(errors.New("command run error"), err)
 		}
 	}
 	ctx.Success = true

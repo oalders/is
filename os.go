@@ -21,7 +21,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 
 	switch r.Attr {
 	case "version":
-		if r.Op == "like" || r.Op == "unlike" {
+		if r.Op == like || r.Op == unlike {
 			err := compare.Strings(ctx, r.Op, attr, r.Val)
 			if err != nil {
 				return errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", attr, r.Val), err)
@@ -48,7 +48,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		}
 	default:
 		switch r.Op {
-		case "eq", "ne", "like", "unlike":
+		case "eq", "ne", like, unlike:
 			err = compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 	}
