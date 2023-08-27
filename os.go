@@ -2,14 +2,12 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"log"
 
-	goversion "github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
+	"github.com/oalders/is/version"
 )
 
 // Run "is os ...".
@@ -25,17 +23,14 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 			return compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 
-		got, err := goversion.NewVersion(attr)
+		got, err := version.NewVersion(attr)
 		if err != nil {
-			return errors.Join(fmt.Errorf("could not parse the version (%s) found for (%s)", attr, got), err)
+			return err
 		}
 
-		want, err := goversion.NewVersion(r.Val)
+		want, err := version.NewVersion(r.Val)
 		if err != nil {
-			return errors.Join(fmt.Errorf(
-				"could not parse the version (%s) which you provided",
-				r.Val,
-			), err)
+			return err
 		}
 
 		ctx.Success = compare.CLIVersions(r.Op, got, want)

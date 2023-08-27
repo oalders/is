@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
+	"github.com/oalders/is/version"
 )
 
 // Run "is cli ...".
@@ -31,19 +31,12 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 
 		got, err := version.NewVersion(output)
 		if err != nil {
-			return errors.Join(fmt.Errorf(
-				"could not parse the version (%s) found for (%s)",
-				output,
-				got,
-			), err)
+			return err
 		}
 
 		want, err := version.NewVersion(r.Version.Val)
 		if err != nil {
-			return errors.Join(fmt.Errorf(
-				"could not parse the version (%s) which you provided",
-				r.Version.Val,
-			), err)
+			return err
 		}
 
 		ctx.Success = compare.CLIVersions(r.Version.Op, got, want)

@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/hashicorp/go-version"
+	"github.com/oalders/is/version"
 )
 
 func CodeName(osVersion string) string {

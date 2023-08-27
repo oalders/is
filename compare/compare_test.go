@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/hashicorp/go-version"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/types"
+	"github.com/oalders/is/version"
 )
 
 const (
