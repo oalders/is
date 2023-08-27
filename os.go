@@ -22,11 +22,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 	switch r.Attr {
 	case "version":
 		if r.Op == like || r.Op == unlike {
-			err := compare.Strings(ctx, r.Op, attr, r.Val)
-			if err != nil {
-				return errors.Join(fmt.Errorf("could not compare the version (%s) using (%s)", attr, r.Val), err)
-			}
-			return err
+			return compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 
 		got, err := goversion.NewVersion(attr)
