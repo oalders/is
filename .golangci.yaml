@@ -111,3 +111,9 @@ linters-settings:
   wrapcheck:
     ignorePackageGlobs:
     - github.com/oalders/is/*
+issues:
+  exclude-rules:
+    # disable funlen for test funcs
+    - source: "^func Test"
+      linters:
+        - funlen
