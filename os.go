@@ -7,7 +7,6 @@ import (
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
-	"github.com/oalders/is/version"
 )
 
 // Run "is os ...".
@@ -23,17 +22,10 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 			return compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 
-		got, err := version.NewVersion(attr)
+		err = compare.CLIVersions(ctx, r.Op, attr, r.Val)
 		if err != nil {
 			return err
 		}
-
-		want, err := version.NewVersion(r.Val)
-		if err != nil {
-			return err
-		}
-
-		ctx.Success = compare.CLIVersions(r.Op, got, want)
 	default:
 		switch r.Op {
 		case "eq", "ne", like, unlike:

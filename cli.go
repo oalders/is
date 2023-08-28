@@ -13,7 +13,6 @@ import (
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
-	"github.com/oalders/is/version"
 )
 
 // Run "is cli ...".
@@ -25,23 +24,12 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		}
 
 		if r.Version.Op == like || r.Version.Op == unlike {
-			err = compare.Strings(ctx, r.Version.Op, output, r.Version.Val)
-			return err
+			return compare.Strings(ctx, r.Version.Op, output, r.Version.Val)
 		}
 
-		got, err := version.NewVersion(output)
+		err = compare.CLIVersions(ctx, r.Version.Op, output, r.Version.Val)
 		if err != nil {
 			return err
-		}
-
-		want, err := version.NewVersion(r.Version.Val)
-		if err != nil {
-			return err
-		}
-
-		ctx.Success = compare.CLIVersions(r.Version.Op, got, want)
-		if !ctx.Success && ctx.Debug {
-			log.Printf("Comparison failed: %s %s %s\n", output, r.Version.Op, want)
 		}
 	} else if r.Age.Name != "" {
 		path, err := exec.LookPath(r.Age.Name)

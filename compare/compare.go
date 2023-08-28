@@ -11,8 +11,17 @@ import (
 	"github.com/oalders/is/types"
 )
 
-func CLIVersions(op string, got, want *version.Version) bool {
+func CLIVersions(ctx *types.Context, op, g, w string) error {
 	var success bool
+	got, err := version.NewVersion(g)
+	if err != nil {
+		return err
+	}
+	want, err := version.NewVersion(w)
+	if err != nil {
+		return err
+	}
+
 	switch op {
 	case "eq":
 		success = got.Equal(want)
@@ -28,7 +37,8 @@ func CLIVersions(op string, got, want *version.Version) bool {
 		success = got.Compare(want) >= 0
 	}
 
-	return success
+	ctx.Success = success
+	return nil
 }
 
 func Strings(ctx *types.Context, operator, got, want string) error {
