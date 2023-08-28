@@ -22,15 +22,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		if err != nil {
 			return err
 		}
-
-		if r.Version.Op == like || r.Version.Op == unlike {
-			return compare.Strings(ctx, r.Version.Op, output, r.Version.Val)
-		}
-
-		err = compare.CLIVersions(ctx, r.Version.Op, output, r.Version.Val)
-		if err != nil {
-			return err
-		}
+		return compare.CLIVersions(ctx, r.Version.Op, output, r.Version.Val)
 	} else if r.Age.Name != "" {
 		path, err := exec.LookPath(r.Age.Name)
 		if err != nil {
@@ -74,7 +66,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		durationString := fmt.Sprintf("%d%s", value*unitMultiplier, unit)
 		dur, err := time.ParseDuration(durationString)
 		if err != nil {
-			return err
+			return errors.Join(errors.New("Cannot parse duration"), err)
 		}
 		targetTime := time.Now().Add(dur)
 

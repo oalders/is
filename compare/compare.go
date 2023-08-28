@@ -7,12 +7,16 @@ import (
 	"log"
 	"regexp"
 
-	"github.com/hashicorp/go-version"
 	"github.com/oalders/is/types"
+	"github.com/oalders/is/version"
 )
 
 func CLIVersions(ctx *types.Context, op, g, w string) error {
 	var success bool
+	switch op {
+	case "like", "unlike":
+		return Strings(ctx, op, g, w)
+	}
 	got, err := version.NewVersion(g)
 	if err != nil {
 		return err
