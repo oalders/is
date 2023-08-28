@@ -3,13 +3,17 @@ package reader
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/oalders/is/types"
 	"gopkg.in/ini.v1"
 )
 
-func MaybeReadINI(path string) (*types.OSRelease, error) {
+func MaybeReadINI(ctx *types.Context, path string) (*types.OSRelease, error) {
+	if ctx.Debug {
+		log.Println("Trying to parse " + path)
+	}
 	_, err := os.Stat(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {

@@ -46,12 +46,12 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 	} else if r.Age.Name != "" {
 		path, err := exec.LookPath(r.Age.Name)
 		if err != nil {
-			return err
+			return errors.Join(errors.New("could not find command"), err)
 		}
 
 		info, err := os.Stat(path)
 		if err != nil {
-			return err
+			return errors.Join(errors.New("could not stat command"), err)
 		}
 
 		units := map[string]string{

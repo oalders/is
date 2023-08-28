@@ -19,7 +19,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	if r.OS.Attr != "" {
 		result, err = os.Info(ctx, r.OS.Attr)
 		if ctx.Debug {
-			os, err := os.Aggregated()
+			os, err := os.Aggregated(ctx)
 			if err != nil {
 				return err
 			}

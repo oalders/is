@@ -45,7 +45,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		if !ctx.Success {
 			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, r.Val)
 		}
-		os, err := os.Aggregated()
+		os, err := os.Aggregated(ctx)
 		if err != nil {
 			return err
 		}

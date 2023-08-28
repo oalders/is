@@ -2,6 +2,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os/exec"
@@ -32,17 +33,20 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	cmd := exec.Command(cliName, arg)
 	output, err := cmd.Output()
 
+	if err != nil {
+		return "", errors.Join(errors.New("could not get command output"), err)
+	}
+
 	// ssh -V doesn't print to STDOUT?
-	if len(output) == 0 && err == nil {
+	if len(output) == 0 {
 		if ctx.Debug {
 			log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 		}
 		cmd = exec.Command(cliName, arg)
 		output, err = cmd.CombinedOutput()
-	}
-
-	if err != nil {
-		return "", err
+		if err != nil {
+			return "", errors.Join(errors.New("could not find command output in STDIN or STDERR"), err)
+		}
 	}
 
 	return CLIVersion(ctx, cliName, string(output)), nil

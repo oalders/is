@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"runtime"
 
 	"github.com/oalders/is/mac"
@@ -25,30 +24,21 @@ func Info(ctx *types.Context, argName string) (string, error) {
 	switch argName {
 	case "id":
 		if runtime.GOOS == linux {
-			if ctx.Debug {
-				log.Println("Trying to parse " + osReleaseFile)
-			}
-			release, err := reader.MaybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 			if err == nil && release != nil && release.ID != "" {
 				result = release.ID
 			}
 		}
 	case "id-like":
 		if runtime.GOOS == linux {
-			if ctx.Debug {
-				log.Println("Trying to parse " + osReleaseFile)
-			}
-			release, err := reader.MaybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 			if err == nil && release != nil && release.IDLike != "" {
 				result = release.IDLike
 			}
 		}
 	case "pretty-name":
 		if runtime.GOOS == linux {
-			if ctx.Debug {
-				log.Println("Trying to parse " + osReleaseFile)
-			}
-			release, err := reader.MaybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 			if err == nil && release != nil && release.PrettyName != "" {
 				result = release.PrettyName
 			}
@@ -63,20 +53,14 @@ func Info(ctx *types.Context, argName string) (string, error) {
 			}
 			result = o
 		} else if runtime.GOOS == linux {
-			if ctx.Debug {
-				log.Println("Trying to parse " + osReleaseFile)
-			}
-			release, err := reader.MaybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 			if err == nil && release != nil && release.Version != "" {
 				result = release.Version
 			}
 		}
 	case "version-codename":
 		if runtime.GOOS == linux {
-			if ctx.Debug {
-				log.Println("Trying to parse " + osReleaseFile)
-			}
-			release, err := reader.MaybeReadINI(osReleaseFile)
+			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 			if err == nil && release != nil && release.VersionCodeName != "" {
 				result = release.VersionCodeName
 			}
@@ -98,8 +82,8 @@ func Info(ctx *types.Context, argName string) (string, error) {
 	return result, nil
 }
 
-func Aggregated() (string, error) {
-	release, err := reader.MaybeReadINI(osReleaseFile)
+func Aggregated(ctx *types.Context) (string, error) {
+	release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 	if err != nil {
 		return "", err
 	}
