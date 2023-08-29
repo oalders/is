@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/ops"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 )
@@ -18,7 +19,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 
 	switch r.Attr {
 	case "version":
-		if r.Op == like || r.Op == unlike {
+		if r.Op == ops.Like || r.Op == ops.Unlike {
 			return compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 
@@ -28,7 +29,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		}
 	default:
 		switch r.Op {
-		case "eq", "ne", like, unlike:
+		case ops.Eq, ops.Ne, ops.Like, ops.Unlike:
 			err = compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 	}

@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/ops"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
@@ -66,57 +67,57 @@ func TestOSCmd(t *testing.T) {
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"name", like, "zzzzz"},
+			Cmd:     OSCmd{"name", ops.Like, "zzzzz"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"name", like, ".*"},
+			Cmd:     OSCmd{"name", ops.Like, ".*"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"name", unlike, "zzzzz"},
+			Cmd:     OSCmd{"name", ops.Unlike, "zzzzz"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"name", unlike, ".*"},
+			Cmd:     OSCmd{"name", ops.Unlike, ".*"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"name", unlike, "["},
+			Cmd:     OSCmd{"name", ops.Unlike, "["},
 			Error:   true,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", like, "xxx"},
+			Cmd:     OSCmd{"version", ops.Like, "xxx"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", like, ".*"},
+			Cmd:     OSCmd{"version", ops.Like, ".*"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", like, "[+"},
+			Cmd:     OSCmd{"version", ops.Like, "[+"},
 			Error:   true,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", unlike, "xxX"},
+			Cmd:     OSCmd{"version", ops.Unlike, "xxX"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", unlike, ".*"},
+			Cmd:     OSCmd{"version", ops.Unlike, ".*"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", unlike, "[+"},
+			Cmd:     OSCmd{"version", ops.Unlike, "[+"},
 			Error:   true,
 			Success: false,
 		},

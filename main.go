@@ -8,11 +8,6 @@ import (
 	"github.com/oalders/is/types"
 )
 
-const (
-	like   = "like"
-	unlike = "unlike"
-)
-
 func main() {
 	ctx := kong.Parse(&API,
 		kong.Vars{

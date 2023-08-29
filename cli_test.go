@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/oalders/is/ops"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +16,7 @@ func TestCliVersion(t *testing.T) {
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
 		cmd.Version.Name = tmux
-		cmd.Version.Op = "ne"
+		cmd.Version.Op = ops.Ne
 		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -26,7 +27,7 @@ func TestCliVersion(t *testing.T) {
 		ctx := types.Context{Debug: true}
 		cmd := CLICmd{}
 		cmd.Version.Name = "tmuxzzz"
-		cmd.Version.Op = "ne"
+		cmd.Version.Op = ops.Ne
 		cmd.Version.Val = "1"
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
@@ -59,7 +60,7 @@ func TestCliVersion(t *testing.T) {
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
 		cmd.Version.Name = tmux
-		cmd.Version.Op = unlike
+		cmd.Version.Op = ops.Unlike
 		cmd.Version.Val = "zzz"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -70,7 +71,7 @@ func TestCliVersion(t *testing.T) {
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
 		cmd.Version.Name = tmux
-		cmd.Version.Op = like
+		cmd.Version.Op = ops.Like
 		cmd.Version.Val = ""
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -81,7 +82,7 @@ func TestCliVersion(t *testing.T) {
 		ctx := types.Context{Debug: false}
 		cmd := CLICmd{}
 		cmd.Version.Name = tmux
-		cmd.Version.Op = like
+		cmd.Version.Op = ops.Like
 		cmd.Version.Val = "3.*"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)

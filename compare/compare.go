@@ -7,15 +7,16 @@ import (
 	"log"
 	"regexp"
 
+	"github.com/oalders/is/ops"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
 )
 
-func CLIVersions(ctx *types.Context, op, g, w string) error {
+func CLIVersions(ctx *types.Context, operator, g, w string) error {
 	var success bool
-	switch op {
-	case "like", "unlike":
-		return Strings(ctx, op, g, w)
+	switch operator {
+	case ops.Like, ops.Unlike:
+		return Strings(ctx, operator, g, w)
 	}
 	got, err := version.NewVersion(g)
 	if err != nil {
@@ -26,18 +27,18 @@ func CLIVersions(ctx *types.Context, op, g, w string) error {
 		return err
 	}
 
-	switch op {
-	case "eq":
+	switch operator {
+	case ops.Eq:
 		success = got.Equal(want)
-	case "ne":
+	case ops.Ne:
 		success = got.Compare(want) != 0
-	case "lt":
+	case ops.Lt:
 		success = got.LessThan(want)
-	case "lte":
+	case ops.Lte:
 		success = got.Compare(want) <= 0
-	case "gt":
+	case ops.Gt:
 		success = got.GreaterThan(want)
-	case "gte":
+	case ops.Gte:
 		success = got.Compare(want) >= 0
 	}
 
@@ -54,17 +55,17 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 		log.Print(comparison)
 	}
 	switch operator {
-	case "eq":
+	case ops.Eq:
 		success = got == want
-	case "ne":
+	case ops.Ne:
 		success = got != want
-	case "like", "unlike":
+	case ops.Like, ops.Unlike:
 		success, err = regexp.MatchString(want, got)
 	}
 
 	if err != nil {
 		err = errors.Join(fmt.Errorf("error in comparison: %s", comparison), err)
-	} else if operator == "unlike" {
+	} else if operator == ops.Unlike {
 		success = !success
 	}
 	ctx.Success = success
