@@ -3,13 +3,12 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"strconv"
 	"time"
 
+	"github.com/oalders/is/age"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
@@ -34,41 +33,11 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 			return errors.Join(errors.New("could not stat command"), err)
 		}
 
-		units := map[string]string{
-			"s":       "s",
-			"second":  "s",
-			"seconds": "s",
-			"m":       "m",
-			"minute":  "m",
-			"minutes": "m",
-			"h":       "h",
-			"hour":    "h",
-			"hours":   "h",
-			"d":       "d",
-			"day":     "d",
-			"days":    "d",
-		}
-
-		unit := units[r.Age.Unit]
-		unitMultiplier := -1
-		if unit == "d" {
-			unitMultiplier = -24
-			unit = "h"
-		}
-
-		value, err := strconv.Atoi(r.Age.Val)
+		dur, err := age.StringToDuration(r.Age.Val, r.Age.Unit)
 		if err != nil {
-			return errors.Join(fmt.Errorf(
-				"the value (%s) does not appear to be an integer",
-				r.Age.Val,
-			), err)
+			return err
 		}
-		durationString := fmt.Sprintf("%d%s", value*unitMultiplier, unit)
-		dur, err := time.ParseDuration(durationString)
-		if err != nil {
-			return errors.Join(errors.New("Cannot parse duration"), err)
-		}
-		targetTime := time.Now().Add(dur)
+		targetTime := time.Now().Add(*dur)
 
 		// Returns -1 if cli age is older than target time
 		// Returns 0 if they are the same
