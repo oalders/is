@@ -2,8 +2,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/os"
@@ -32,17 +30,6 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 		case ops.Eq, ops.Ne, ops.Like, ops.Unlike:
 			err = compare.Strings(ctx, r.Op, attr, r.Val)
 		}
-	}
-
-	if ctx.Debug {
-		if !ctx.Success {
-			log.Printf("Comparison failed: %s %s %s\n", r.Attr, r.Op, r.Val)
-		}
-		os, err := os.Aggregated(ctx)
-		if err != nil {
-			return err
-		}
-		log.Printf("%s\n", os)
 	}
 
 	return err

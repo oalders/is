@@ -32,7 +32,6 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	}
 	cmd := exec.Command(cliName, arg)
 	output, err := cmd.Output()
-
 	if err != nil {
 		return "", errors.Join(errors.New("could not get command output"), err)
 	}

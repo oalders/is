@@ -8,21 +8,22 @@ import (
 	"regexp"
 
 	"github.com/oalders/is/ops"
+	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
 )
 
-func CLIVersions(ctx *types.Context, operator, g, w string) error {
+func CLIVersions(ctx *types.Context, operator, gotString, wantString string) error {
 	var success bool
 	switch operator {
 	case ops.Like, ops.Unlike:
-		return Strings(ctx, operator, g, w)
+		return Strings(ctx, operator, gotString, wantString)
 	}
-	got, err := version.NewVersion(g)
+	got, err := version.NewVersion(gotString)
 	if err != nil {
 		return err
 	}
-	want, err := version.NewVersion(w)
+	want, err := version.NewVersion(wantString)
 	if err != nil {
 		return err
 	}
@@ -43,7 +44,7 @@ func CLIVersions(ctx *types.Context, operator, g, w string) error {
 	}
 
 	ctx.Success = success
-	return nil
+	return maybeDebug(ctx, operator, gotString, wantString)
 }
 
 func Strings(ctx *types.Context, operator, got, want string) error {
@@ -64,10 +65,28 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	}
 
 	if err != nil {
-		err = errors.Join(fmt.Errorf("error in comparison: %s", comparison), err)
-	} else if operator == ops.Unlike {
+		ctx.Success = false
+		return errors.Join(fmt.Errorf("error in comparison: %s", comparison), err)
+	}
+	if operator == ops.Unlike {
 		success = !success
 	}
 	ctx.Success = success
-	return err
+	return maybeDebug(ctx, operator, got, want)
+}
+
+func maybeDebug(ctx *types.Context, operator, got, want string) error {
+	if !ctx.Debug {
+		return nil
+	}
+
+	if !ctx.Success {
+		log.Printf("Comparison failed: %s %s %s\n", got, operator, want)
+	}
+	os, err := os.Aggregated(ctx)
+	if err != nil {
+		return err
+	}
+	log.Printf("%s\n", os)
+	return nil
 }
