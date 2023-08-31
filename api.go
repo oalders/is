@@ -43,7 +43,7 @@ type OSCmd struct {
 //
 //nolint:lll
 type UserCmd struct {
-	Sudoer string `arg:"" required:"" default:"1" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
+	Sudoer string `arg:"" required:"" default:"sudoer" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
 // KnownCmd type is configuration for printing environment info.
