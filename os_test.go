@@ -47,22 +47,22 @@ func TestOSCmd(t *testing.T) {
 
 	tests := []OSTest{
 		{
-			Cmd:     OSCmd{"name", "eq", "zzz"},
+			Cmd:     OSCmd{"name", ops.Eq, "zzz"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"name", "ne", "zzz"},
+			Cmd:     OSCmd{"name", ops.Ne, "zzz"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", "eq", "1"},
+			Cmd:     OSCmd{"version", ops.Eq, "1"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", "ne", "1"},
+			Cmd:     OSCmd{"version", ops.Ne, "1"},
 			Error:   false,
 			Success: true,
 		},
