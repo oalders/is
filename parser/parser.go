@@ -95,7 +95,9 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 	} else if found := len(hasNewLines.FindAllStringIndex(output, -1)); found > 1 {
 		// If --version returns more than one line, the actual version will
 		// generally be the last thing on the first line
-		versionRegex = regexp.MustCompile(fmt.Sprintf(`(?:\s)(%s|%s|%s|%s)\s*\n`, vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex, vStringRegex, floatRegex))
+		versionRegex = regexp.MustCompile(fmt.Sprintf(`(?:\s)(%s|%s|%s|%s)\s*\n`,
+			vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex,
+			vStringRegex, floatRegex))
 	} else {
 		versionRegex = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
 	}
