@@ -12,81 +12,36 @@ const tmux = "tmux"
 
 func TestCliVersion(t *testing.T) {
 	t.Parallel()
-	{
+	type test struct {
+		Cmp     VersionCmp
+		Error   bool
+		Success bool
+	}
+
+	tests := []test{
+		{VersionCmp{"tmux", ops.Ne, "1"}, false, true},
+		{VersionCmp{"tmuxzzz", ops.Ne, "1"}, true, false},
+		{VersionCmp{"tmux", ops.Eq, "1"}, false, false},
+		{VersionCmp{"tmux", ops.Eq, "zzz"}, true, false},
+		{VersionCmp{"tmux", ops.Unlike, "zzz"}, false, true},
+		{VersionCmp{"tmux", ops.Like, ""}, false, true}, // FIXME
+		{VersionCmp{"tmux", ops.Like, "3.*"}, false, true},
+	}
+
+	for _, test := range tests {
 		ctx := types.Context{Debug: true}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = ops.Ne
-		cmd.Version.Val = "1"
+		cmd := CLICmd{Version: test.Cmp}
 		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: true}
-		cmd := CLICmd{}
-		cmd.Version.Name = "tmuxzzz"
-		cmd.Version.Op = ops.Ne
-		cmd.Version.Val = "1"
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: true}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = "eq"
-		cmd.Version.Val = "1"
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.False(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: true}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = "eq"
-		cmd.Version.Val = "zzz"
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: false}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = ops.Unlike
-		cmd.Version.Val = "zzz"
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: false}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = ops.Like
-		cmd.Version.Val = ""
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
-	}
-
-	{
-		ctx := types.Context{Debug: false}
-		cmd := CLICmd{}
-		cmd.Version.Name = tmux
-		cmd.Version.Op = ops.Like
-		cmd.Version.Val = "3.*"
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success)
+		if test.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+		if test.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success)
+		}
 	}
 }
 

@@ -1,16 +1,18 @@
 // package main contains the api for the CLI
 package main
 
+type VersionCmp struct {
+	Name string `arg:"" required:"" help:"[name of command or path to command]"`
+	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Val  string `arg:"" required:""`
+}
+
 // CLICmd type is configuration for CLI checks.
 //
 //nolint:lll
 type CLICmd struct {
-	Version struct {
-		Name string `arg:"" required:"" help:"[name of command or path to command]"`
-		Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
-		Val  string `arg:"" required:""`
-	} `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
-	Age struct {
+	Version VersionCmp `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
+	Age     struct {
 		Name string `arg:"" required:"" help:"[name of command or path to command]"`
 		Op   string `arg:"" required:"" enum:"gt,lt" help:"[gt|lt]"`
 		Val  string `arg:"" required:""`
@@ -31,7 +33,7 @@ type OSCmd struct {
 //
 //nolint:lll
 type UserCmd struct {
-	Sudoer string `arg:"" required:"" default:"sudoer" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
+	Sudoer string `arg:"" required:"" default:"1" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
 // KnownCmd type is configuration for printing environment info.
