@@ -6,6 +6,7 @@ type Context struct {
 	Success bool
 }
 
+//nolint:tagliatelle
 type OSRelease struct {
 	ID              string `json:"id,omitempty"`
 	IDLike          string `json:"id-like,omitempty"`
