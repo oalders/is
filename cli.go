@@ -10,6 +10,7 @@ import (
 
 	"github.com/oalders/is/age"
 	"github.com/oalders/is/compare"
+	"github.com/oalders/is/ops"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 )
@@ -39,27 +40,30 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		}
 		targetTime := time.Now().Add(*dur)
 
-		// Returns -1 if cli age is older than target time
-		// Returns 0 if they are the same
-		// Returns 1 if cli age is younger than target time
-		compare := info.ModTime().Compare(targetTime)
-		if (r.Age.Op == "gt" || r.Age.Op == "gte") && compare < 1 {
-			ctx.Success = true
-		} else if (r.Age.Op == "lt" || r.Age.Op == "lte") && compare >= 0 {
-			ctx.Success = true
-		}
-
-		if ctx.Debug {
-			translate := map[string]string{"gt": "before", "lt": "after"}
-			log.Printf(
-				"Comparison:\n%s (%s last modification)\n%s\n%s\n",
-				info.ModTime().Format("2006-01-02 15:04:05"),
-				path,
-				translate[r.Age.Op],
-				targetTime.Format("2006-01-02 15:04:05"),
-			)
-		}
+		compareAge(ctx, info.ModTime(), targetTime, r.Age.Op, path)
 	}
 
 	return nil
+}
+
+func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) {
+	// Returns -1 if cli age is older than target time
+	// Returns 0 if they are the same
+	// Returns 1 if cli age is younger than target time
+	compare := modTime.Compare(targetTime)
+	if (operator == ops.Gt || operator == ops.Gte) && compare < 1 {
+		ctx.Success = true
+	} else if (operator == ops.Lt || operator == ops.Lte) && compare >= 0 {
+		ctx.Success = true
+	}
+	if ctx.Debug {
+		translate := map[string]string{"gt": "before", "lt": "after"}
+		log.Printf(
+			"Comparison:\n%s (%s last modification)\n%s\n%s\n",
+			modTime.Format("2006-01-02 15:04:05"),
+			path,
+			translate[operator],
+			targetTime.Format("2006-01-02 15:04:05"),
+		)
+	}
 }
