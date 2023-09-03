@@ -34,6 +34,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 					log.Printf("executable file \"%s\" not found", r.CLI.Name)
 				}
 
+				ctx.Success = false
 				return nil
 			}
 
@@ -49,8 +50,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	if err != nil {
 		return err
 	}
-	log.Println(result)
-	ctx.Success = true
+	if len(result) > 0 {
+		ctx.Success = true
+	}
 
-	return nil
+	return err
 }

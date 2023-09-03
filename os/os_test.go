@@ -4,6 +4,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/attr"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +12,7 @@ import (
 
 func TestOSInfo(t *testing.T) {
 	t.Parallel()
-	tests := []string{"name", "version", "version-codename"}
+	tests := []string{"name", attr.Version, "version-codename"}
 
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}

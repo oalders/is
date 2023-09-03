@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/oalders/is/attr"
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
@@ -13,7 +14,7 @@ import (
 
 func TestOSInfo(t *testing.T) {
 	t.Parallel()
-	tests := []string{"name", "version", "version-codename"}
+	tests := []string{"name", attr.Version, "version-codename"}
 
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}
@@ -57,12 +58,12 @@ func TestOSCmd(t *testing.T) {
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Eq, "1"},
+			Cmd:     OSCmd{attr.Version, ops.Eq, "1"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Ne, "1"},
+			Cmd:     OSCmd{attr.Version, ops.Ne, "1"},
 			Error:   false,
 			Success: true,
 		},
@@ -92,32 +93,32 @@ func TestOSCmd(t *testing.T) {
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Like, "xxx"},
+			Cmd:     OSCmd{attr.Version, ops.Like, "xxx"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Like, ".*"},
+			Cmd:     OSCmd{attr.Version, ops.Like, ".*"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Like, "[+"},
+			Cmd:     OSCmd{attr.Version, ops.Like, "[+"},
 			Error:   true,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Unlike, "xxX"},
+			Cmd:     OSCmd{attr.Version, ops.Unlike, "xxX"},
 			Error:   false,
 			Success: true,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Unlike, ".*"},
+			Cmd:     OSCmd{attr.Version, ops.Unlike, ".*"},
 			Error:   false,
 			Success: false,
 		},
 		{
-			Cmd:     OSCmd{"version", ops.Unlike, "[+"},
+			Cmd:     OSCmd{attr.Version, ops.Unlike, "[+"},
 			Error:   true,
 			Success: false,
 		},
