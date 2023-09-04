@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/oalders/is/attr"
 	"github.com/oalders/is/mac"
 	"github.com/oalders/is/reader"
 	"github.com/oalders/is/types"
@@ -20,59 +21,31 @@ const (
 )
 
 func Info(ctx *types.Context, argName string) (string, error) {
+	if argName == "name" {
+		ctx.Success = true
+		return runtime.GOOS, nil
+	}
+
+	if runtime.GOOS == linux {
+		return linuxOS(ctx, argName)
+	}
+
+	if runtime.GOOS != "darwin" {
+		return "", nil
+	}
+
 	result := ""
+	macVersion, err := mac.Version()
+	if err != nil {
+		return result, err
+	}
 	switch argName {
-	case "id":
-		if runtime.GOOS == linux {
-			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
-			if err == nil && release != nil && release.ID != "" {
-				result = release.ID
-			}
-		}
-	case "id-like":
-		if runtime.GOOS == linux {
-			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
-			if err == nil && release != nil && release.IDLike != "" {
-				result = release.IDLike
-			}
-		}
-	case "pretty-name":
-		if runtime.GOOS == linux {
-			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
-			if err == nil && release != nil && release.PrettyName != "" {
-				result = release.PrettyName
-			}
-		}
-	case name:
-		result = runtime.GOOS
 	case "version":
-		if runtime.GOOS == darwin {
-			o, err := mac.Version()
-			if err != nil {
-				return result, err
-			}
-			result = o
-		} else if runtime.GOOS == linux {
-			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
-			if err == nil && release != nil && release.Version != "" {
-				result = release.Version
-			}
-		}
+		result = macVersion
 	case "version-codename":
-		if runtime.GOOS == linux {
-			release, err := reader.MaybeReadINI(ctx, osReleaseFile)
-			if err == nil && release != nil && release.VersionCodeName != "" {
-				result = release.VersionCodeName
-			}
-		} else if runtime.GOOS == darwin {
-			o, err := mac.Version()
-			if err != nil {
-				return result, err
-			}
-			name := mac.CodeName(o)
-			if name != "" {
-				result = name
-			}
+		name := mac.CodeName(macVersion)
+		if name != "" {
+			result = name
 		}
 	}
 	if result != "" {
@@ -106,4 +79,32 @@ func Aggregated(ctx *types.Context) (string, error) {
 	}
 
 	return string(data), nil
+}
+
+func linuxOS(ctx *types.Context, argName string) (string, error) {
+	release, err := reader.MaybeReadINI(ctx, osReleaseFile)
+	if err != nil {
+		return "", err
+	}
+	if release == nil {
+		return "", errors.New("release info cannot be found")
+	}
+
+	result := ""
+	switch argName {
+	case "id":
+		result = release.ID
+	case "id-like":
+		result = release.IDLike
+	case "pretty-name":
+		result = release.PrettyName
+	case attr.Version:
+		result = release.Version
+	case "version-codename":
+		result = release.VersionCodeName
+	}
+	if result != "" {
+		ctx.Success = true
+	}
+	return result, err
 }
