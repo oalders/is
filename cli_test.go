@@ -18,6 +18,7 @@ func TestCliVersion(t *testing.T) {
 		Success bool
 	}
 
+	//nolint:godox
 	tests := []test{
 		{VersionCmp{tmux, ops.Ne, "1"}, false, true},
 		{VersionCmp{"tmuxzzz", ops.Ne, "1"}, true, false},
