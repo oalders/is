@@ -9,43 +9,48 @@ import (
 	"github.com/oalders/is/version"
 )
 
+// TODO: return error when no code name found.
+//
+//nolint:godox
 func CodeName(osVersion string) string {
 	got, err := version.NewVersion(osVersion)
 	if err != nil {
 		return ""
 	}
+
 	// https://en.wikipedia.org/wiki/List_of_Apple_codenames
-	segments := got.Segments()
-	name := ""
-	switch segments[0] {
-	case 13:
-		name = "ventura"
-	case 12:
-		name = "monterey"
-	case 11:
-		name = "big sur"
-	case 10:
-		switch segments[1] {
-		case 15:
-			name = "catalina"
-		case 14:
-			name = "mojave"
-		case 13:
-			name = "high sierra"
-		case 12:
-			name = "sierra"
-		case 11:
-			name = "el capitan"
-		case 10:
-			name = "yosemite"
-		case 9:
-			name = "mavericks"
-		case 8:
-			name = "mountain lion" // released 2012
-		}
+	major := map[int]string{
+		13: "ventura",
+		12: "monterey",
+		11: "big sur",
 	}
 
-	return name
+	segments := got.Segments()
+
+	if v, ok := major[segments[0]]; ok {
+		return v
+	}
+
+	if segments[0] != 10 {
+		return ""
+	}
+
+	minor := map[int]string{
+		15: "catalina",
+		14: "mojave",
+		13: "high sierra",
+		12: "sierra",
+		11: "el capitan",
+		10: "yosemite",
+		9:  "mavericks",
+		8:  "mountain lion", // released 2012
+	}
+
+	if v, ok := minor[segments[1]]; ok {
+		return v
+	}
+
+	return ""
 }
 
 func Version() (string, error) {
