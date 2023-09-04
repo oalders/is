@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"runtime"
 
 	"github.com/oalders/is/attr"
@@ -21,6 +22,7 @@ const (
 )
 
 func Info(ctx *types.Context, argName string) (string, error) {
+	maybeDebug(ctx)
 	if argName == "name" {
 		ctx.Success = true
 		return runtime.GOOS, nil
@@ -107,4 +109,14 @@ func linuxOS(ctx *types.Context, argName string) (string, error) {
 		ctx.Success = true
 	}
 	return result, err
+}
+
+func maybeDebug(ctx *types.Context) {
+	if ctx.Debug {
+		os, err := Aggregated(ctx)
+		if err != nil {
+			log.Printf("getting os info %s", err)
+		}
+		log.Printf("%s\n", os)
+	}
 }
