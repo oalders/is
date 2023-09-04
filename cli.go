@@ -17,31 +17,15 @@ import (
 
 // Run "is cli ...".
 func (r *CLICmd) Run(ctx *types.Context) error {
+	if r.Age.Name != "" {
+		return runAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
+	}
 	if r.Version.Name != "" {
 		output, err := parser.CLIOutput(ctx, r.Version.Name)
 		if err != nil {
 			return err
 		}
 		return compare.CLIVersions(ctx, r.Version.Op, output, r.Version.Val)
-	} else if r.Age.Name != "" {
-		path, err := exec.LookPath(r.Age.Name)
-		if err != nil {
-			return errors.Join(errors.New("could not find command"), err)
-		}
-
-		info, err := os.Stat(path)
-		if err != nil {
-			return errors.Join(errors.New("could not stat command"), err)
-		}
-
-		dur, err := age.StringToDuration(r.Age.Val, r.Age.Unit)
-		if err != nil {
-			return err
-		}
-		targetTime := time.Now().Add(*dur)
-
-		compareAge(ctx, info.ModTime(), targetTime, r.Age.Op, path)
-		return err
 	}
 
 	return errors.New("unimplemented comparison")
@@ -67,4 +51,25 @@ func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, pat
 			targetTime.Format("2006-01-02 15:04:05"),
 		)
 	}
+}
+
+func runAge(ctx *types.Context, name, ageOperator, ageValue, ageUnit string) error {
+	path, err := exec.LookPath(name)
+	if err != nil {
+		return errors.Join(errors.New("could not find command"), err)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		return errors.Join(errors.New("could not stat command"), err)
+	}
+
+	dur, err := age.StringToDuration(ageValue, ageUnit)
+	if err != nil {
+		return err
+	}
+	targetTime := time.Now().Add(*dur)
+
+	compareAge(ctx, info.ModTime(), targetTime, ageOperator, path)
+	return err
 }
