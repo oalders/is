@@ -41,9 +41,10 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		targetTime := time.Now().Add(*dur)
 
 		compareAge(ctx, info.ModTime(), targetTime, r.Age.Op, path)
+		return err
 	}
 
-	return nil
+	return errors.New("unimplemented comparison")
 }
 
 func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) {
