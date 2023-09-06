@@ -28,6 +28,19 @@ jobs:
       - name: Test
         run: go test -race -coverprofile=coverage.out -covermode=atomic -v ./...
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Build binary
+        run: go build .
+
+      - name: Install bats
+        run: npm install -g bats && ./is known cli version bats
+
+      - name: bats test
+        run: bats test
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
   macos:
