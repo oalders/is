@@ -18,7 +18,7 @@ is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ### Is this the target Operating System?
 
 ```bash
-(is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧)
+(is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧) || echo 💣
 ```
 
 ### Check the OS with a Regex
