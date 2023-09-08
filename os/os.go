@@ -16,14 +16,13 @@ import (
 
 const (
 	darwin        = "darwin"
-	name          = "name"
 	linux         = "linux"
 	osReleaseFile = "/etc/os-release"
 )
 
 func Info(ctx *types.Context, argName string) (string, error) {
 	maybeDebug(ctx)
-	if argName == "name" {
+	if argName == attr.Name {
 		ctx.Success = true
 		return runtime.GOOS, nil
 	}
@@ -32,7 +31,7 @@ func Info(ctx *types.Context, argName string) (string, error) {
 		return linuxOS(ctx, argName)
 	}
 
-	if runtime.GOOS != "darwin" {
+	if runtime.GOOS != darwin {
 		return "", nil
 	}
 
@@ -42,9 +41,9 @@ func Info(ctx *types.Context, argName string) (string, error) {
 		return result, err
 	}
 	switch argName {
-	case "version":
+	case attr.Version:
 		result = macVersion
-	case "version-codename":
+	case attr.VersionCodename:
 		name := mac.CodeName(macVersion)
 		if name != "" {
 			result = name
@@ -102,7 +101,7 @@ func linuxOS(ctx *types.Context, argName string) (string, error) {
 		result = release.PrettyName
 	case attr.Version:
 		result = release.Version
-	case "version-codename":
+	case attr.VersionCodename:
 		result = release.VersionCodeName
 	}
 	if result != "" {

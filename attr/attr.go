@@ -2,6 +2,7 @@
 package attr
 
 const (
-	Name    = "name"
-	Version = "version"
+	Name            = "name"
+	Version         = "version"
+	VersionCodename = "version-codename"
 )

@@ -12,7 +12,7 @@ import (
 
 func TestOSInfo(t *testing.T) {
 	t.Parallel()
-	tests := []string{"name", attr.Version, "version-codename"}
+	tests := []string{"name", attr.Version, attr.VersionCodename}
 
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}
