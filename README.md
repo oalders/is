@@ -593,8 +593,6 @@ go version go1.20.4 darwin/amd64
 ```text
 $ is known cli version go
 1.20.4
-$ is known os name
-darwin
 ```
 
 ### Perl (--version)
