@@ -47,81 +47,21 @@ func TestOSCmd(t *testing.T) {
 	}
 
 	tests := []OSTest{
-		{
-			Cmd:     OSCmd{"name", ops.Eq, "zzz"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Ne, "zzz"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Eq, "1"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Ne, "1"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Like, "zzzzz"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Like, ".*"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Unlike, "zzzzz"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Unlike, ".*"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{"name", ops.Unlike, "["},
-			Error:   true,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Like, "xxx"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Like, ".*"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Like, "[+"},
-			Error:   true,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Unlike, "xxX"},
-			Error:   false,
-			Success: true,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Unlike, ".*"},
-			Error:   false,
-			Success: false,
-		},
-		{
-			Cmd:     OSCmd{attr.Version, ops.Unlike, "[+"},
-			Error:   true,
-			Success: false,
-		},
+		{OSCmd{attr.Name, ops.Eq, "zzz"}, false, false},
+		{OSCmd{attr.Name, ops.Ne, "zzz"}, false, true},
+		{OSCmd{attr.Version, ops.Eq, "1"}, false, false},
+		{OSCmd{attr.Version, ops.Ne, "1"}, false, true},
+		{OSCmd{attr.Name, ops.Like, "zzz"}, false, false},
+		{OSCmd{attr.Name, ops.Like, ".*"}, false, true},
+		{OSCmd{attr.Name, ops.Unlike, "zzz"}, false, true},
+		{OSCmd{attr.Name, ops.Unlike, ".*"}, false, false},
+		{OSCmd{attr.Name, ops.Unlike, "["}, true, false},
+		{OSCmd{attr.Version, ops.Like, "xxx"}, false, false},
+		{OSCmd{attr.Version, ops.Like, ".*"}, false, true},
+		{OSCmd{attr.Version, ops.Like, "[+"}, true, false},
+		{OSCmd{attr.Version, ops.Unlike, "xxX"}, false, true},
+		{OSCmd{attr.Version, ops.Unlike, ".*"}, false, false},
+		{OSCmd{attr.Version, ops.Unlike, "[+"}, true, false},
 	}
 
 	for _, test := range tests {
