@@ -3,8 +3,8 @@ package version_test
 import (
 	"testing"
 
-	"github.com/alecthomas/assert/v2"
 	"github.com/oalders/is/version"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCompareCLIVersions(t *testing.T) {

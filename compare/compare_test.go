@@ -3,10 +3,10 @@ package compare_test
 import (
 	"testing"
 
-	"github.com/alecthomas/assert/v2"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/types"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCompareCLIVersions(t *testing.T) {
