@@ -48,6 +48,9 @@ type UserCmd struct {
 //
 //nolint:lll
 type KnownCmd struct {
+	Arch struct {
+		Attr string `arg:"" required:"" default:"arch" enum:"arch"`
+	} `cmd:"" help:"Print arch without check. e.g. \"is known arch\""`
 	OS struct {
 		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	} `cmd:"" help:"Print without check. e.g. \"is known os name\""`

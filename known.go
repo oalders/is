@@ -2,8 +2,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/oalders/is/os"
@@ -12,6 +14,8 @@ import (
 )
 
 // Run "is known ...".
+//
+//nolint:gocritic
 func (r *KnownCmd) Run(ctx *types.Context) error {
 	result := ""
 	var err error
@@ -20,6 +24,8 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		result, err = os.Info(ctx, r.OS.Attr)
 	} else if r.CLI.Attr != "" {
 		result, err = runCLI(ctx, r.CLI.Name)
+	} else if r.Arch.Attr != "" {
+		result = runtime.GOARCH
 	}
 
 	if err != nil {
