@@ -15,6 +15,11 @@ type VersionCmp struct {
 	Val  string `arg:"" required:""`
 }
 
+type ArchCmd struct {
+	Op  string `arg:"" required:"" enum:"eq,ne,like,unlike" help:"[eq|ne|like|unlike]"`
+	Val string `arg:"" required:""`
+}
+
 // CLICmd type is configuration for CLI checks.
 //
 //nolint:lll
