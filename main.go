@@ -21,7 +21,7 @@ func main() {
 
 	ctx := kong.Parse(&API,
 		kong.Vars{
-			"version": "0.1.1",
+			"version": "0.1.2",
 		})
 	runContext := types.Context{Debug: API.Debug}
 	err := ctx.Run(&runContext)
