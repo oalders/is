@@ -35,6 +35,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		ctx.Success = true
 	}
 
+	//nolint:forbidigo
+	fmt.Println(result)
+
 	return err
 }
 
