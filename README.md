@@ -175,8 +175,8 @@ is arch like 64
 
 Supported comparisons are:
 
-* `lt`
-* `gt`
+* `eq`
+* `ne`
 * `like`
 * `unlike`
 
