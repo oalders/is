@@ -54,7 +54,6 @@ $ is known cli version bash
 
 ```text
 $ is cli age gofumpt lt 7 d
-5.2.15
 ```
 
 ### echo the OS name
@@ -66,6 +65,8 @@ i'm on darwin for sure
 
 ### Get some debugging information about the OS
 
+macOS:
+
 ```text
 $ is known os name --debug
 {
@@ -75,6 +76,8 @@ $ is known os name --debug
 }
 darwin
 ```
+
+Linux:
 
 ```text
 is known os name --debug
@@ -98,7 +101,7 @@ is user sudoer || echo 😭
 ## Exit Codes are Everything
 
 `is` returns an exit code of `0` on success and non-zero (usually `1`) on
-failure. You can leverage this in shell scripting:
+failure. We can leverage this in shell scripting:
 
 In a script:
 
@@ -132,7 +135,8 @@ $ is os name eq darwin
 
 ### Using a Regex
 
-The `like` and `unlike` operators accept a regular expression. You may need to quote your regex. For instance:
+The `like` and `unlike` operators accept a regular expression. We may need to
+quote our regex. For instance:
 
 ```bash
 is os name like darw\w
@@ -144,19 +148,30 @@ should be
 is os name like "darw\w"
 ```
 
-Use the debug flag to see how your regex may have been changed by your shell:
+We can the debug flag to see how our regex may have been changed by our shell:
 
 ```text
 $ is os name like darw\w --debug
 comparing regex "darww" with darwin
 ```
 
-In this case we can see that the unquoted `\w` is turned into `w` by the shell because it was not quoted.
+In this case we can see that the unquoted `\w` is turned into `w` by the shell
+because it was not quoted.
 
-You can also use regexes with no special characters at all:
+We can also use regexes with no special characters at all:
 
 ```bash
 is os version-codename unlike ventura
+```
+
+#### Under the Hood
+
+🚨 Leaky abstraction alert!
+
+Regex patterns are passed directly to Golang's `regexp.MatchString`. We can take advantage of this when crafting regexes. For instance, for a case insensitive search:
+
+```text
+is cli output stdout date like "(?i)wed"
 ```
 
 ## Top Level Commands
@@ -165,11 +180,11 @@ is os version-codename unlike ventura
 
 Checks against the arch which this binary has been compiled for.
 
-```
+```text
 is arch eq amd64
 ```
 
-```
+```text
 is arch like 64
 ```
 
@@ -180,7 +195,8 @@ Supported comparisons are:
 * `like`
 * `unlike`
 
-Try `is known arch` to get the value for your installed binary or run this command with the `--debug` flag.
+We can try `is known arch` to get the value for our installed binary or run this
+command with the `--debug` flag.
 
 Theoretical possibilites are:
 
@@ -254,7 +270,7 @@ Supported units are:
 Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
 into account here.
 
-The `--debug` flag can give you some helpful information when troubleshooting
+The `--debug` flag can give us some helpful information when troubleshooting
 date math.
 
 #### version
@@ -276,6 +292,114 @@ Supported comparisons are:
 * `ne`
 * `like`
 * `unlike`
+
+#### output
+
+Run an arbitrary command and compare the output of `stdout`, `stderr` or `combined`.
+
+The format is:
+
+```
+is cli output              \
+  [stdout|stderr|combined] \
+  some-command             \
+  --arg foo --arg bar      \
+  [lt|lte|eq|gte|ne|like|unlike] "string/regex to match"
+```
+
+##### stdout
+
+```
+is cli output stdout date like Wed
+```
+
+Case insensitive:
+
+```
+is cli output stdout date like "(?i)wed"
+```
+
+```
+is cli output stdout hostname unlike olaf
+```
+
+##### stderr
+
+`ssh` prints its version to `stderr`.
+
+```text
+is cli output stderr ssh --arg="-V" like 9.0p1
+```
+
+##### combined
+
+`combined` allows us to match on `stdout` and `stderr` at the same time.
+
+```text
+is cli output combined ssh --arg="-V" like 9.0p1
+```
+
+##### --arg
+
+Optional argument to command. Can be used more than once.
+
+Let's match on the results of `uname -m -n`.
+
+```
+is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_64"
+```
+
+If our args don't contain special characters or spaces, we may not need to quote them. Let's match on the results of `cat README.md`.
+
+```
+is cli output stdout cat --arg README.md like "an inspector for your environment"
+```
+
+#### Tip: Using pipes
+
+To pipe output from one command to another, we'll need to do something that is equivalent to: `bash -c "some-command | other-command"`
+
+To count the number of lines returned by `date`, we might normally write:
+
+```text
+$ date | wc -l
+       1
+```
+
+Via `bash -c`:
+
+```text
+$ bash -c "date | wc -l"
+       1
+```
+
+Now, run via `is` and assert that there really is just one line:
+
+```text
+is cli output stdout bash --arg='-c' --arg='date|wc -l' eq 1
+```
+
+##### --debug
+
+Use the `--debug` flag to see where comparisons are failing:
+
+```
+is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_65" --debug
+2023/09/13 23:05:26 comparison "olafs-mbp-2.lan x86_64" eq "olafs-mbp-2.lan x86_65"
+2023/09/13 23:05:26 comparison failed: olafs-mbp-2.lan x86_64 eq olafs-mbp-2.lan x86_65
+```
+Supported comparisons are:
+
+* `lt`
+* `lte`
+* `eq`
+* `gte`
+* `gt`
+* `ne`
+* `like`
+* `unlike`
+
+👉 Nota bene: because `is` doesn't know what you're trying to match, it will, in some cases try to do an optimistic comparison. That is, it will try a string comparison first and then a numeric comparison. Hopefully this will "do the right thing" for you. If not, please open an issue.
 
 ### os
 
@@ -443,8 +567,8 @@ is user sudoer && sudo apt-get install ripgrep
 Returns 1 if the current appears to be able to `sudo` without being prompted
 for a password.
 
-This is useful for scripts where you want to install via `sudo`, but you don't
-want the script to be interactive. That means you can skip installing things
+This is useful for scripts where we want to install via `sudo`, but we don't
+want the script to be interactive. That means we can skip installing things
 that require `sudo` and handle them in some other place.
 
 ### known
@@ -454,7 +578,8 @@ and `1` if info cannot be found.
 
 #### arch
 
-Prints the value of `runtime.GOARCH`. Note that this is the arch that the binary was compiled for. It's not running `uname` under the hood.
+Prints the value of golang's `runtime.GOARCH`. Note that this is the arch that
+the binary was compiled for. It's not running `uname` under the hood.
 
 Theoretical possibilites are:
 

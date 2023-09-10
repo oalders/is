@@ -9,6 +9,15 @@ type AgeCmp struct {
 }
 
 //nolint:lll
+type OutputCmp struct {
+	Stream  string   `arg:"" required:"" enum:"stdout,stderr,combined" help:"[output stream to capture: (stdout|stderr|combined)]"`
+	Command string   `arg:"" required:"" help:"[name of command or path to command plus any arguments e.g. \"uname -a\"]"`
+	Op      string   `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Val     string   `arg:"" required:""`
+	Arg     []string `optional:"" help:"--arg=\"-V\" --arg foo"`
+}
+
+//nolint:lll
 type VersionCmp struct {
 	Name string `arg:"" required:"" help:"[name of command or path to command]"`
 	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
@@ -26,6 +35,7 @@ type ArchCmd struct {
 type CLICmd struct {
 	Version VersionCmp `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
 	Age     AgeCmp     `cmd:"" help:"Check last modified time of cli (2h, 4d). e.g. \"is cli age tmux gt 1 d\""`
+	Output  OutputCmp  `cmd:"" help:"Check output of a command. e.g. \"is cli output stdout \"uname -a\" like \"Kernel Version 22.5\""`
 }
 
 // OSCmd type is configuration for OS level checks.

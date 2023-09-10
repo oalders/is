@@ -6,19 +6,22 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"slices"
 
 	"github.com/oalders/is/ops"
-	"github.com/oalders/is/os"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
 )
 
-func CLIVersions(ctx *types.Context, operator, gotString, wantString string) error {
+func Versions(ctx *types.Context, operator, gotString, wantString string) error {
 	var success bool
 	switch operator {
 	case ops.Like, ops.Unlike:
 		return Strings(ctx, operator, gotString, wantString)
 	}
+
+	maybeDebug(ctx, "numeric", operator, gotString, wantString)
+
 	got, err := version.NewVersion(gotString)
 	if err != nil {
 		return err
@@ -44,17 +47,15 @@ func CLIVersions(ctx *types.Context, operator, gotString, wantString string) err
 	}
 
 	ctx.Success = success
-	return maybeDebug(ctx, operator, gotString, wantString)
+	return nil
 }
 
 func Strings(ctx *types.Context, operator, got, want string) error {
 	var err error
 	var success bool
 
-	comparison := fmt.Sprintf(`comparison "%s" %s "%s"`, want, operator, got)
-	if ctx.Debug {
-		log.Print(comparison)
-	}
+	maybeDebug(ctx, "string", operator, got, want)
+
 	switch operator {
 	case ops.Eq:
 		success = got == want
@@ -66,27 +67,40 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 
 	if err != nil {
 		ctx.Success = false
-		return errors.Join(fmt.Errorf("error in comparison: %s", comparison), err)
+		comparison := fmt.Sprintf(`string comparison "%s" %s "%s"`, got, operator, want)
+		return errors.Join(errors.New(comparison), err)
 	}
 	if operator == ops.Unlike {
 		success = !success
 	}
 	ctx.Success = success
-	return maybeDebug(ctx, operator, got, want)
+	return nil
 }
 
-func maybeDebug(ctx *types.Context, operator, got, want string) error {
-	if !ctx.Debug {
-		return nil
+func Optimistic(ctx *types.Context, operator, got, want string) error {
+	stringy := []string{ops.Eq, ops.Ne, ops.Like, ops.Unlike}
+	reg := []string{ops.Like, ops.Unlike}
+	if slices.Contains(stringy, operator) {
+		err := Strings(ctx, operator, got, want)
+		if err != nil || ctx.Success || slices.Contains(reg, operator) {
+			return err
+		}
 	}
 
-	if !ctx.Success {
-		log.Printf("Comparison failed: %s %s %s\n", got, operator, want)
+	// We are being optimistic here and we can't know if the intention was a
+	// string or a numeric comparison, so we'll suppress the error message
+	// unless debugging is enabled.
+	err := Versions(ctx, operator, got, want)
+	if err != nil && ctx.Debug {
+		log.Printf("cannot compare versions: %s", err)
 	}
-	os, err := os.Aggregated(ctx)
-	if err != nil {
-		return err
-	}
-	log.Printf("%s\n", os)
 	return nil
+}
+
+func maybeDebug(ctx *types.Context, comparisonType, operator, got, want string) {
+	if !ctx.Debug {
+		return
+	}
+
+	log.Printf(`%s comparison: "%s" %s "%s"\n`, comparisonType, got, operator, want)
 }

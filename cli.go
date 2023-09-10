@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/oalders/is/age"
+	"github.com/oalders/is/command"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/parser"
@@ -25,10 +26,19 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		if err != nil {
 			return err
 		}
-		return compare.CLIVersions(ctx, r.Version.Op, output, r.Version.Val)
+		return compare.Versions(ctx, r.Version.Op, output, r.Version.Val)
 	}
 
-	return errors.New("unimplemented comparison")
+	// This is output
+	//nolint:gosec
+	output, err := command.Output(
+		exec.Command(r.Output.Command, r.Output.Arg...), r.Output.Stream,
+	)
+	if err != nil {
+		return err
+	}
+
+	return compare.Optimistic(ctx, r.Output.Op, output, r.Output.Val)
 }
 
 func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) {
