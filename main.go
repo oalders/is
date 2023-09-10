@@ -10,10 +10,11 @@ import (
 
 func main() {
 	var API struct {
-		Debug   bool             `help:"turn on debugging statements"`
-		OS      OSCmd            `cmd:"" help:"Check OS attributes. e.g. \"is os name eq darwin\""`
+		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
+		Debug   bool             `help:"turn on debugging statements"`
 		Known   KnownCmd         `cmd:""`
+		OS      OSCmd            `cmd:"" help:"Check OS attributes. e.g. \"is os name eq darwin\""`
 		There   ThereCmd         `cmd:"" help:"Check if command exists. e.g. \"is there git\""`
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 		Version kong.VersionFlag `help:"Print version to screen"`
@@ -21,7 +22,7 @@ func main() {
 
 	ctx := kong.Parse(&API,
 		kong.Vars{
-			"version": "0.1.1",
+			"version": "0.1.2",
 		})
 	runContext := types.Context{Debug: API.Debug}
 	err := ctx.Run(&runContext)

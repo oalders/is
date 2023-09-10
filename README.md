@@ -161,6 +161,48 @@ is os version-codename unlike ventura
 
 ## Top Level Commands
 
+### arch
+
+Checks against the arch which this binary has been compiled for.
+
+```
+is arch eq amd64
+```
+
+```
+is arch like 64
+```
+
+Supported comparisons are:
+
+* `lt`
+* `gt`
+* `like`
+* `unlike`
+
+Try `is known arch` to get the value for your installed binary or run this command with the `--debug` flag.
+
+Theoretical possibilites are:
+
+```text
+386
+amd64
+arm
+arm64
+loong64
+mips
+mips64
+mips64le
+mipsle
+ppc64
+ppc64le
+riscv64
+s390x
+wasm
+```
+
+however, there are available binaries for only some of these values.
+
 ### cli
 
 #### age
@@ -410,6 +452,31 @@ that require `sudo` and handle them in some other place.
 Prints known information about a resource to `STDOUT`. Returns `0` on success
 and `1` if info cannot be found.
 
+#### arch
+
+Prints the value of `runtime.GOARCH`. Note that this is the arch that the binary was compiled for. It's not running `uname` under the hood.
+
+Theoretical possibilites are:
+
+```text
+386
+amd64
+arm
+arm64
+loong64
+mips
+mips64
+mips64le
+mipsle
+ppc64
+ppc64le
+riscv64
+s390x
+wasm
+```
+
+however, there are available binaries for only some of these values.
+
 #### os
 
 Details specific to the current operating system.
@@ -559,7 +626,7 @@ is --version
 * [Download a release](https://github.com/oalders/is/releases)
 * `go install`
   * `go install github.com/oalders/is@latest`
-  * `go install github.com/oalders/is@v0.1.1`
+  * `go install github.com/oalders/is@v0.1.2`
 * Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash

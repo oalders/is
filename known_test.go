@@ -44,4 +44,33 @@ func TestKnownCmd(t *testing.T) {
 		assert.NoError(t, err)
 		assert.False(t, ctx.Success, "No success")
 	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = "git"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = "gitzzz"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.False(t, ctx.Success, "No success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.Arch.Attr = "arch"
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
 }

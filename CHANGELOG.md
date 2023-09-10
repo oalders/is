@@ -1,5 +1,10 @@
 # Changes
 
+## 0.1.2 - 2023-09-08
+
+- Improve docs
+- Re-organize internals
+
 ## 0.1.1 - 2023-08-16
 
 - Add better fallback version parsing
