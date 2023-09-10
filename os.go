@@ -23,6 +23,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 
 		err = compare.CLIVersions(ctx, r.Op, attr, r.Val)
 		if err != nil {
+			ctx.Success = false
 			return err
 		}
 	default:

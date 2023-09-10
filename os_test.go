@@ -51,6 +51,7 @@ func TestOSCmd(t *testing.T) {
 		{OSCmd{attr.Name, ops.Ne, "zzz"}, false, true},
 		{OSCmd{attr.Version, ops.Eq, "1"}, false, false},
 		{OSCmd{attr.Version, ops.Ne, "1"}, false, true},
+		{OSCmd{attr.Version, ops.Eq, "[*&1.1.1.1.1"}, true, false},
 		{OSCmd{attr.Name, ops.Like, "zzz"}, false, false},
 		{OSCmd{attr.Name, ops.Like, ".*"}, false, true},
 		{OSCmd{attr.Name, ops.Unlike, "zzz"}, false, true},
