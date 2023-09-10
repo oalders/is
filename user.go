@@ -13,10 +13,6 @@ import (
 
 // Run "is user ...".
 func (r *UserCmd) Run(ctx *types.Context) error {
-	if r.Sudoer == "" {
-		return errors.New("user command does not exist")
-	}
-
 	if ctx.Debug {
 		log.Printf("Running \"sudo -n true\"\n")
 	}
