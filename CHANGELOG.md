@@ -1,5 +1,10 @@
 # Changes
 
+## 0.1.3 - 2023-09-09
+
+- Add "is arch" and "is known arch"
+- "is known" once again prints output
+
 ## 0.1.2 - 2023-09-08
 
 - Improve docs
