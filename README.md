@@ -571,8 +571,8 @@ Flags:
       --version    Print version to screen
 
 Commands:
-  os <attribute> <op> <val>
-    Check OS attributes. e.g. "is os name eq darwin"
+  arch <op> <val>
+    Check arch e.g. "is arch like x64"
 
   cli version <name> <op> <val>
     Check version of command. e.g. "is cli version tmux gte 3"
@@ -580,11 +580,17 @@ Commands:
   cli age <name> <op> <val> <unit>
     Check last modified time of cli (2h, 4d). e.g. "is cli age tmux gt 1 d"
 
+  known arch [<attr>]
+    Print arch without check. e.g. "is known arch"
+
   known os <attribute>
     Print without check. e.g. "is known os name"
 
   known cli <attribute> <name>
     Print without check. e.g. "is known cli version git"
+
+  os <attribute> <op> <val>
+    Check OS attributes. e.g. "is os name eq darwin"
 
   there <name>
     Check if command exists. e.g. "is there git"
