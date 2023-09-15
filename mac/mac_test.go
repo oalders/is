@@ -22,6 +22,8 @@ func TestCodeName(t *testing.T) {
 	assert.Equal(t, "mavericks", mac.CodeName("10.9"))
 	assert.Equal(t, "mountain lion", mac.CodeName("10.8"))
 	assert.Equal(t, "", mac.CodeName("10.7"))
+	assert.Equal(t, "", mac.CodeName("9.0"))
+	assert.Equal(t, "", mac.CodeName("-1"))
 }
 
 func TestVersion(t *testing.T) {

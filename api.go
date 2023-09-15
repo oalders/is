@@ -15,6 +15,7 @@ type OutputCmp struct {
 	Op      string   `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
 	Val     string   `arg:"" required:""`
 	Arg     []string `optional:"" help:"--arg=\"-V\" --arg foo"`
+	Compare string   `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 
 //nolint:lll

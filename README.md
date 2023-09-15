@@ -295,9 +295,14 @@ Supported comparisons are:
 
 #### output
 
-Run an arbitrary command and compare the output of `stdout`, `stderr` or `combined`.
+Run an arbitrary command and compare the output of `stdout`, `stderr` or `combined`. Whitespace is automatically trimmed from the left and right of output before any comparisons are attempted. So, we don't need to worry about cleaning trimming output with leading spaces like this:
 
-The format is:
+```text
+cat README.md | wc -l
+     847
+```
+
+The format for this command is:
 
 ```
 is cli output              \
@@ -353,6 +358,25 @@ If our args don't contain special characters or spaces, we may not need to quote
 
 ```
 is cli output stdout cat --arg README.md like "an inspector for your environment"
+```
+
+##### --compare
+
+Optional argument to command. Defaults to `optimistic`. Because comparisons like `eq` mean different things when comparing strings, integers and floats, we can tell `is` what sort of a comparison to perform. Our options are:
+
+* float
+* integer
+* string
+* version
+* optimistic
+
+`optimistic` will first try a `string` comparison. If this fails, it will try a `version` comparison. This will "Do What I Mean" in a lot of cases, but if we want to constrain the check to a specific type, we can certainly do that.
+
+```text
+is cli output stdout                            \
+  bash --arg="-c" --arg="cat README.md | wc -l" \
+  gt 10                                         \
+  --debug --compare integer
 ```
 
 #### Tip: Using pipes

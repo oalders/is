@@ -7,11 +7,67 @@ import (
 	"log"
 	"regexp"
 	"slices"
+	"strconv"
 
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
 )
+
+type Number interface {
+	int | float32 | float64
+}
+
+func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T) {
+	switch operator {
+	case ops.Eq:
+		ctx.Success = got == want
+	case ops.Ne:
+		ctx.Success = got != want
+	case ops.Gt:
+		ctx.Success = got > want
+	case ops.Gte:
+		ctx.Success = got >= want
+	case ops.Lt:
+		ctx.Success = got < want
+	case ops.Lte:
+		ctx.Success = got <= want
+	}
+}
+
+func Floats(ctx *types.Context, operator, g, w string) error {
+	got, err := strconv.ParseFloat(g, 32)
+	if err != nil {
+		return errors.Join(errors.New("wanted result must be a float"), err)
+	}
+	want, err := strconv.ParseFloat(w, 32)
+	if err != nil {
+		return errors.Join(errors.New("command output %s is not a float"), err)
+	}
+
+	if ctx.Debug {
+		log.Printf("compare floats %f %s %f", got, operator, want)
+	}
+	IntegersOrFloats(ctx, operator, got, want)
+	return nil
+}
+
+func Integers(ctx *types.Context, operator, g, w string) error {
+	got, err := strconv.Atoi(g)
+	if err != nil {
+		return errors.Join(errors.New("wanted result must be an integer"), err)
+	}
+	want, err := strconv.Atoi(w)
+	if err != nil {
+		return errors.Join(errors.New("command output %s is not an integer"), err)
+	}
+
+	if ctx.Debug {
+		log.Printf("compare integers %d %s %d", got, operator, want)
+	}
+	IntegersOrFloats(ctx, operator, got, want)
+	return nil
+}
 
 func Versions(ctx *types.Context, operator, gotString, wantString string) error {
 	var success bool
@@ -20,7 +76,7 @@ func Versions(ctx *types.Context, operator, gotString, wantString string) error 
 		return Strings(ctx, operator, gotString, wantString)
 	}
 
-	maybeDebug(ctx, "numeric", operator, gotString, wantString)
+	maybeDebug(ctx, "versions", operator, gotString, wantString)
 
 	got, err := version.NewVersion(gotString)
 	if err != nil {
@@ -54,7 +110,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	var err error
 	var success bool
 
-	maybeDebug(ctx, "string", operator, got, want)
+	maybeDebug(ctx, "strings", operator, got, want)
 
 	switch operator {
 	case ops.Eq:
@@ -67,7 +123,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 
 	if err != nil {
 		ctx.Success = false
-		comparison := fmt.Sprintf(`string comparison "%s" %s "%s"`, got, operator, want)
+		comparison := fmt.Sprintf(`compare strings "%s" %s "%s"`, got, operator, want)
 		return errors.Join(errors.New(comparison), err)
 	}
 	if operator == ops.Unlike {
@@ -102,5 +158,5 @@ func maybeDebug(ctx *types.Context, comparisonType, operator, got, want string) 
 		return
 	}
 
-	log.Printf(`%s comparison: "%s" %s "%s"\n`, comparisonType, got, operator, want)
+	log.Printf(`compare %s: "%s" %s "%s"\n`, comparisonType, got, operator, want)
 }

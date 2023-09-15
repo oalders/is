@@ -38,7 +38,18 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		return err
 	}
 
-	return compare.Optimistic(ctx, r.Output.Op, output, r.Output.Val)
+	switch r.Output.Compare {
+	case "string":
+		return compare.Strings(ctx, r.Output.Op, output, r.Output.Val)
+	case "version":
+		return compare.Versions(ctx, r.Output.Op, output, r.Output.Val)
+	case "integer":
+		return compare.Integers(ctx, r.Output.Op, output, r.Output.Val)
+	case "float":
+		return compare.Floats(ctx, r.Output.Op, output, r.Output.Val)
+	default:
+		return compare.Optimistic(ctx, r.Output.Op, output, r.Output.Val)
+	}
 }
 
 func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) {

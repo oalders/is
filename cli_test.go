@@ -88,14 +88,19 @@ func TestCliOutput(t *testing.T) {
 
 	command := "tmux"
 	args := []string{"-V"}
+	const optimistic = "optimistic"
 
 	tests := []test{
-		{OutputCmp{"stdout", command, ops.Ne, "1", args}, false, true},
-		{OutputCmp{"stdout", command, ops.Eq, "1", args}, false, false},
-		{OutputCmp{"stderr", command, ops.Like, "xxx", args}, false, false},
-		{OutputCmp{"stderr", command, ops.Unlike, "xxx", args}, false, true},
-		{OutputCmp{"combined", command, ops.Like, "xxx", args}, false, false},
-		{OutputCmp{"combined", command, ops.Unlike, "xxx", args}, false, true},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, optimistic}, false, true},
+		{OutputCmp{"stdout", command, ops.Eq, "1", args, optimistic}, false, false},
+		{OutputCmp{"stderr", command, ops.Like, "xxx", args, optimistic}, false, false},
+		{OutputCmp{"stderr", command, ops.Unlike, "xxx", args, optimistic}, false, true},
+		{OutputCmp{"combined", command, ops.Like, "xxx", args, optimistic}, false, false},
+		{OutputCmp{"combined", command, ops.Unlike, "xxx", args, optimistic}, false, true},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "string"}, false, true},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "integer"}, true, false},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "version"}, true, false},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "float"}, true, false},
 	}
 
 	for _, test := range tests {
