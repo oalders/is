@@ -344,7 +344,7 @@ is cli output stderr ssh --arg="-V" like 9.0p1
 is cli output combined ssh --arg="-V" like 9.0p1
 ```
 
-##### --arg
+##### ---arg (-a)
 
 Optional argument to command. Can be used more than once.
 
@@ -400,7 +400,13 @@ $ bash -c "date | wc -l"
 Now, run via `is` and assert that there really is just one line:
 
 ```text
-is cli output stdout bash --arg='-c' --arg='date|wc -l' eq 1
+is cli output stdout bash --arg='-c' --arg="date|wc -l" eq 1
+```
+
+Let's make this more succinct. We can make this a little shorter, because `is` handles `bash -c` as a special case:
+
+```text
+is cli output stdout "bash -c" -a "date|wc -l" eq 1
 ```
 
 ##### --debug

@@ -14,7 +14,7 @@ type OutputCmp struct {
 	Command string   `arg:"" required:"" help:"[name of command or path to command plus any arguments e.g. \"uname -a\"]"`
 	Op      string   `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
 	Val     string   `arg:"" required:""`
-	Arg     []string `optional:"" help:"--arg=\"-V\" --arg foo"`
+	Arg     []string `short:"a" optional:"" help:"--arg=\"-V\" --arg foo"`
 	Compare string   `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 

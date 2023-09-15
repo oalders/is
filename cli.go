@@ -16,6 +16,16 @@ import (
 	"github.com/oalders/is/types"
 )
 
+func execCommand(stream, cmd string, args []string) (string, error) {
+	if cmd == "bash -c" {
+		cmd = "bash"
+		args = append([]string{"-c"}, args...)
+	}
+	return command.Output(
+		exec.Command(cmd, args...), stream,
+	)
+}
+
 // Run "is cli ...".
 func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Age.Name != "" {
@@ -29,11 +39,7 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		return compare.Versions(ctx, r.Version.Op, output, r.Version.Val)
 	}
 
-	// This is output
-	//nolint:gosec
-	output, err := command.Output(
-		exec.Command(r.Output.Command, r.Output.Arg...), r.Output.Stream,
-	)
+	output, err := execCommand(r.Output.Stream, r.Output.Command, r.Output.Arg)
 	if err != nil {
 		return err
 	}

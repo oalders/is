@@ -101,6 +101,7 @@ func TestCliOutput(t *testing.T) {
 		{OutputCmp{"stdout", command, ops.Ne, "1", args, "integer"}, true, false},
 		{OutputCmp{"stdout", command, ops.Ne, "1", args, "version"}, true, false},
 		{OutputCmp{"stdout", command, ops.Ne, "1", args, "float"}, true, false},
+		{OutputCmp{"stdout", "bash -c", ops.Eq, "1", []string{"date|wc -l"}, "integer"}, false, true},
 	}
 
 	for _, test := range tests {
