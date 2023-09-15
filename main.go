@@ -22,7 +22,7 @@ func main() {
 
 	ctx := kong.Parse(&API,
 		kong.Vars{
-			"version": "0.1.2",
+			"version": "0.1.3",
 		})
 	runContext := types.Context{Debug: API.Debug}
 	err := ctx.Run(&runContext)
