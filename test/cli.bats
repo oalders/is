@@ -18,3 +18,51 @@ bats_require_minimum_version 1.5.0
 @test "output with pipe" {
     ./is cli output stdout bash --arg='-c' --arg='date|wc -l' eq 1
 }
+
+@test "succinct output with pipe" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output with pipe and --compare integer" {
+    ./is cli output stdout --compare integer "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output with pipe and --compare float" {
+    ./is cli output stdout --compare float "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output with pipe and --compare string" {
+    ./is cli output stdout --compare string "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output with pipe and --compare version" {
+    ./is cli output stdout --compare version "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output with pipe and --compare optimistic" {
+    ./is cli output stdout --compare optimistic "bash -c" -a 'date|wc -l' eq 1
+}
+
+@test "output gt" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' gt 0
+}
+
+@test "output gte" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' gte 1
+}
+
+@test "output lt" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' lt 2
+}
+
+@test "output lte" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' lte 1
+}
+
+@test "output like" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' like 1
+}
+
+@test "output unlike" {
+    ./is cli output stdout "bash -c" -a 'date|wc -l' unlike 111
+}
