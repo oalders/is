@@ -77,3 +77,46 @@ func TestCliAge(t *testing.T) {
 		assert.False(t, ctx.Success)
 	}
 }
+
+func TestCliOutput(t *testing.T) {
+	t.Parallel()
+	type test struct {
+		Cmp     OutputCmp
+		Error   bool
+		Success bool
+	}
+
+	command := "tmux"
+	args := []string{"-V"}
+	const optimistic = "optimistic"
+
+	tests := []test{
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, optimistic}, false, true},
+		{OutputCmp{"stdout", command, ops.Eq, "1", args, optimistic}, false, false},
+		{OutputCmp{"stderr", command, ops.Like, "xxx", args, optimistic}, false, false},
+		{OutputCmp{"stderr", command, ops.Unlike, "xxx", args, optimistic}, false, true},
+		{OutputCmp{"combined", command, ops.Like, "xxx", args, optimistic}, false, false},
+		{OutputCmp{"combined", command, ops.Unlike, "xxx", args, optimistic}, false, true},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "string"}, false, true},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "integer"}, true, false},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "version"}, true, false},
+		{OutputCmp{"stdout", command, ops.Ne, "1", args, "float"}, true, false},
+		{OutputCmp{"stdout", "bash -c", ops.Eq, "1", []string{"date|wc -l"}, "integer"}, false, true},
+	}
+
+	for _, test := range tests {
+		ctx := types.Context{Debug: true}
+		cmd := CLICmd{Output: test.Cmp}
+		err := cmd.Run(&ctx)
+		if test.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+		if test.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success)
+		}
+	}
+}

@@ -21,7 +21,7 @@ func (r *OSCmd) Run(ctx *types.Context) error {
 			return compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 
-		err = compare.CLIVersions(ctx, r.Op, attr, r.Val)
+		err = compare.Versions(ctx, r.Op, attr, r.Val)
 		if err != nil {
 			ctx.Success = false
 			return err

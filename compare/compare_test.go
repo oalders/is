@@ -1,6 +1,7 @@
 package compare_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/oalders/is/compare"
@@ -9,7 +10,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCompareCLIVersions(t *testing.T) {
+type compareTest struct {
+	Op      string
+	Got     string
+	Want    string
+	Error   bool
+	Success bool
+	Debug   bool
+}
+
+func TestCompareVersions(t *testing.T) {
 	t.Parallel()
 	type test struct {
 		Got     string
@@ -56,7 +66,7 @@ func TestCompareCLIVersions(t *testing.T) {
 	}
 	for _, v := range tests {
 		ctx := &types.Context{Debug: false}
-		err := compare.CLIVersions(ctx, v.Op, v.Got, v.Want)
+		err := compare.Versions(ctx, v.Op, v.Got, v.Want)
 		assert.NoError(t, err)
 		if v.Success {
 			assert.True(t, ctx.Success, "success")
@@ -68,36 +78,136 @@ func TestCompareCLIVersions(t *testing.T) {
 
 func TestStrings(t *testing.T) {
 	t.Parallel()
-	ctx := &types.Context{}
-	{
-		err := compare.Strings(ctx, ops.Like, "delboy trotter", "delboy")
-		assert.True(t, ctx.Success)
-		assert.NoError(t, err)
+
+	tests := []compareTest{
+		{ops.Like, "delboy trotter", "delboy", false, true, false},
+		{ops.Unlike, "delboy trotter", "delboy", false, false, false},
+		{ops.Like, "delboy trotter", "Zdelboy", false, false, false},
+		{ops.Unlike, "delboy trotter", "Zdelboy", false, true, false},
+		{ops.Like, "delboy trotter", "/[/", true, false, false},
+		{ops.Unlike, "delboy trotter", "/[/", true, false, false},
+		{ops.Like, "delboy trotter", "delboy", false, true, true},
+		{ops.Like, "delboy trotter", "delboyD", false, false, true},
 	}
-	{
-		err := compare.Strings(ctx, ops.Unlike, "delboy trotter", "delboy")
-		assert.False(t, ctx.Success)
-		assert.NoError(t, err)
+
+	for _, this := range tests {
+		ctx := &types.Context{}
+		err := compare.Strings(ctx, this.Op, this.Got, this.Want)
+		if this.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success)
+		}
+		if this.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
 	}
-	{
-		err := compare.Strings(ctx, ops.Like, "delboy trotter", "Zdelboy")
-		assert.False(t, ctx.Success)
-		assert.NoError(t, err)
+}
+
+func TestOptimistic(t *testing.T) {
+	t.Parallel()
+
+	tests := []compareTest{
+		{ops.Like, "delboy trotter", "delboy", false, true, false},
+		{ops.Unlike, "delboy trotter", "delboy", false, false, false},
+		{ops.Like, "delboy trotter", "Zdelboy", false, false, false},
+		{ops.Unlike, "delboy trotter", "Zdelboy", false, true, false},
+		{ops.Like, "delboy trotter", "/[/", true, false, false},
+		{ops.Unlike, "delboy trotter", "/[/", true, false, false},
+		{ops.Like, "delboy trotter", "delboy", false, true, true},
+		{ops.Like, "delboy trotter", "delboyD", false, false, true},
+		{ops.Eq, "1.0", "1", false, true, true},
+		{ops.Ne, "1", "2", false, true, true},
+		{ops.Ne, "a", "2", false, true, true},
+		{ops.Gte, "/[/", "1", false, false, true},
+		{ops.Gte, "1", "/[/", false, false, true},
 	}
-	{
-		err := compare.Strings(ctx, ops.Unlike, "delboy trotter", "Zdelboy")
-		assert.True(t, ctx.Success)
-		assert.NoError(t, err)
+
+	for _, this := range tests {
+		ctx := &types.Context{Debug: this.Debug}
+		err := compare.Optimistic(ctx, this.Op, this.Got, this.Want)
+		if this.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success)
+		}
+		if this.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
 	}
-	{
-		err := compare.Strings(ctx, ops.Like, "delboy trotter", "/[/")
-		assert.False(t, ctx.Success)
-		assert.Error(t, err)
+}
+
+func TestIntegers(t *testing.T) {
+	t.Parallel()
+	type compareTest struct {
+		Op      string
+		Got     string
+		Want    string
+		Error   bool
+		Success bool
+		Debug   bool
 	}
-	{
-		err := compare.Strings(ctx, ops.Unlike, "delboy trotter", "/[/")
-		assert.False(t, ctx.Success)
-		assert.Error(t, err)
+
+	tests := []compareTest{
+		{ops.Eq, "1", "1", false, true, true},
+		{ops.Gte, "1", "1", false, true, true},
+		{ops.Gt, "1", "1", false, false, true},
+		{ops.Gte, "2", "1", false, true, true},
+		{ops.Lt, "1", "1", false, false, true},
+		{ops.Lte, "1", "1", false, true, true},
+		{ops.Ne, "1", "2", false, true, true},
+		{ops.Ne, "a", "2", true, false, true},
+		{ops.Gte, "/[/", "1", true, false, true},
+		{ops.Gte, "1", "/[/", true, false, true},
 	}
-	ctx.Debug = true
+
+	for _, this := range tests {
+		ctx := &types.Context{Debug: this.Debug}
+		err := compare.Integers(ctx, this.Op, this.Got, this.Want)
+		if this.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success, fmt.Sprintf("%s %s %s", this.Got, this.Op, this.Want))
+		}
+		if this.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+	}
+}
+
+func TestFloats(t *testing.T) {
+	t.Parallel()
+
+	tests := []compareTest{
+		{ops.Eq, "1", "1", false, true, true},
+		{ops.Eq, "1.0", "1", false, true, true},
+		{ops.Eq, "1", "1.0", false, true, true},
+		{ops.Gte, "1", "1", false, true, true},
+		{ops.Gte, "2", "1", false, true, true},
+		{ops.Ne, "1", "2", false, true, true},
+		{ops.Ne, "a", "2", true, false, true},
+		{ops.Gte, "/[/", "1", true, false, true},
+		{ops.Gte, "1", "/[/", true, false, true},
+	}
+
+	for _, this := range tests {
+		ctx := &types.Context{Debug: this.Debug}
+		err := compare.Floats(ctx, this.Op, this.Got, this.Want)
+		if this.Success {
+			assert.True(t, ctx.Success)
+		} else {
+			assert.False(t, ctx.Success, fmt.Sprintf("%s %s %s", this.Got, this.Op, this.Want))
+		}
+		if this.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
+	}
 }

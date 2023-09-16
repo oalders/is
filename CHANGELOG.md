@@ -1,5 +1,9 @@
 # Changes
 
+## 0.1.3 - 2023-09-15
+
+- Add "is command output"
+
 ## 0.1.2 - 2023-09-08
 
 - Improve docs

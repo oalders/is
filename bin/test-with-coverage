@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e -u -o pipefail
+
+go test -coverprofile=c.out ./... && go tool cover -html=c.out
