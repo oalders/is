@@ -42,7 +42,7 @@ func Floats(ctx *types.Context, operator, g, w string) error {
 	}
 	want, err := strconv.ParseFloat(w, 32)
 	if err != nil {
-		return errors.Join(errors.New("command output %s is not a float"), err)
+		return errors.Join(errors.New("command output is not a float"), err)
 	}
 
 	if ctx.Debug {
@@ -59,7 +59,7 @@ func Integers(ctx *types.Context, operator, g, w string) error {
 	}
 	want, err := strconv.Atoi(w)
 	if err != nil {
-		return errors.Join(errors.New("command output %s is not an integer"), err)
+		return errors.Join(errors.New("command output is not an integer"), err)
 	}
 
 	if ctx.Debug {
