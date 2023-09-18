@@ -42,7 +42,7 @@ func Floats(ctx *types.Context, operator, g, w string) error {
 	}
 	want, err := strconv.ParseFloat(w, 32)
 	if err != nil {
-		return errors.Join(errors.New("command output %s is not a float"), err)
+		return errors.Join(errors.New("command output is not a float"), err)
 	}
 
 	if ctx.Debug {
@@ -59,7 +59,7 @@ func Integers(ctx *types.Context, operator, g, w string) error {
 	}
 	want, err := strconv.Atoi(w)
 	if err != nil {
-		return errors.Join(errors.New("command output %s is not an integer"), err)
+		return errors.Join(errors.New("command output is not an integer"), err)
 	}
 
 	if ctx.Debug {
@@ -133,6 +133,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	return nil
 }
 
+//nolint:cyclop
 func Optimistic(ctx *types.Context, operator, got, want string) error {
 	stringy := []string{ops.Eq, ops.Ne, ops.Like, ops.Unlike}
 	reg := []string{ops.Like, ops.Unlike}
@@ -146,6 +147,19 @@ func Optimistic(ctx *types.Context, operator, got, want string) error {
 	// We are being optimistic here and we can't know if the intention was a
 	// string or a numeric comparison, so we'll suppress the error message
 	// unless debugging is enabled.
+
+	if err := Integers(ctx, operator, got, want); err == nil {
+		return nil
+	} else if ctx.Debug {
+		log.Printf("cannot compare integers: %s", err)
+	}
+
+	if err := Floats(ctx, operator, got, want); err == nil {
+		return nil
+	} else if ctx.Debug {
+		log.Printf("cannot compare floats: %s", err)
+	}
+
 	err := Versions(ctx, operator, got, want)
 	if err != nil && ctx.Debug {
 		log.Printf("cannot compare versions: %s", err)

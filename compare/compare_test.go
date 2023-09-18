@@ -118,6 +118,7 @@ func TestOptimistic(t *testing.T) {
 		{ops.Unlike, "delboy trotter", "/[/", true, false, false},
 		{ops.Like, "delboy trotter", "delboy", false, true, true},
 		{ops.Like, "delboy trotter", "delboyD", false, false, true},
+		{ops.Gte, "1", "1", false, true, true},
 		{ops.Eq, "1.0", "1", false, true, true},
 		{ops.Ne, "1", "2", false, true, true},
 		{ops.Ne, "a", "2", false, true, true},

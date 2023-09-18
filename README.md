@@ -411,20 +411,19 @@ is cli output stdout "bash -c" -a "date|wc -l" eq 1
 
 #### Tip: Using Negative Numbers
 
-Passing negative integers as expected values is a bit tricky, since we don't want them to be interpreted as flags. We can use `--` before the expected value to get around this:
+Passing negative integers as expected values is a bit tricky, since we don't want them to be interpreted as flags.
 
 ```
-$ is cli output stdout    \
-'bash -c' -a 'date|wc -l' \
---debug --compare integer \
-gt -- -1
+$ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
 ```
 
---debug output:
-> 2023/09/16 16:50:59 compare integers 1 gt -1
+> 💥 is: error: unknown flag -1, did you mean one of "-h", "-a"?
 
-Omitting the `--` will return:
-> is: error: unknown flag -1, did you mean one of "-h", "-a"?
+We can use `--` before the expected value to get around this. 😅
+
+```
+$ is cli output stdout 'bash -c' -a 'date|wc -l' gt -- -1
+```
 
 ##### --debug
 
