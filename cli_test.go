@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const tmux = "tmux"
+const tmux = "./testdata/bin/tmux"
 
 func TestCliVersion(t *testing.T) {
 	t.Parallel()
@@ -18,15 +18,22 @@ func TestCliVersion(t *testing.T) {
 		Success bool
 	}
 
+	major := false
+	minor := false
+	patch := false
+
 	//nolint:godox
 	tests := []test{
-		{VersionCmp{tmux, ops.Ne, "1"}, false, true},
-		{VersionCmp{"tmuxzzz", ops.Ne, "1"}, true, false},
-		{VersionCmp{tmux, ops.Eq, "1"}, false, false},
-		{VersionCmp{tmux, ops.Eq, "zzz"}, true, false},
-		{VersionCmp{tmux, ops.Unlike, "zzz"}, false, true},
-		{VersionCmp{tmux, ops.Like, ""}, false, true}, // FIXME
-		{VersionCmp{tmux, ops.Like, "3.*"}, false, true},
+		{VersionCmp{tmux, ops.Ne, "1", major, minor, patch}, false, true},
+		{VersionCmp{"tmuxzzz", ops.Ne, "1", major, minor, patch}, true, false},
+		{VersionCmp{tmux, ops.Eq, "1", major, minor, patch}, false, false},
+		{VersionCmp{tmux, ops.Eq, "zzz", major, minor, patch}, true, false},
+		{VersionCmp{tmux, ops.Unlike, "zzz", major, minor, patch}, false, true},
+		{VersionCmp{tmux, ops.Like, "", major, minor, patch}, false, true}, // FIXME
+		{VersionCmp{tmux, ops.Like, "3.*", major, minor, patch}, false, true},
+		{VersionCmp{tmux, ops.Eq, "3", true, minor, patch}, false, true},
+		{VersionCmp{tmux, ops.Eq, "3", major, true, patch}, false, true},
+		{VersionCmp{tmux, ops.Eq, "0", major, minor, true}, false, true},
 	}
 
 	for _, test := range tests {
@@ -86,7 +93,7 @@ func TestCliOutput(t *testing.T) {
 		Success bool
 	}
 
-	command := "tmux"
+	command := "./testdata/bin/tmux"
 	args := []string{"-V"}
 	const optimistic = "optimistic"
 

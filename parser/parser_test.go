@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	ssh  = "../testdata/bin/ssh"
+	tmux = "../testdata/bin/tmux"
+)
+
 //nolint:lll
 func TestCLIVersion(t *testing.T) {
 	t.Parallel()
@@ -26,6 +31,7 @@ func TestCLIVersion(t *testing.T) {
 	There is NO WARRANTY, to the extent permitted by law.`,
 		},
 		{"bat", "0.23.0", "bat 0.23.0 (871abd2)"},
+		{"csh", "6.21.00", "tcsh 6.21.00 (Astron) 2019-05-08 (x86_64-apple-darwin) options wide,nls,dl,bye,al,kan,sm,rh,color,filec"},
 		{
 			"curl", "7.88.1",
 			`curl 7.88.1 (x86_64-apple-darwin22.0) libcurl/7.88.1 (SecureTransport) LibreSSL/3.3.6 zlib/1.2.11 nghttp2/1.51.0
@@ -78,7 +84,11 @@ or on the internet at http://perltidy.sourceforge.net.
 		{"python", "3.11.3", "Python 3.11.3"},
 		{"python3", "3.11.3", "Python 3.11.3"},
 		{"ripgrep", "13.0.0", "ripgrep 13.0.0"},
+		{"sh", "3.2.57", `GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin22)
+Copyright (C) 2007 Free Software Foundation, Inc.
+`},
 		{"tar", "3.5.3", "bsdtar 3.5.3 - libarchive 3.5.3 zlib/1.2.11 liblzma/5.0.5 bz2lib/1.0.8"},
+		{"tcsh", "6.21.00", "tcsh 6.21.00 (Astron) 2019-05-08 (x86_64-apple-darwin) options wide,nls,dl,bye,al,kan,sm,rh,color,filec"},
 		{"trurl", "0.6", "trurl version 0.6 libcurl/7.88.1 [built-with 7.87.0]"},
 		{"tmux", "3.3a", "tmux 3.3a"},
 		{
@@ -119,13 +129,13 @@ func TestCLIOutput(t *testing.T) {
 	t.Parallel()
 	{
 		ctx := &types.Context{Debug: true}
-		o, err := (parser.CLIOutput(ctx, "ssh"))
+		o, err := (parser.CLIOutput(ctx, ssh))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 	{
 		ctx := &types.Context{}
-		o, err := (parser.CLIOutput(ctx, "tmux"))
+		o, err := (parser.CLIOutput(ctx, tmux))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}

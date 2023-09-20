@@ -2,7 +2,9 @@
 
 bats_require_minimum_version 1.5.0
 
+semver=./testdata/bin/semver
 tmux=./testdata/bin/tmux
+
 @test 'cli age' {
     ./is cli age $tmux gt 1 s
     run ! ./is cli age $tmux lt 1 s
@@ -70,4 +72,20 @@ tmux=./testdata/bin/tmux
 
 @test 'output gte negative integer' {
     ./is cli output stdout 'bash -c' -a 'date|wc -l' gte --compare integer -- -1
+}
+
+@test 'major' {
+    ./is cli version --major $semver eq 1
+}
+
+@test 'minor' {
+    ./is cli version --minor $semver eq 2
+}
+
+@test 'patch' {
+    ./is cli version --patch $semver eq 3
+}
+
+@test 'unspecified patch in output' {
+    ./is cli version --patch $tmux eq 0
 }

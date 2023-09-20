@@ -16,10 +16,13 @@ import (
 	"github.com/oalders/is/types"
 )
 
-func execCommand(stream, cmd string, args []string) (string, error) {
+func execCommand(ctx *types.Context, stream, cmd string, args []string) (string, error) {
 	if cmd == "bash -c" {
 		cmd = "bash"
 		args = append([]string{"-c"}, args...)
+	}
+	if ctx.Debug {
+		log.Printf("Running command %s with args: %v", cmd, args)
 	}
 	return command.Output(
 		exec.Command(cmd, args...), stream,
@@ -27,7 +30,7 @@ func execCommand(stream, cmd string, args []string) (string, error) {
 }
 
 // Run "is cli ...".
-func (r *CLICmd) Run(ctx *types.Context) error {
+func (r *CLICmd) Run(ctx *types.Context) error { //nolint:cyclop
 	if r.Age.Name != "" {
 		return runAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
 	}
@@ -36,10 +39,19 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		if err != nil {
 			return err
 		}
+		switch {
+		case r.Version.Major:
+			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 0)
+		case r.Version.Minor:
+			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 1)
+		case r.Version.Patch:
+			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 2)
+		}
+
 		return compare.Versions(ctx, r.Version.Op, output, r.Version.Val)
 	}
 
-	output, err := execCommand(r.Output.Stream, r.Output.Command, r.Output.Arg)
+	output, err := execCommand(ctx, r.Output.Stream, r.Output.Command, r.Output.Arg)
 	if err != nil {
 		return err
 	}

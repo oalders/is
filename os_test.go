@@ -54,23 +54,33 @@ func TestOSCmd(t *testing.T) {
 		Success bool
 	}
 
+	const major = false
+	const minor = false
+	const patch = false
+
 	tests := []OSTest{
-		{OSCmd{attr.Name, ops.Eq, "zzz"}, false, false},
-		{OSCmd{attr.Name, ops.Ne, "zzz"}, false, true},
-		{OSCmd{attr.Version, ops.Eq, "1"}, false, false},
-		{OSCmd{attr.Version, ops.Ne, "1"}, false, true},
-		{OSCmd{attr.Version, ops.Eq, "[*&1.1.1.1.1"}, true, false},
-		{OSCmd{attr.Name, ops.Like, "zzz"}, false, false},
-		{OSCmd{attr.Name, ops.Like, ".*"}, false, true},
-		{OSCmd{attr.Name, ops.Unlike, "zzz"}, false, true},
-		{OSCmd{attr.Name, ops.Unlike, ".*"}, false, false},
-		{OSCmd{attr.Name, ops.Unlike, "["}, true, false},
-		{OSCmd{attr.Version, ops.Like, "xxx"}, false, false},
-		{OSCmd{attr.Version, ops.Like, ".*"}, false, true},
-		{OSCmd{attr.Version, ops.Like, "[+"}, true, false},
-		{OSCmd{attr.Version, ops.Unlike, "xxX"}, false, true},
-		{OSCmd{attr.Version, ops.Unlike, ".*"}, false, false},
-		{OSCmd{attr.Version, ops.Unlike, "[+"}, true, false},
+		{OSCmd{attr.Name, ops.Eq, "zzz", major, minor, patch}, false, false},
+		{OSCmd{attr.Name, ops.Ne, "zzz", major, minor, patch}, false, true},
+		{OSCmd{attr.Version, ops.Eq, "1", major, minor, patch}, false, false},
+		{OSCmd{attr.Version, ops.Ne, "1", major, minor, patch}, false, true},
+		{OSCmd{attr.Version, ops.Eq, "[*&1.1.1.1.1", major, minor, patch}, true, false},
+		{OSCmd{attr.Name, ops.Like, "zzz", major, minor, patch}, false, false},
+		{OSCmd{attr.Name, ops.Like, ".*", major, minor, patch}, false, true},
+		{OSCmd{attr.Name, ops.Unlike, "zzz", major, minor, patch}, false, true},
+		{OSCmd{attr.Name, ops.Unlike, ".*", major, minor, patch}, false, false},
+		{OSCmd{attr.Name, ops.Unlike, "[", major, minor, patch}, true, false},
+		{OSCmd{attr.Version, ops.Like, "xxx", major, minor, patch}, false, false},
+		{OSCmd{attr.Version, ops.Like, ".*", major, minor, patch}, false, true},
+		{OSCmd{attr.Version, ops.Like, "[+", major, minor, patch}, true, false},
+		{OSCmd{attr.Version, ops.Unlike, "xxX", major, minor, patch}, false, true},
+		{OSCmd{attr.Version, ops.Unlike, ".*", major, minor, patch}, false, false},
+		{OSCmd{attr.Version, ops.Unlike, "[+", major, minor, patch}, true, false},
+		{OSCmd{attr.Version, ops.Gt, "0", true, minor, patch}, false, true},
+		{OSCmd{attr.Version, ops.Gt, "0", major, true, patch}, false, true},
+		{OSCmd{attr.Version, ops.Gt, "0", major, minor, true}, false, true},
+		{OSCmd{attr.Name, ops.Gt, "0", true, minor, patch}, true, false},
+		{OSCmd{attr.Name, ops.Gt, "0", major, true, patch}, true, false},
+		{OSCmd{attr.Name, ops.Gt, "0", major, minor, true}, true, false},
 	}
 
 	for _, test := range tests {

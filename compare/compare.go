@@ -69,20 +69,39 @@ func Integers(ctx *types.Context, operator, g, w string) error {
 	return nil
 }
 
-func Versions(ctx *types.Context, operator, gotString, wantString string) error {
-	var success bool
-	switch operator {
-	case ops.Like, ops.Unlike:
-		return Strings(ctx, operator, gotString, wantString)
+func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segment uint) error {
+	got, err := version.NewVersion(gotStr)
+	if err != nil {
+		return errors.Join(errors.New("parse version from output"), err)
 	}
 
-	maybeDebug(ctx, "versions", operator, gotString, wantString)
+	segments := got.Segments()
+	gotSegment := segments[segment]
 
-	got, err := version.NewVersion(gotString)
+	switch operator {
+	case ops.Like, ops.Unlike:
+		return Strings(ctx, operator, fmt.Sprint(gotSegment), wantStr)
+	}
+	return Integers(ctx, operator, fmt.Sprint(gotSegment), wantStr)
+}
+
+func Versions(
+	ctx *types.Context,
+	operator, gotStr, wantStr string,
+) error {
+	var success bool
+	maybeDebug(ctx, "versions", operator, gotStr, wantStr)
+
+	switch operator {
+	case ops.Like, ops.Unlike:
+		return Strings(ctx, operator, gotStr, wantStr)
+	}
+
+	got, err := version.NewVersion(gotStr)
 	if err != nil {
 		return err
 	}
-	want, err := version.NewVersion(wantString)
+	want, err := version.NewVersion(wantStr)
 	if err != nil {
 		return err
 	}

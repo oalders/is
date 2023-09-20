@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.0 - 2023-09-23
+
+- Add --major, --minor and --patch version segment constraints
+
 ## 0.2.0 - 2023-09-15
 
 - Add "is command output"

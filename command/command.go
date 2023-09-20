@@ -7,10 +7,6 @@ import (
 	"strings"
 )
 
-func Cmd(command string, args ...string) *exec.Cmd {
-	return exec.Command(command, args...)
-}
-
 func Output(cmd *exec.Cmd, stream string) (string, error) {
 	var pipe io.ReadCloser
 	var err error
