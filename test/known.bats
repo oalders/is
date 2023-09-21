@@ -1,7 +1,9 @@
 #!/usr/bin/env bats
 
+tmux=./testdata/bin/tmux
+
 @test "is known cli" {
-	./is known cli version tmux
+	./is known cli version $tmux
 }
 
 @test "is known os" {
