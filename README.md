@@ -205,7 +205,7 @@ Supported comparisons are:
 We can try `is known arch` to get the value for our installed binary or run this
 command with the `--debug` flag.
 
-Theoretical possibilites are:
+Theoretical possibilities are:
 
 ```text
 386
@@ -331,7 +331,7 @@ Supported comparisons are:
 Run an arbitrary command and compare the output of `stdout`, `stderr` or
 `combined`. Whitespace is automatically trimmed from the left and right of
 output before any comparisons are attempted. So, we don't need to worry about
-cleaning trimming output with leading spaces like this:
+trimming output with leading spaces like this:
 
 ```text
 cat README.md | wc -l
@@ -691,7 +691,7 @@ and `1` if info cannot be found.
 Prints the value of golang's `runtime.GOARCH`. Note that this is the arch that
 the binary was compiled for. It's not running `uname` under the hood.
 
-Theoretical possibilites are:
+Theoretical possibilities are:
 
 ```text
 386
