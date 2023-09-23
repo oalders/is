@@ -76,8 +76,8 @@ func TestOSCmd(t *testing.T) {
 		{OSCmd{attr.Version, ops.Unlike, ".*", major, minor, patch}, false, false},
 		{OSCmd{attr.Version, ops.Unlike, "[+", major, minor, patch}, true, false},
 		{OSCmd{attr.Version, ops.Gt, "0", true, minor, patch}, false, true},
-		{OSCmd{attr.Version, ops.Gt, "0", major, true, patch}, false, true},
-		{OSCmd{attr.Version, ops.Gt, "0", major, minor, true}, false, true},
+		{OSCmd{attr.Version, ops.Gte, "0", major, true, patch}, false, true},
+		{OSCmd{attr.Version, ops.Gte, "0", major, minor, true}, false, true},
 		{OSCmd{attr.Name, ops.Gt, "0", true, minor, patch}, true, false},
 		{OSCmd{attr.Name, ops.Gt, "0", major, true, patch}, true, false},
 		{OSCmd{attr.Name, ops.Gt, "0", major, minor, true}, true, false},
@@ -86,16 +86,24 @@ func TestOSCmd(t *testing.T) {
 	for _, test := range tests {
 		ctx := types.Context{Debug: false}
 		err := test.Cmd.Run(&ctx)
-		name := fmt.Sprintf("%s %s %s", test.Cmd.Attr, test.Cmd.Op, test.Cmd.Val)
+		name := fmt.Sprintf(
+			"%s %s %s major: %t minor: %t patch: %t",
+			test.Cmd.Attr,
+			test.Cmd.Op,
+			test.Cmd.Val,
+			test.Cmd.Major,
+			test.Cmd.Minor,
+			test.Cmd.Patch,
+		)
 		if test.Error {
-			assert.Error(t, err, name)
+			assert.Error(t, err, "has error "+name)
 		} else {
-			assert.NoError(t, err, name)
+			assert.NoError(t, err, "has no error "+name)
 		}
 		if test.Success {
-			assert.True(t, ctx.Success, name)
+			assert.True(t, ctx.Success, "has success "+name)
 		} else {
-			assert.False(t, ctx.Success, name)
+			assert.False(t, ctx.Success, "has no success "+name)
 		}
 	}
 }
