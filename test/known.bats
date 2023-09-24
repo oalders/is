@@ -43,7 +43,7 @@ bats_require_minimum_version 1.5.0
 }
 
 @test "is known cli version --major --minor semver" {
-    run ! ./is known cli version --patch $semver
+    run ! ./is known cli version --major --minor $semver
 }
 
 @test "is known os version --major" {
