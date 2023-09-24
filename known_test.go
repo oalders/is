@@ -11,6 +11,7 @@ import (
 
 func TestKnownCmd(t *testing.T) {
 	t.Parallel()
+	const tmux = "testdata/bin/tmux"
 	{
 		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
@@ -49,16 +50,6 @@ func TestKnownCmd(t *testing.T) {
 		ctx := types.Context{Debug: true}
 		cmd := KnownCmd{}
 		cmd.CLI.Attr = attr.Version
-		cmd.CLI.Name = "git"
-		err := cmd.Run(&ctx)
-		assert.NoError(t, err)
-		assert.True(t, ctx.Success, "success")
-	}
-
-	{
-		ctx := types.Context{Debug: true}
-		cmd := KnownCmd{}
-		cmd.CLI.Attr = attr.Version
 		cmd.CLI.Name = "gitzzz"
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
@@ -72,5 +63,60 @@ func TestKnownCmd(t *testing.T) {
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = tmux
+		cmd.Major = true
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = tmux
+		cmd.Minor = true
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = tmux
+		cmd.Patch = true
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Version
+		cmd.CLI.Name = tmux
+		cmd.Major = true
+		err := cmd.Run(&ctx)
+		assert.NoError(t, err)
+		assert.True(t, ctx.Success, "success")
+	}
+
+	{
+		ctx := types.Context{Debug: true}
+		cmd := KnownCmd{}
+		cmd.CLI.Attr = attr.Name
+		cmd.CLI.Name = tmux
+		cmd.Major = true
+		err := cmd.Run(&ctx)
+		assert.Error(t, err)
+		assert.False(t, ctx.Success, "success")
 	}
 }

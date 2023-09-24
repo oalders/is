@@ -20,9 +20,12 @@ type OutputCmp struct {
 
 //nolint:lll
 type VersionCmp struct {
-	Name string `arg:"" required:"" help:"[name of command or path to command]"`
-	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
-	Val  string `arg:"" required:""`
+	Name  string `arg:"" required:"" help:"[name of command or path to command]"`
+	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Val   string `arg:"" required:""`
+	Major bool   `xor:"Major,Minor,Patch" help:"Only match on the major version (e.g. major.minor.patch)"`
+	Minor bool   `xor:"Major,Minor,Patch" help:"Only match on the minor version (e.g. major.minor.patch)"`
+	Patch bool   `xor:"Major,Minor,Patch" help:"Only match on the patch version (e.g. major.minor.patch)"`
 }
 
 type ArchCmd struct {
@@ -43,9 +46,12 @@ type CLICmd struct {
 //
 //nolint:lll
 type OSCmd struct {
-	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
-	Op   string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
-	Val  string `arg:"" required:""`
+	Attr  string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
+	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Val   string `arg:"" required:""`
+	Major bool   `xor:"Major,Minor,Patch" help:"Only match on the major OS version (e.g. major.minor.patch)"`
+	Minor bool   `xor:"Major,Minor,Patch" help:"Only match on the minor OS version (e.g. major.minor.patch)"`
+	Patch bool   `xor:"Major,Minor,Patch" help:"Only match on the patch OS version (e.g. major.minor.patch)"`
 }
 
 // UserCmd type is configuration for user level checks.
@@ -69,6 +75,9 @@ type KnownCmd struct {
 		Attr string `arg:"" name:"attribute" required:"" enum:"version"`
 		Name string `arg:"" required:""`
 	} `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
+	Major bool `xor:"Major,Minor,Patch" help:"Only print the major OS or CLI version (e.g. major.minor.patch)"`
+	Minor bool `xor:"Major,Minor,Patch" help:"Only print the minor OS or CLI version (e.g. major.minor.patch)"`
+	Patch bool `xor:"Major,Minor,Patch" help:"Only print the patch OS or CLI version (e.g. major.minor.patch)"`
 }
 
 // ThereCmd is configuration for finding executables.

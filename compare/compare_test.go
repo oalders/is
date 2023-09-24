@@ -64,10 +64,47 @@ func TestCompareVersions(t *testing.T) {
 		{"1", ops.Like, "2", false},
 		{"1", ops.Unlike, "2", true},
 	}
+
 	for _, v := range tests {
 		ctx := &types.Context{Debug: false}
 		err := compare.Versions(ctx, v.Op, v.Got, v.Want)
 		assert.NoError(t, err)
+		if v.Success {
+			assert.True(t, ctx.Success, "success")
+		} else {
+			assert.False(t, ctx.Success, "failure")
+		}
+	}
+}
+
+func TestCompareVersionSegments(t *testing.T) {
+	t.Parallel()
+	type test struct {
+		Got     string
+		Op      string
+		Want    string
+		Segment uint
+		Error   bool
+		Success bool
+	}
+	tests := []test{
+		{"3.3", ops.Eq, "3", 0, false, true},
+		{"3.3", ops.Eq, "3", 1, false, true},
+		{"3.3", ops.Eq, "0", 2, false, true},
+		{"3.3", ops.Like, "3", 0, false, true},
+		{"3.3", ops.Like, "3", 1, false, true},
+		{"3.3", ops.Like, "0", 2, false, true},
+		{"!!x]", ops.Like, "0", 2, true, false},
+	}
+
+	for _, v := range tests { //nolint:varnamelen
+		ctx := &types.Context{Debug: false}
+		err := compare.VersionSegment(ctx, v.Op, v.Got, v.Want, v.Segment)
+		if v.Error {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+		}
 		if v.Success {
 			assert.True(t, ctx.Success, "success")
 		} else {
@@ -90,20 +127,11 @@ func TestStrings(t *testing.T) {
 		{ops.Like, "delboy trotter", "delboyD", false, false, true},
 	}
 
-	for _, this := range tests {
-		ctx := &types.Context{}
-		err := compare.Strings(ctx, this.Op, this.Got, this.Want)
-		if this.Success {
-			assert.True(t, ctx.Success)
-		} else {
-			assert.False(t, ctx.Success)
-		}
-		if this.Error {
-			assert.Error(t, err)
-		} else {
-			assert.NoError(t, err)
-		}
-	}
+	testTable(t, tests,
+		func(ctx *types.Context, this compareTest) error {
+			return compare.Strings(ctx, this.Op, this.Got, this.Want)
+		},
+	)
 }
 
 func TestOptimistic(t *testing.T) {
@@ -126,32 +154,15 @@ func TestOptimistic(t *testing.T) {
 		{ops.Gte, "1", "/[/", false, false, true},
 	}
 
-	for _, this := range tests {
-		ctx := &types.Context{Debug: this.Debug}
-		err := compare.Optimistic(ctx, this.Op, this.Got, this.Want)
-		if this.Success {
-			assert.True(t, ctx.Success)
-		} else {
-			assert.False(t, ctx.Success)
-		}
-		if this.Error {
-			assert.Error(t, err)
-		} else {
-			assert.NoError(t, err)
-		}
-	}
+	testTable(t, tests,
+		func(ctx *types.Context, this compareTest) error {
+			return compare.Optimistic(ctx, this.Op, this.Got, this.Want)
+		},
+	)
 }
 
 func TestIntegers(t *testing.T) {
 	t.Parallel()
-	type compareTest struct {
-		Op      string
-		Got     string
-		Want    string
-		Error   bool
-		Success bool
-		Debug   bool
-	}
 
 	tests := []compareTest{
 		{ops.Eq, "1", "1", false, true, true},
@@ -166,20 +177,11 @@ func TestIntegers(t *testing.T) {
 		{ops.Gte, "1", "/[/", true, false, true},
 	}
 
-	for _, this := range tests {
-		ctx := &types.Context{Debug: this.Debug}
-		err := compare.Integers(ctx, this.Op, this.Got, this.Want)
-		if this.Success {
-			assert.True(t, ctx.Success)
-		} else {
-			assert.False(t, ctx.Success, fmt.Sprintf("%s %s %s", this.Got, this.Op, this.Want))
-		}
-		if this.Error {
-			assert.Error(t, err)
-		} else {
-			assert.NoError(t, err)
-		}
-	}
+	testTable(t, tests,
+		func(ctx *types.Context, this compareTest) error {
+			return compare.Integers(ctx, this.Op, this.Got, this.Want)
+		},
+	)
 }
 
 func TestFloats(t *testing.T) {
@@ -197,18 +199,31 @@ func TestFloats(t *testing.T) {
 		{ops.Gte, "1", "/[/", true, false, true},
 	}
 
+	testTable(t, tests,
+		func(ctx *types.Context, this compareTest) error {
+			return compare.Floats(ctx, this.Op, this.Got, this.Want)
+		},
+	)
+}
+
+func testTable( //nolint:thelper
+	t *testing.T,
+	tests []compareTest,
+	comparison func(ctx *types.Context, this compareTest) error,
+) {
 	for _, this := range tests {
 		ctx := &types.Context{Debug: this.Debug}
-		err := compare.Floats(ctx, this.Op, this.Got, this.Want)
+		err := comparison(ctx, this)
+		label := fmt.Sprintf("%s %s %s", this.Got, this.Op, this.Want)
 		if this.Success {
-			assert.True(t, ctx.Success)
+			assert.True(t, ctx.Success, label)
 		} else {
-			assert.False(t, ctx.Success, fmt.Sprintf("%s %s %s", this.Got, this.Op, this.Want))
+			assert.False(t, ctx.Success, label)
 		}
 		if this.Error {
-			assert.Error(t, err)
+			assert.Error(t, err, label)
 		} else {
-			assert.NoError(t, err)
+			assert.NoError(t, err, label)
 		}
 	}
 }

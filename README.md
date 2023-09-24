@@ -50,6 +50,13 @@ $ is known cli version bash
 5.2.15
 ```
 
+### What's the major version of zsh?
+
+```text
+$ is known cli version --major zsh
+5
+```
+
 ### Has gofumpt been modified in the last week?
 
 ```text
@@ -198,7 +205,7 @@ Supported comparisons are:
 We can try `is known arch` to get the value for our installed binary or run this
 command with the `--debug` flag.
 
-Theoretical possibilites are:
+Theoretical possibilities are:
 
 ```text
 386
@@ -282,6 +289,32 @@ true and exit code of 1 if condition is false.
 is cli version go gte 1.20.4 || bash upgrade-go.sh
 ```
 
+##### version segments --major | --minor | --patch
+
+If we want to match only on part of a version, we can do that by specifying
+which segment of the version we want to match on, where the pattern is
+`major.minor.patch`. Given a version number of `1.2.3` that would make 1 the
+`major` version, 2 the `minor` version and `3` the patch version. If the
+version number does not include a `patch`, then it is assumed to be zero.
+Likewise for a missing `minor` segment.
+
+The segment flags are `--major`, `--minor` and `--patch`. They are mutually
+exclusive, only one of these flags can be passed per command.
+
+Let's rework the example above to say that any version of `go` with a minor
+version >= 20 means we don't need to upgrade.
+
+```bash
+is cli version --minor go gte 20 || bash upgrade-go.sh
+```
+
+We could also express this in the following way, if we want to match on the
+major version as well.
+
+```bash
+is cli version go gte 1.20
+```
+
 Supported comparisons are:
 
 * `lt`
@@ -295,7 +328,10 @@ Supported comparisons are:
 
 #### output
 
-Run an arbitrary command and compare the output of `stdout`, `stderr` or `combined`. Whitespace is automatically trimmed from the left and right of output before any comparisons are attempted. So, we don't need to worry about cleaning trimming output with leading spaces like this:
+Run an arbitrary command and compare the output of `stdout`, `stderr` or
+`combined`. Whitespace is automatically trimmed from the left and right of
+output before any comparisons are attempted. So, we don't need to worry about
+trimming output with leading spaces like this:
 
 ```text
 cat README.md | wc -l
@@ -304,7 +340,7 @@ cat README.md | wc -l
 
 The format for this command is:
 
-```
+```text
 is cli output              \
   [stdout|stderr|combined] \
   some-command             \
@@ -354,7 +390,8 @@ Let's match on the results of `uname -m -n`.
 is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_64"
 ```
 
-If our args don't contain special characters or spaces, we may not need to quote them. Let's match on the results of `cat README.md`.
+If our args don't contain special characters or spaces, we may not need to
+quote them. Let's match on the results of `cat README.md`.
 
 ```
 is cli output stdout cat --arg README.md like "an inspector for your environment"
@@ -362,7 +399,9 @@ is cli output stdout cat --arg README.md like "an inspector for your environment
 
 ##### --compare
 
-Optional argument to command. Defaults to `optimistic`. Because comparisons like `eq` mean different things when comparing strings, integers and floats, we can tell `is` what sort of a comparison to perform. Our options are:
+Optional argument to command. Defaults to `optimistic`. Because comparisons
+like `eq` mean different things when comparing strings, integers and floats, we
+can tell `is` what sort of a comparison to perform. Our options are:
 
 * float
 * integer
@@ -370,7 +409,9 @@ Optional argument to command. Defaults to `optimistic`. Because comparisons like
 * version
 * optimistic
 
-`optimistic` will first try a `string` comparison. If this fails, it will try a `version` comparison. This will "Do What I Mean" in a lot of cases, but if we want to constrain the check to a specific type, we can certainly do that.
+`optimistic` will first try a `string` comparison. If this fails, it will try a
+`version` comparison. This will "Do What I Mean" in a lot of cases, but if we
+want to constrain the check to a specific type, we can certainly do that.
 
 ```text
 is cli output stdout                            \
@@ -381,7 +422,8 @@ is cli output stdout                            \
 
 #### Tip: Using pipes
 
-To pipe output from one command to another, we'll need to do something that is equivalent to: `bash -c "some-command | other-command"`
+To pipe output from one command to another, we'll need to do something that is
+equivalent to: `bash -c "some-command | other-command"`
 
 To count the number of lines returned by `date`, we might normally write:
 
@@ -403,7 +445,8 @@ Now, run via `is` and assert that there really is just one line:
 is cli output stdout bash --arg='-c' --arg="date|wc -l" eq 1
 ```
 
-Let's make this more succinct. We can make this a little shorter, because `is` handles `bash -c` as a special case:
+Let's make this more succinct. We can make this a little shorter, because `is`
+handles `bash -c` as a special case:
 
 ```text
 is cli output stdout "bash -c" -a "date|wc -l" eq 1
@@ -411,7 +454,8 @@ is cli output stdout "bash -c" -a "date|wc -l" eq 1
 
 #### Tip: Using Negative Numbers
 
-Passing negative integers as expected values is a bit tricky, since we don't want them to be interpreted as flags.
+Passing negative integers as expected values is a bit tricky, since we don't
+want them to be interpreted as flags.
 
 ```
 $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
@@ -429,11 +473,12 @@ $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -- -1
 
 Use the `--debug` flag to see where comparisons are failing:
 
-```
+```text
 is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_65" --debug
 2023/09/13 23:05:26 comparison "olafs-mbp-2.lan x86_64" eq "olafs-mbp-2.lan x86_65"
 2023/09/13 23:05:26 comparison failed: olafs-mbp-2.lan x86_64 eq olafs-mbp-2.lan x86_65
 ```
+
 Supported comparisons are:
 
 * `lt`
@@ -445,7 +490,10 @@ Supported comparisons are:
 * `like`
 * `unlike`
 
-👉 Nota bene: because `is` doesn't know what you're trying to match, it will, in some cases try to do an optimistic comparison. That is, it will try a string comparison first and then a numeric comparison. Hopefully this will "do the right thing" for you. If not, please open an issue.
+👉 Nota bene: because `is` doesn't know what you're trying to match, it will,
+in some cases try to do an optimistic comparison. That is, it will try a string
+comparison first and then a numeric comparison. Hopefully this will "do the
+right thing" for you. If not, please open an issue.
 
 ### os
 
@@ -459,6 +507,22 @@ is os version gt 22
 
 ```bash
 is os version like "13.4.\d"
+```
+
+##### version segments --major | --minor | --patch
+
+If we want to match only on part of a version, we can do that by specifying
+which segment of the version we want to match on, where the pattern is
+`major.minor.patch`. Given a version number of `1.2.3` that would make 1 the
+`major` version, 2 the `minor` version and `3` the patch version. If the
+version number does not include a `patch`, then it is assumed to be zero.
+Likewise for a missing `minor` segment.
+
+The segment flags are `--major`, `--minor` and `--patch`. They are mutually
+exclusive, only one of these flags can be passed per command.
+
+```text
+is os version --major eq 13
 ```
 
 Supported comparisons are:
@@ -627,7 +691,7 @@ and `1` if info cannot be found.
 Prints the value of golang's `runtime.GOARCH`. Note that this is the arch that
 the binary was compiled for. It's not running `uname` under the hood.
 
-Theoretical possibilites are:
+Theoretical possibilities are:
 
 ```text
 386
@@ -706,6 +770,24 @@ $ is known os version
 22.04
 ```
 
+```text
+$ is known os version --major
+22
+```
+
+```text
+$ is known os version --minor
+04
+```
+
+```text
+$ is known os version --patch
+0
+```
+
+Please see the docs on `os version` for more information on `--major`,
+`--minor` and `--patch`.
+
 ##### version-codename
 
 ```text
@@ -717,8 +799,25 @@ jammy
 
 ```text
 $ is known cli version tmux
-3.3a
+2.7
 ```
+
+```text
+$ is known cli version --major tmux
+2
+```
+
+```text
+$ is known cli version --minor tmux
+7
+```
+
+```text
+$ is known cli version --patch tmux
+0
+```
+Please see the docs on `os version` for more information on `--major`,
+`--minor` and `--patch`.
 
 ### --debug
 
@@ -750,6 +849,10 @@ Commands:
 
   cli age <name> <op> <val> <unit>
     Check last modified time of cli (2h, 4d). e.g. "is cli age tmux gt 1 d"
+
+  cli output <stream> <command> <op> <val>
+    Check output of a command. e.g. "is cli output stdout "uname -a" like
+    "Kernel Version 22.5"
 
   known arch [<attr>]
     Print arch without check. e.g. "is known arch"

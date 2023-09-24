@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -23,7 +24,9 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		"tmux":    "-V",
 	}
 	arg := "--version"
-	if v, exists := versionArg[cliName]; exists {
+
+	baseName := filepath.Base(cliName) // might be a path
+	if v, exists := versionArg[baseName]; exists {
 		arg = v
 	}
 
@@ -62,12 +65,14 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 	floatRegex := `[\d.]*`
 	floatWithTrailingLetterRegex := `[\d.]*\w`
 	intRegex := `\d*`
+	semverRegex := `\d+\.\d+\.\d+`
 	vStringRegex := `v[\d.]*`
 	vStringWithTrailingLetterRegex := `v[\d.]*\w`
 	regexen := map[string]string{
 		"ansible": fmt.Sprintf(`ansible \[core (%s)\b`, floatRegex),
 		"bash":    fmt.Sprintf(`version (%s)\b`, floatRegex),
 		"bat":     fmt.Sprintf(`bat (%s)\b`, floatRegex),
+		"csh":     fmt.Sprintf(`(%s)`, semverRegex),
 		"curl":    fmt.Sprintf(`curl (%s)\b`, floatRegex),
 		"docker":  fmt.Sprintf(`version (%s),`, floatRegex),
 		"gcc":     fmt.Sprintf(`clang version (%s)\b`, floatRegex),
@@ -86,6 +91,8 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"python3": fmt.Sprintf(`Python (%s)\b`, floatRegex),
 		"rg":      fmt.Sprintf(`ripgrep (%s)\b`, floatRegex),
 		"ruby":    `ruby (\d+\.\d+\.[\d\w]+)\b`,
+		"tcsh":    fmt.Sprintf(`(%s)`, semverRegex),
+		"sh":      fmt.Sprintf(`version (%s)\b`, floatRegex),
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
 		"tar":     fmt.Sprintf(`bsdtar (%s)\b`, floatRegex),
 		"tmux":    fmt.Sprintf(`tmux (%s)\b`, floatWithTrailingLetterRegex),
@@ -110,10 +117,11 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 	}
 
 	matches := versionRegex.FindAllStringSubmatch(output, -1)
+	if ctx.Debug {
+		log.Printf("matching output \"%s\" on regex \"%s\"\n", output, versionRegex)
+	}
 	if len(matches) > 0 {
 		output = matches[0][1]
-	} else if ctx.Debug {
-		log.Printf("output \"%s\" does not match regex \"%s\"\n", output, versionRegex)
 	}
 	output = strings.TrimRight(output, "\n")
 
