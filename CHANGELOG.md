@@ -1,6 +1,6 @@
 # Changes
 
-## 0.3.0 - 2023-09-23
+## 0.3.0 - 2023-09-24
 
 - Add --major, --minor and --patch version segment constraints
 
