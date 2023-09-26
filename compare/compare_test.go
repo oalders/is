@@ -2,6 +2,7 @@ package compare_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/oalders/is/compare"
@@ -19,7 +20,7 @@ type compareTest struct {
 	Debug   bool
 }
 
-func TestCompareVersions(t *testing.T) {
+func TestVersions(t *testing.T) {
 	t.Parallel()
 	type test struct {
 		Got     string
@@ -32,6 +33,8 @@ func TestCompareVersions(t *testing.T) {
 		{"3.3", ops.Ne, "3.3", false},
 		{"3.3", ops.Eq, "3.3", true},
 		{"3.3", ops.Gte, "3.3", true},
+		{"3.3", ops.In, "3.3,4.4", true},
+		{"3.3", ops.In, "4.4", false},
 		{"3.3", ops.Lte, "3.3", true},
 		{"3.3", ops.Lt, "3.3", false},
 		{"3.3", ops.Like, "3.3", true},
@@ -75,6 +78,18 @@ func TestCompareVersions(t *testing.T) {
 			assert.False(t, ctx.Success, "failure")
 		}
 	}
+	{
+		ctx := &types.Context{}
+		err := compare.Versions(ctx, ops.In, "3.3", strings.Repeat("3,", 100))
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
+	{
+		ctx := &types.Context{}
+		err := compare.Versions(ctx, ops.In, "3.3", "!!x")
+		assert.Error(t, err)
+		assert.False(t, ctx.Success)
+	}
 }
 
 func TestCompareVersionSegments(t *testing.T) {
@@ -91,6 +106,10 @@ func TestCompareVersionSegments(t *testing.T) {
 		{"3.3", ops.Eq, "3", 0, false, true},
 		{"3.3", ops.Eq, "3", 1, false, true},
 		{"3.3", ops.Eq, "0", 2, false, true},
+		{"3.3", ops.In, "1,2,3,4", 0, false, true},
+		{"3.3", ops.In, "4,5,6", 0, false, false},
+		{"3.3", ops.In, "4.0,5,6", 0, true, false},
+		{"3.3", ops.In, strings.Repeat("X,", 100), 0, true, false},
 		{"3.3", ops.Like, "3", 0, false, true},
 		{"3.3", ops.Like, "3", 1, false, true},
 		{"3.3", ops.Like, "0", 2, false, true},
@@ -98,17 +117,18 @@ func TestCompareVersionSegments(t *testing.T) {
 	}
 
 	for _, v := range tests { //nolint:varnamelen
+		label := fmt.Sprintf("%s %s %s %d", v.Got, v.Op, v.Want, v.Segment)
 		ctx := &types.Context{Debug: false}
 		err := compare.VersionSegment(ctx, v.Op, v.Got, v.Want, v.Segment)
 		if v.Error {
-			assert.Error(t, err)
+			assert.Error(t, err, label)
 		} else {
-			assert.NoError(t, err)
+			assert.NoError(t, err, label)
 		}
 		if v.Success {
-			assert.True(t, ctx.Success, "success")
+			assert.True(t, ctx.Success, label+"success ")
 		} else {
-			assert.False(t, ctx.Success, "failure")
+			assert.False(t, ctx.Success, label+"failure")
 		}
 	}
 }
@@ -125,6 +145,9 @@ func TestStrings(t *testing.T) {
 		{ops.Unlike, "delboy trotter", "/[/", true, false, false},
 		{ops.Like, "delboy trotter", "delboy", false, true, true},
 		{ops.Like, "delboy trotter", "delboyD", false, false, true},
+		{ops.In, "delboy trotter", "delboy trotter, rodney trotter", false, true, false},
+		{ops.In, "X", strings.Repeat("X,", 99), false, true, false},
+		{ops.In, "X", strings.Repeat("X,", 100), true, false, false},
 	}
 
 	testTable(t, tests,
@@ -152,6 +175,7 @@ func TestOptimistic(t *testing.T) {
 		{ops.Ne, "a", "2", false, true, true},
 		{ops.Gte, "/[/", "1", false, false, true},
 		{ops.Gte, "1", "/[/", false, false, true},
+		{ops.In, "X", strings.Repeat("X,", 100), false, false, false}, // should be an error
 	}
 
 	testTable(t, tests,
@@ -169,12 +193,16 @@ func TestIntegers(t *testing.T) {
 		{ops.Gte, "1", "1", false, true, true},
 		{ops.Gt, "1", "1", false, false, true},
 		{ops.Gte, "2", "1", false, true, true},
+		{ops.In, "1", "0,1", false, true, true},
+		{ops.In, "1", "2,3", false, false, true},
+		{ops.In, "1", "2.0,3.0", true, false, true},
 		{ops.Lt, "1", "1", false, false, true},
 		{ops.Lte, "1", "1", false, true, true},
 		{ops.Ne, "1", "2", false, true, true},
 		{ops.Ne, "a", "2", true, false, true},
 		{ops.Gte, "/[/", "1", true, false, true},
 		{ops.Gte, "1", "/[/", true, false, true},
+		{ops.In, "X", strings.Repeat("X,", 100), true, false, false},
 	}
 
 	testTable(t, tests,
@@ -193,6 +221,9 @@ func TestFloats(t *testing.T) {
 		{ops.Eq, "1", "1.0", false, true, true},
 		{ops.Gte, "1", "1", false, true, true},
 		{ops.Gte, "2", "1", false, true, true},
+		{ops.In, "1.0", "1.0,2.0", false, true, true},
+		{ops.In, "1.0", "2.0,3.0", false, false, false},
+		{ops.In, "1.0", "2.0,3.0,X", true, false, false},
 		{ops.Ne, "1", "2", false, true, true},
 		{ops.Ne, "a", "2", true, false, true},
 		{ops.Gte, "/[/", "1", true, false, true},

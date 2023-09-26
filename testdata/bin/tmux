@@ -2,8 +2,6 @@
 
 set -e -u -o pipefail
 
-echo "$@"
-
 if [[ $# -eq 1 ]] && [[ $1 = "-V" ]]; then
-    echo "3.3a"
+    echo "tmux 3.3a"
 fi

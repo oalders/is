@@ -6,3 +6,7 @@ bats_require_minimum_version 1.5.0
   ./is os name like ".*"
   run ! ./is os name unlike ".*"
 }
+
+@test "is os name in" {
+  ./is os name in darwin,linux
+}

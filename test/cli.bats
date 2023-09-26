@@ -74,6 +74,10 @@ tmux=./testdata/bin/tmux
     ./is cli output stdout 'bash -c' -a 'date|wc -l' gte --compare integer -- -1
 }
 
+@test 'output in' {
+    ./is cli output --debug stdout $semver --arg="--version" in 1.2.3,3.2.1
+}
+
 @test 'major' {
     ./is cli version --major $semver eq 1
 }
@@ -84,6 +88,18 @@ tmux=./testdata/bin/tmux
 
 @test 'patch' {
     ./is cli version --patch $semver eq 3
+}
+
+@test 'version in (float)' {
+    ./is cli version $tmux in "3.2,3.3a"
+}
+
+@test 'version in' {
+    ./is cli version $semver in 1.2.3,1.2.4,1.2.5
+}
+
+@test 'version --major in' {
+    ./is cli version --major $semver in 1,4,5
 }
 
 @test 'unspecified patch in output' {

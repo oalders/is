@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/types"
@@ -35,7 +36,23 @@ func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T
 	}
 }
 
-func Floats(ctx *types.Context, operator, g, w string) error {
+func Floats(ctx *types.Context, operator, g, w string) error { //nolint:varnamelen
+	if operator == ops.In {
+		wantList, err := want2List(w)
+		if err != nil {
+			return err
+		}
+		for _, v := range wantList {
+			err := Floats(ctx, ops.Eq, g, v)
+			if err != nil {
+				return err
+			}
+			if ctx.Success {
+				return nil
+			}
+		}
+		return nil
+	}
 	got, err := strconv.ParseFloat(g, 32)
 	if err != nil {
 		return errors.Join(errors.New("wanted result must be a float"), err)
@@ -52,7 +69,24 @@ func Floats(ctx *types.Context, operator, g, w string) error {
 	return nil
 }
 
-func Integers(ctx *types.Context, operator, g, w string) error {
+func Integers(ctx *types.Context, operator, g, w string) error { //nolint:varnamelen
+	if operator == ops.In {
+		wantList, err := want2List(w)
+		if err != nil {
+			return err
+		}
+
+		for _, v := range wantList {
+			err := Integers(ctx, ops.Eq, g, v)
+			if err != nil {
+				return err
+			}
+			if ctx.Success {
+				return nil
+			}
+		}
+		return nil
+	}
 	got, err := strconv.Atoi(g)
 	if err != nil {
 		return errors.Join(errors.New("wanted result must be an integer"), err)
@@ -70,6 +104,22 @@ func Integers(ctx *types.Context, operator, g, w string) error {
 }
 
 func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segment uint) error {
+	if operator == ops.In {
+		wantList, err := want2List(wantStr)
+		if err != nil {
+			return err
+		}
+		for _, v := range wantList {
+			err := VersionSegment(ctx, ops.Eq, gotStr, v, segment)
+			if err != nil {
+				return err
+			}
+			if ctx.Success {
+				return nil
+			}
+		}
+		return nil
+	}
 	got, err := version.NewVersion(gotStr)
 	if err != nil {
 		return errors.Join(errors.New("parse version from output"), err)
@@ -85,7 +135,7 @@ func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segmen
 	return Integers(ctx, operator, fmt.Sprint(gotSegment), wantStr)
 }
 
-func Versions(
+func Versions( //nolint:cyclop
 	ctx *types.Context,
 	operator, gotStr, wantStr string,
 ) error {
@@ -93,6 +143,21 @@ func Versions(
 	maybeDebug(ctx, "versions", operator, gotStr, wantStr)
 
 	switch operator {
+	case ops.In:
+		wantList, err := want2List(wantStr)
+		if err != nil {
+			return err
+		}
+		for _, v := range wantList {
+			err := Versions(ctx, ops.Eq, gotStr, v)
+			if err != nil {
+				return err
+			}
+			if ctx.Success {
+				return nil
+			}
+		}
+		return nil
 	case ops.Like, ops.Unlike:
 		return Strings(ctx, operator, gotStr, wantStr)
 	}
@@ -134,6 +199,12 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	switch operator {
 	case ops.Eq:
 		success = got == want
+	case ops.In:
+		wantList, err := want2List(want)
+		if err != nil {
+			return err
+		}
+		success = slices.Contains(wantList, got)
 	case ops.Ne:
 		success = got != want
 	case ops.Like, ops.Unlike:
@@ -184,6 +255,17 @@ func Optimistic(ctx *types.Context, operator, got, want string) error {
 		log.Printf("cannot compare versions: %s", err)
 	}
 	return nil
+}
+
+func want2List(want string) ([]string, error) {
+	wantList := strings.Split(want, ",")
+	for i := range wantList {
+		wantList[i] = strings.TrimSpace(wantList[i])
+	}
+	if len(wantList) > 100 {
+		return []string{}, errors.New("\"in\" takes a maximum of 100 arguments")
+	}
+	return wantList, nil
 }
 
 func maybeDebug(ctx *types.Context, comparisonType, operator, got, want string) {

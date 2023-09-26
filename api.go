@@ -12,7 +12,7 @@ type AgeCmp struct {
 type OutputCmp struct {
 	Stream  string   `arg:"" required:"" enum:"stdout,stderr,combined" help:"[output stream to capture: (stdout|stderr|combined)]"`
 	Command string   `arg:"" required:"" help:"[name of command or path to command plus any arguments e.g. \"uname -a\"]"`
-	Op      string   `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Op      string   `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
 	Val     string   `arg:"" required:""`
 	Arg     []string `short:"a" optional:"" help:"--arg=\"-V\" --arg foo"`
 	Compare string   `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
@@ -21,7 +21,7 @@ type OutputCmp struct {
 //nolint:lll
 type VersionCmp struct {
 	Name  string `arg:"" required:"" help:"[name of command or path to command]"`
-	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
 	Val   string `arg:"" required:""`
 	Major bool   `xor:"Major,Minor,Patch" help:"Only match on the major version (e.g. major.minor.patch)"`
 	Minor bool   `xor:"Major,Minor,Patch" help:"Only match on the minor version (e.g. major.minor.patch)"`
@@ -29,7 +29,7 @@ type VersionCmp struct {
 }
 
 type ArchCmd struct {
-	Op  string `arg:"" required:"" enum:"eq,ne,like,unlike" help:"[eq|ne|like|unlike]"`
+	Op  string `arg:"" required:"" enum:"eq,ne,in,like,unlike" help:"[eq|ne|in|like|unlike]"`
 	Val string `arg:"" required:""`
 }
 
@@ -47,7 +47,7 @@ type CLICmd struct {
 //nolint:lll
 type OSCmd struct {
 	Attr  string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
-	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,lt,lte,like,unlike" help:"[eq|ne|gt|gte|like|lt|lte|unlike]"`
+	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
 	Val   string `arg:"" required:""`
 	Major bool   `xor:"Major,Minor,Patch" help:"Only match on the major OS version (e.g. major.minor.patch)"`
 	Minor bool   `xor:"Major,Minor,Patch" help:"Only match on the minor OS version (e.g. major.minor.patch)"`

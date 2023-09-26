@@ -18,29 +18,27 @@ is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ### Is this the target Operating System?
 
 ```bash
-(is os name eq darwin && echo 🍏 ) || (is os name eq linux && echo 🐧) || echo 💣
+(is os name eq darwin && echo 🍏 ) ||
+  (is os name eq linux && echo 🐧) ||
+  echo 💣
 ```
 
-### Check the OS with a Regex
+### Check the OS with a regex
 
 ```bash
 is os name like "da\w{4}" && echo 🍏
 ```
 
-### Do we have go? Then update go binaries used by vim-go
+### Is this a recent macOS?
 
 ```bash
-#!/bin/bash
-
-if is there go; then
-    nvim +:GoUpdateBinaries +qa || true
-fi
+is os version-codename in ventura,monterey
 ```
 
-Or, as a one-liner:
+### Do we have go? Then install `goimports`
 
 ```bash
-is there go && nvim +:GoUpdateBinaries +qa
+ $ is there go && go install golang.org/x/tools/cmd/goimports@latest
 ```
 
 ### What's the version of bash?
@@ -199,6 +197,7 @@ Supported comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike`
 
@@ -322,6 +321,7 @@ Supported comparisons are:
 * `eq`
 * `gte`
 * `gt`
+* `in`
 * `ne`
 * `like`
 * `unlike`
@@ -486,6 +486,7 @@ Supported comparisons are:
 * `eq`
 * `gte`
 * `gt`
+* `in`
 * `ne`
 * `like`
 * `unlike`
@@ -532,6 +533,7 @@ Supported comparisons are:
 * `eq`
 * `gte`
 * `gt`
+* `in`
 * `ne`
 * `like`
 * `unlike`
@@ -548,6 +550,7 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike`
 
@@ -561,6 +564,12 @@ is os name eq darwin
 
 ```bash
 is os name ne linux
+```
+
+##### In a comma-delimited list
+
+```bash
+is os name in darwin,linux
 ```
 
 ##### Regex
@@ -596,6 +605,7 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike`
 
@@ -611,6 +621,7 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike`
 
@@ -624,6 +635,7 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike``
 
@@ -637,6 +649,7 @@ Available comparisons are:
 
 * `eq`
 * `ne`
+* `in`
 * `like`
 * `unlike`
 
@@ -883,14 +896,18 @@ Usage: is os <attribute> <op> <val>
 Check OS attributes. e.g. "is os name eq darwin"
 
 Arguments:
-  <attribute>    [arch|id|id-like|pretty-name|name|version|version-codename]
-  <op>           [eq|ne|gt|gte|lt|lte]
+  <attribute>    [id|id-like|pretty-name|name|version|version-codename]
+  <op>           [eq|ne|gt|gte|in|like|lt|lte|unlike]
   <val>
 
 Flags:
   -h, --help       Show context-sensitive help.
       --debug      turn on debugging statements
       --version    Print version to screen
+
+      --major      Only match on the major OS version (e.g. major.minor.patch)
+      --minor      Only match on the minor OS version (e.g. major.minor.patch)
+      --patch      Only match on the patch OS version (e.g. major.minor.patch)
 ```
 
 ### --version

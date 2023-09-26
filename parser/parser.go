@@ -58,7 +58,7 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		output, _ = io.ReadAll(stderr)
 	}
 
-	return CLIVersion(ctx, cliName, string(output)), nil
+	return CLIVersion(ctx, baseName, string(output)), nil
 }
 
 func CLIVersion(ctx *types.Context, cliName, output string) string {

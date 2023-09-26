@@ -20,6 +20,8 @@ func TestArchCmd(t *testing.T) {
 	tests := []ArchTest{
 		{ArchCmd{ops.Eq, "zzz"}, false, false},
 		{ArchCmd{ops.Ne, "zzz"}, false, true},
+		{ArchCmd{ops.In, "amd64,arm,arm64"}, false, true},
+		{ArchCmd{ops.In, "X"}, false, false},
 		{ArchCmd{ops.Like, "zzz"}, false, false},
 		{ArchCmd{ops.Unlike, "zzz"}, false, true},
 	}

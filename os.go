@@ -50,7 +50,7 @@ func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 		}
 
 		switch r.Op {
-		case ops.Eq, ops.Ne, ops.Like, ops.Unlike:
+		case ops.Eq, ops.In, ops.Ne, ops.Like, ops.Unlike:
 			err = compare.Strings(ctx, r.Op, attr, r.Val)
 		}
 	}
