@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.0 - 2023-09-27
+
+- Add "in" for matching on items in a comma-delimited list
+
 ## 0.3.0 - 2023-09-24
 
 - Add --major, --minor and --patch version segment constraints
