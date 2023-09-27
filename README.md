@@ -35,10 +35,16 @@ is os name like "da\w{4}" && echo 🍏
 is os version-codename in ventura,monterey
 ```
 
+### Who am I?
+
+```bash
+is cli output stdout whoami eq olaf
+```
+
 ### Do we have go? Then install `goimports`
 
 ```bash
- $ is there go && go install golang.org/x/tools/cmd/goimports@latest
+is there go && go install golang.org/x/tools/cmd/goimports@latest
 ```
 
 ### What's the version of bash?
