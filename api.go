@@ -61,6 +61,11 @@ type UserCmd struct {
 	Sudoer string `arg:"" required:"" default:"sudoer" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
+type KnownCLI struct {
+	Attr string `arg:"" name:"attribute" required:"" enum:"version"`
+	Name string `arg:"" required:""`
+}
+
 // KnownCmd type is configuration for printing environment info.
 //
 //nolint:lll
@@ -71,13 +76,10 @@ type KnownCmd struct {
 	OS struct {
 		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	} `cmd:"" help:"Print without check. e.g. \"is known os name\""`
-	CLI struct {
-		Attr string `arg:"" name:"attribute" required:"" enum:"version"`
-		Name string `arg:"" required:""`
-	} `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
-	Major bool `xor:"Major,Minor,Patch" help:"Only print the major OS or CLI version (e.g. major.minor.patch)"`
-	Minor bool `xor:"Major,Minor,Patch" help:"Only print the minor OS or CLI version (e.g. major.minor.patch)"`
-	Patch bool `xor:"Major,Minor,Patch" help:"Only print the patch OS or CLI version (e.g. major.minor.patch)"`
+	CLI   KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
+	Major bool     `xor:"Major,Minor,Patch" help:"Only print the major OS or CLI version (e.g. major.minor.patch)"`
+	Minor bool     `xor:"Major,Minor,Patch" help:"Only print the minor OS or CLI version (e.g. major.minor.patch)"`
+	Patch bool     `xor:"Major,Minor,Patch" help:"Only print the patch OS or CLI version (e.g. major.minor.patch)"`
 }
 
 // ThereCmd is configuration for finding executables.
