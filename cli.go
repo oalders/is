@@ -30,7 +30,7 @@ func execCommand(ctx *types.Context, stream, cmd string, args []string) (string,
 }
 
 // Run "is cli ...".
-func (r *CLICmd) Run(ctx *types.Context) error { //nolint:cyclop
+func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Age.Name != "" {
 		return runAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
 	}
@@ -56,17 +56,21 @@ func (r *CLICmd) Run(ctx *types.Context) error { //nolint:cyclop
 		return err
 	}
 
-	switch r.Output.Compare {
+	return compareOutput(ctx, r.Output.Compare, r.Output.Op, output, r.Output.Val)
+}
+
+func compareOutput(ctx *types.Context, comparisonType, operator, output, want string) error {
+	switch comparisonType {
 	case "string":
-		return compare.Strings(ctx, r.Output.Op, output, r.Output.Val)
+		return compare.Strings(ctx, operator, output, want)
 	case "version":
-		return compare.Versions(ctx, r.Output.Op, output, r.Output.Val)
+		return compare.Versions(ctx, operator, output, want)
 	case "integer":
-		return compare.Integers(ctx, r.Output.Op, output, r.Output.Val)
+		return compare.Integers(ctx, operator, output, want)
 	case "float":
-		return compare.Floats(ctx, r.Output.Op, output, r.Output.Val)
+		return compare.Floats(ctx, operator, output, want)
 	default:
-		return compare.Optimistic(ctx, r.Output.Op, output, r.Output.Val)
+		return compare.Optimistic(ctx, operator, output, want)
 	}
 }
 
