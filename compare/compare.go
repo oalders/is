@@ -225,7 +225,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 
 //nolint:cyclop
 func Optimistic(ctx *types.Context, operator, got, want string) error {
-	stringy := []string{ops.Eq, ops.Ne, ops.Like, ops.Unlike}
+	stringy := []string{ops.Eq, ops.In, ops.Ne, ops.Like, ops.Unlike}
 	reg := []string{ops.Like, ops.Unlike}
 	if slices.Contains(stringy, operator) {
 		err := Strings(ctx, operator, got, want)
