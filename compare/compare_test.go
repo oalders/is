@@ -175,7 +175,7 @@ func TestOptimistic(t *testing.T) {
 		{ops.Ne, "a", "2", false, true, true},
 		{ops.Gte, "/[/", "1", false, false, true},
 		{ops.Gte, "1", "/[/", false, false, true},
-		{ops.In, "X", strings.Repeat("X,", 100), false, false, false}, // should be an error
+		{ops.In, "X", strings.Repeat("X,", 100), true, false, false},
 	}
 
 	testTable(t, tests,
@@ -228,6 +228,7 @@ func TestFloats(t *testing.T) {
 		{ops.Ne, "a", "2", true, false, true},
 		{ops.Gte, "/[/", "1", true, false, true},
 		{ops.Gte, "1", "/[/", true, false, true},
+		{ops.In, "1.0", strings.Repeat("1.0,", 100), true, false, false},
 	}
 
 	testTable(t, tests,

@@ -105,3 +105,7 @@ tmux=./testdata/bin/tmux
 @test 'unspecified patch in output' {
     ./is cli version --patch $tmux eq 0
 }
+
+@test 'string in' {
+    ./is cli output stdout date --arg="+%a" in Mon,Tue,Wed,Thu,Fri,Sat,Sun
+}
