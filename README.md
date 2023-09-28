@@ -929,7 +929,7 @@ is --version
 * [Download a release](https://github.com/oalders/is/releases)
 * `go install`
   * `go install github.com/oalders/is@latest`
-  * `go install github.com/oalders/is@v0.4.0`
+  * `go install github.com/oalders/is@v0.4.1`
 * Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash

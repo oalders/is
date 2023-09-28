@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.1 - 2023-09-28
+
+- Ensure stringy comparison of "in" via optimistic compare
+
 ## 0.4.0 - 2023-09-27
 
 - Add "in" for matching on items in a comma-delimited list
