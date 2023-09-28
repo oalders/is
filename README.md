@@ -926,26 +926,29 @@ is --version
 
 ## Installation
 
-* [Download a release](https://github.com/oalders/is/releases)
-* `go install`
+Choose from the following options to install `is`.
+
+1. [Download a release](https://github.com/oalders/is/releases)
+1. Use `go install`
   * `go install github.com/oalders/is@latest`
   * `go install github.com/oalders/is@v0.4.1`
-* Use [ubi](https://github.com/houseabsolute/ubi)
+1. Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash
 #!/usr/bin/env bash
 
-set -eux
+set -e -u -x -o pipefail
 
-INSTALL_DIR="$HOME/local/bin"
+# Or choose a different dir in your $PATH
+dir="$HOME/local/bin"
 
 if [ ! "$(command -v ubi)" ]; then
     curl --silent --location \
         https://raw.githubusercontent.com/houseabsolute/ubi/master/bootstrap/bootstrap-ubi.sh |
-        TARGET=$INSTALL_DIR sh
+        TARGET=$dir sh
 fi
 
-ubi --project oalders/is --in "$INSTALL_DIR"
+ubi --project oalders/is --in "$dir"
 ```
 
 ## Bonus: Easier Version Parsing of Available Tools
