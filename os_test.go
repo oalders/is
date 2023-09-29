@@ -16,33 +16,25 @@ func TestOSInfo(t *testing.T) {
 	t.Parallel()
 	tests := []string{attr.Name, attr.Version, attr.VersionCodename}
 
+	if runtime.GOOS == "linux" {
+		tests = append(tests, "id", "pretty-name")
+		ctx := types.Context{Debug: true}
+		found, err := os.Info(&ctx, "name")
+		assert.NoError(t, err)
+
+		// id-like not present in Debian 11, so can't be in a blanket Linux
+		// test
+		if found == "ubuntu" {
+			tests = append(tests, "id-like")
+		}
+	}
+
 	for _, v := range tests {
 		ctx := types.Context{Debug: true}
 		found, err := os.Info(&ctx, v)
 		assert.NoError(t, err, v)
 		assert.True(t, ctx.Success, v)
 		assert.NotEmpty(t, found, v)
-	}
-
-	// id-like not present in Debian 11, so can't be in a blanket Linux test
-	if runtime.GOOS == "linux" {
-		tests := []string{"id", "pretty-name"}
-		{
-			ctx := types.Context{Debug: true}
-			found, err := os.Info(&ctx, "name")
-			assert.NoError(t, err)
-			if found == "ubuntu" {
-				tests = append(tests, "id-like")
-			}
-		}
-
-		for _, v := range tests {
-			ctx := types.Context{Debug: true}
-			found, err := os.Info(&ctx, v)
-			assert.NoError(t, err, v)
-			assert.True(t, ctx.Success, v)
-			assert.NotEmpty(t, found, v)
-		}
 	}
 }
 
