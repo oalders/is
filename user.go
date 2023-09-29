@@ -2,12 +2,11 @@
 package main
 
 import (
-	"errors"
-	"io"
 	"log"
 	"os/exec"
 	"strings"
 
+	"github.com/oalders/is/command"
 	"github.com/oalders/is/types"
 )
 
@@ -17,26 +16,14 @@ func (r *UserCmd) Run(ctx *types.Context) error {
 		log.Printf("Running \"sudo -n true\"\n")
 	}
 	cmd := exec.Command("sudo", "-n", "true")
-	stderr, err := cmd.StderrPipe()
+	output, err := command.Output(cmd, "stderr")
 	if err != nil {
-		return errors.Join(errors.New("open STDERR pipe"), err)
+		return err
 	}
-
-	if err := cmd.Start(); err != nil {
-		return errors.Join(errors.New("starting command"), err)
-	}
-
-	slurp, _ := io.ReadAll(stderr)
-	if ctx.Debug {
-		log.Printf("STDERR: %s", string(slurp))
-	}
-	if strings.Contains(string(slurp), "password") {
+	if strings.Contains(output, "password") {
 		return nil
 	}
 
-	if err := cmd.Wait(); err != nil {
-		return errors.Join(errors.New("waiting for command"), err)
-	}
 	ctx.Success = true
 	return nil
 }
