@@ -6,6 +6,8 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/oalders/is/types"
+	"github.com/posener/complete"
+	"github.com/willabides/kongplete"
 )
 
 func main() {
@@ -20,6 +22,17 @@ func main() {
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 		Version kong.VersionFlag `help:"Print version to screen"`
 	}
+
+	parser := kong.Must(&API,
+		kong.Name("is"),
+		kong.Description("A shell-like example app."),
+		kong.UsageOnError(),
+	)
+
+	// Run kongplete.Complete to handle completion requests
+	kongplete.Complete(parser,
+		kongplete.WithPredictor("file", complete.PredictFiles("*")),
+	)
 
 	ctx := kong.Parse(&API,
 		kong.Vars{
