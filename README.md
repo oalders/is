@@ -359,18 +359,14 @@ is cli output              \
 
 ##### stdout
 
-```
+```bash
 is cli output stdout date like Wed
 ```
 
 Case insensitive:
 
-```
+```bash
 is cli output stdout date like "(?i)wed"
-```
-
-```
-is cli output stdout hostname unlike olaf
 ```
 
 ##### stderr
