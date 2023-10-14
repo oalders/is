@@ -6,8 +6,9 @@
 
 ## Introduction
 
-`is` is an inspector for your environment. `is` tries to make it just a little
-bit easier to run commands which rely on a specific OS or a specific CLI
+`is` is an inspector for your environment. I made it for my
+[dot-files](https://github.com/oalders/dot-files). `is` tries to make it just a
+little bit easier to run commands which rely on a specific OS or a specific CLI
 version. Aside from the docs below, this [quick
 introduction](https://www.olafalders.com/2023/09/28/is-an-inspector-for-your-environment/)
 can get you up and running in a hurry.
