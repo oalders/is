@@ -8,7 +8,7 @@ type AgeCmp struct {
 	Unit string `arg:"" required:"" enum:"s,second,seconds,m,minute,minutes,h,hour,hours,d,day,days"`
 }
 
-//nolint:lll
+//nolint:lll,govet
 type OutputCmp struct {
 	Stream  string   `arg:"" required:"" enum:"stdout,stderr,combined" help:"[output stream to capture: (stdout|stderr|combined)]"`
 	Command string   `arg:"" required:"" help:"[name of command or path to command plus any arguments e.g. \"uname -a\"]"`
@@ -35,7 +35,7 @@ type ArchCmd struct {
 
 // CLICmd type is configuration for CLI checks.
 //
-//nolint:lll
+//nolint:lll,govet
 type CLICmd struct {
 	Version VersionCmp `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
 	Age     AgeCmp     `cmd:"" help:"Check last modified time of cli (2h, 4d). e.g. \"is cli age tmux gt 1 d\""`

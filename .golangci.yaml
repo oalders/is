@@ -13,7 +13,6 @@ linters:
     - containedctx
     - contextcheck
     - cyclop
-    # - deadcode
     - decorder
     # - depguard
     - dogsled
@@ -64,7 +63,6 @@ linters:
     - loggercheck
     - maintidx
     - makezero
-    # - maligned
     - misspell
     - nakedret
     - nestif
@@ -82,7 +80,6 @@ linters:
     - reassign
     - revive
     - rowserrcheck
-    # - scopelint
     - sqlclosecheck
     - staticcheck
     # - structcheck
@@ -106,6 +103,9 @@ linters-settings:
   funlen:
     lines: 75
     statements: 40
+  govet:
+    enable:
+      - fieldalignment
   lll:
     line-length: 100
   wrapcheck:

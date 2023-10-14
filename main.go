@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	var API struct {
+	var API struct { //nolint:govet
 		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 		Debug   bool             `help:"turn on debugging statements"`
