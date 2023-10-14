@@ -1,4 +1,4 @@
-// The main package is the command line runner
+// The main package is the command line runner for the is command.
 package main
 
 import (
