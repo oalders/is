@@ -1,5 +1,10 @@
 # Changes
 
+## 0.4.2 - 2023-11-27
+
+- Fix cli version parsing for "rustc"
+- Add "sonoma" to macOS codenames
+
 ## 0.4.1 - 2023-09-28
 
 - Ensure stringy comparison of "in" via optimistic compare
