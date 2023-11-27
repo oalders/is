@@ -84,6 +84,7 @@ or on the internet at http://perltidy.sourceforge.net.
 		{"python", "3.11.3", "Python 3.11.3"},
 		{"python3", "3.11.3", "Python 3.11.3"},
 		{"ripgrep", "13.0.0", "ripgrep 13.0.0"},
+		{"rustc", "1.73.0", "rustc 1.73.0 (cc66ad468 2023-10-03)"},
 		{"sh", "3.2.57", `GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin22)
 Copyright (C) 2007 Free Software Foundation, Inc.
 `},
