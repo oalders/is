@@ -92,6 +92,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"rg":      fmt.Sprintf(`ripgrep (%s)\b`, floatRegex),
 		"ruby":    `ruby (\d+\.\d+\.[\d\w]+)\b`,
 		"tcsh":    fmt.Sprintf(`(%s)`, semverRegex),
+		"rustc":   fmt.Sprintf(`rustc (%s)\b`, floatRegex),
 		"sh":      fmt.Sprintf(`version (%s)\b`, floatRegex),
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
 		"tar":     fmt.Sprintf(`bsdtar (%s)\b`, floatRegex),
