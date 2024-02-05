@@ -39,7 +39,7 @@ jobs:
         run: bats test
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
   macos:
     runs-on: macos-latest
     steps:
@@ -60,7 +60,7 @@ jobs:
         run: go test -race -coverprofile=coverage.out -covermode=atomic -v ./...
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
   precious:
     runs-on: ubuntu-latest
     steps:
