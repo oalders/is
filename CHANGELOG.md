@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.3 - 2024-03-05
+
+- Add OCaml toolchain (GH#27) (Rawley)
+
 ## 0.4.2 - 2023-11-27
 
 - Fix cli version parsing for "rustc"
