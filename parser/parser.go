@@ -84,6 +84,8 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"lua":     fmt.Sprintf(`Lua (%s)\b`, floatRegex),
 		"md5sum":  fmt.Sprintf(`md5sum \(GNU coreutils\) (%s)\b`, floatRegex),
 		"perl":    fmt.Sprintf(`This is perl .* \((%s)\)\s`, vStringRegex),
+		"ocaml":   fmt.Sprintf(`The OCaml toplevel, version (%s)`, semverRegex),
+		"opam":    fmt.Sprintf(`(%s)`, semverRegex),
 		"openssl": fmt.Sprintf(`SSL (%s)\b`, floatWithTrailingLetterRegex),
 		"pihole":  fmt.Sprintf(`Pi-hole version is (%s)`, vStringRegex),
 		"plenv":   `plenv ([\d\w\-\.]*)\b`,

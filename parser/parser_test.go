@@ -56,6 +56,8 @@ This program built for i386-apple-darwin11.3.0`},
 		{"md5sum", "9.3", "md5sum (GNU coreutils) 9.3"},
 		{"node", "v20.2.0", "v20.2.0"},
 		{"npx", "9.6.6", "9.6.6"},
+		{"ocaml", "5.1.0", "The OCaml toplevel, version 5.1.0"},
+		{"opam", "2.1.5", "2.1.5"},
 		{"openssl", "3.3.6", "LibreSSL 3.3.6"},
 		{"openssl", "1.1.1f", "OpenSSL 1.1.1f  31 Mar 2020"},
 		{
