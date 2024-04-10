@@ -54,6 +54,10 @@ PARTICULAR PURPOSE.
 
 This program built for i386-apple-darwin11.3.0`},
 		{"md5sum", "9.3", "md5sum (GNU coreutils) 9.3"},
+		{"nvim", "v0.10.0-dev-2663+gc1c6c1ee1", `NVIM v0.10.0-dev-2663+gc1c6c1ee1
+Build type: RelWithDebInfo
+LuaJIT 2.1.1710088188
+Run "nvim -V1 -v" for more info`},
 		{"node", "v20.2.0", "v20.2.0"},
 		{"npx", "9.6.6", "9.6.6"},
 		{"ocaml", "5.1.0", "The OCaml toplevel, version 5.1.0"},
