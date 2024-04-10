@@ -1,4 +1,4 @@
-// package version creates verion objects from strings
+// package version creates version objects from strings
 package version
 
 import (
