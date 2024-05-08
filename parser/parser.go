@@ -68,6 +68,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 	semverRegex := `\d+\.\d+\.\d+`
 	vStringRegex := `v[\d.]*`
 	vStringWithTrailingLetterRegex := `v[\d.]*\w`
+	vStringWithTrailingGreedyRegex := `v[\d.]*[\w+-]*\w`
 	regexen := map[string]string{
 		"ansible": fmt.Sprintf(`ansible \[core (%s)\b`, floatRegex),
 		"bash":    fmt.Sprintf(`version (%s)\b`, floatRegex),
@@ -83,6 +84,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"less":    fmt.Sprintf(`less (%s)\b`, intRegex),
 		"lua":     fmt.Sprintf(`Lua (%s)\b`, floatRegex),
 		"md5sum":  fmt.Sprintf(`md5sum \(GNU coreutils\) (%s)\b`, floatRegex),
+		"nvim":    fmt.Sprintf(`NVIM (%s)\b`, vStringWithTrailingGreedyRegex),
 		"perl":    fmt.Sprintf(`This is perl .* \((%s)\)\s`, vStringRegex),
 		"ocaml":   fmt.Sprintf(`The OCaml toplevel, version (%s)`, semverRegex),
 		"opam":    fmt.Sprintf(`(%s)`, semverRegex),

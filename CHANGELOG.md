@@ -1,5 +1,7 @@
 # Changes
 
+- Fix neovim nightly version parsing (GH#28)
+
 ## 0.4.3 - 2024-03-05
 
 - Add OCaml toolchain (GH#27) (Rawley)

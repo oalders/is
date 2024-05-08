@@ -1,0 +1,6 @@
+[default.extend-words]
+abd = "abd"
+sur = "sur"
+
+[files]
+extend-exclude = []
