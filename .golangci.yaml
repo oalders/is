@@ -1,7 +1,7 @@
 ---
 linters:
   disable:
-    - goerr113
+    - err113
     - nlreturn
     - typecheck
     - wsl
@@ -23,7 +23,6 @@ linters:
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
     # - exhaustivestruct
     # - exhaustruct
