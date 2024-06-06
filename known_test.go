@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"runtime"
 	"testing"
 
@@ -10,9 +12,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func prependPath(path string) string {
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	return filepath.Join(wd, path) + string(os.PathListSeparator) + os.Getenv("PATH")
+}
+
 func TestKnownCmd(t *testing.T) {
-	t.Parallel()
-	const tmux = "testdata/bin/tmux"
+	t.Setenv("PATH", prependPath("testdata/bin"))
+
+	const command = "semver"
 	type testableOS struct {
 		Attr    string
 		Error   bool
@@ -55,10 +67,10 @@ func TestKnownCmd(t *testing.T) {
 	}
 	cliTests := []testableCLI{
 		{KnownCmd{CLI: KnownCLI{attr.Version, "gitzzz"}}, false, false},
-		{KnownCmd{CLI: KnownCLI{attr.Version, tmux}}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, tmux}, Major: true}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, tmux}, Minor: true}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, tmux}, Patch: true}, false, true},
+		{KnownCmd{CLI: KnownCLI{attr.Version, command}}, false, true},
+		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Major: true}, false, true},
+		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Minor: true}, false, true},
+		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Patch: true}, false, true},
 	}
 
 	for _, test := range cliTests {
