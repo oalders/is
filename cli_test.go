@@ -8,10 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const tmux = "./testdata/bin/tmux"
-
+//nolint:paralleltest,nolintlint
 func TestCliVersion(t *testing.T) {
-	t.Parallel()
+	const command = "tmux"
+	t.Setenv("PATH", prependPath("testdata/bin"))
+
 	type test struct {
 		Cmp     VersionCmp
 		Error   bool
@@ -24,16 +25,20 @@ func TestCliVersion(t *testing.T) {
 
 	//nolint:godox
 	tests := []test{
-		{VersionCmp{tmux, ops.Ne, "1", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Eq, "3.3a", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Gt, "3.2a", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Lt, "3.3b", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Lt, "4", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Ne, "1", major, minor, patch}, false, true},
 		{VersionCmp{"tmuxzzz", ops.Ne, "1", major, minor, patch}, true, false},
-		{VersionCmp{tmux, ops.Eq, "1", major, minor, patch}, false, false},
-		{VersionCmp{tmux, ops.Eq, "zzz", major, minor, patch}, true, false},
-		{VersionCmp{tmux, ops.Unlike, "zzz", major, minor, patch}, false, true},
-		{VersionCmp{tmux, ops.Like, "", major, minor, patch}, false, true}, // FIXME
-		{VersionCmp{tmux, ops.Like, "3.*", major, minor, patch}, false, true},
-		{VersionCmp{tmux, ops.Eq, "3", true, minor, patch}, false, true},
-		{VersionCmp{tmux, ops.Eq, "3", major, true, patch}, false, true},
-		{VersionCmp{tmux, ops.Eq, "0", major, minor, true}, false, true},
+		{VersionCmp{command, ops.Eq, "1", major, minor, patch}, false, false},
+		{VersionCmp{command, ops.Eq, "zzz", major, minor, patch}, true, false},
+		{VersionCmp{command, ops.Unlike, "zzz", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Like, "", major, minor, patch}, false, true}, // FIXME
+		{VersionCmp{command, ops.Like, "3.*", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Eq, "3", true, minor, patch}, false, true},
+		{VersionCmp{command, ops.Eq, "3", major, true, patch}, false, true},
+		{VersionCmp{command, ops.Eq, "0", major, minor, true}, false, true},
 	}
 
 	for _, test := range tests {
@@ -53,25 +58,27 @@ func TestCliVersion(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest,nolintlint
 func TestCliAge(t *testing.T) {
-	t.Parallel()
+	t.Setenv("PATH", prependPath("testdata/bin"))
+	const command = "tmux"
 	{
 		ctx := types.Context{Debug: true}
-		cmd := CLICmd{Age: AgeCmp{tmux, ops.Gt, "1", "s"}}
+		cmd := CLICmd{Age: AgeCmp{command, ops.Gt, "1", "s"}}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
 		ctx := types.Context{Debug: true}
-		cmd := CLICmd{Age: AgeCmp{tmux, ops.Lt, "100000", "days"}}
+		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "100000", "days"}}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
 		ctx := types.Context{Debug: true}
-		cmd := CLICmd{Age: AgeCmp{tmux, ops.Lt, "1.1", "d"}}
+		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "1.1", "d"}}
 		err := cmd.Run(&ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
@@ -85,19 +92,21 @@ func TestCliAge(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest,nolintlint
 func TestCliOutput(t *testing.T) {
-	t.Parallel()
+	t.Setenv("PATH", prependPath("testdata/bin"))
 	type test struct {
 		Cmp     OutputCmp
 		Error   bool
 		Success bool
 	}
 
-	command := "./testdata/bin/tmux"
+	command := "tmux"
 	args := []string{"-V"}
 	const optimistic = "optimistic"
 
 	tests := []test{
+		{OutputCmp{"stdout", command, ops.Eq, "tmux 3.3a", args, optimistic}, false, true},
 		{OutputCmp{"stdout", command, ops.Ne, "1", args, optimistic}, false, true},
 		{OutputCmp{"stdout", command, ops.Eq, "1", args, optimistic}, false, false},
 		{OutputCmp{"stderr", command, ops.Like, "xxx", args, optimistic}, false, false},
