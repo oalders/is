@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//nolint:unparam
 func prependPath(path string) string {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -21,6 +22,7 @@ func prependPath(path string) string {
 	return filepath.Join(wd, path) + string(os.PathListSeparator) + os.Getenv("PATH")
 }
 
+//nolint:paralleltest,nolintlint
 func TestKnownCmd(t *testing.T) {
 	t.Setenv("PATH", prependPath("testdata/bin"))
 
