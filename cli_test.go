@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//nolint:paralleltest,nolintlint
 func TestCliVersion(t *testing.T) {
 	const command = "tmux"
 	t.Setenv("PATH", prependPath("testdata/bin"))
@@ -24,6 +25,10 @@ func TestCliVersion(t *testing.T) {
 
 	//nolint:godox
 	tests := []test{
+		{VersionCmp{command, ops.Eq, "3.3a", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Gt, "3.2a", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Lt, "3.3b", major, minor, patch}, false, true},
+		{VersionCmp{command, ops.Lt, "4", major, minor, patch}, false, true},
 		{VersionCmp{command, ops.Ne, "1", major, minor, patch}, false, true},
 		{VersionCmp{"tmuxzzz", ops.Ne, "1", major, minor, patch}, true, false},
 		{VersionCmp{command, ops.Eq, "1", major, minor, patch}, false, false},
@@ -53,6 +58,7 @@ func TestCliVersion(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest,nolintlint
 func TestCliAge(t *testing.T) {
 	t.Setenv("PATH", prependPath("testdata/bin"))
 	const command = "tmux"
@@ -86,6 +92,7 @@ func TestCliAge(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest,nolintlint
 func TestCliOutput(t *testing.T) {
 	t.Setenv("PATH", prependPath("testdata/bin"))
 	type test struct {
@@ -94,11 +101,12 @@ func TestCliOutput(t *testing.T) {
 		Success bool
 	}
 
-	command := "./testdata/bin/tmux"
+	command := "tmux"
 	args := []string{"-V"}
 	const optimistic = "optimistic"
 
 	tests := []test{
+		{OutputCmp{"stdout", command, ops.Eq, "tmux 3.3a", args, optimistic}, false, true},
 		{OutputCmp{"stdout", command, ops.Ne, "1", args, optimistic}, false, true},
 		{OutputCmp{"stdout", command, ops.Eq, "1", args, optimistic}, false, false},
 		{OutputCmp{"stderr", command, ops.Like, "xxx", args, optimistic}, false, false},
