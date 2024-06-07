@@ -32,7 +32,7 @@ func execCommand(ctx *types.Context, stream, cmd string, args []string) (string,
 // Run "is cli ...".
 func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Age.Name != "" {
-		return runAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
+		return runCliAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
 	}
 	if r.Version.Name != "" {
 		output, err := parser.CLIOutput(ctx, r.Version.Name)
@@ -96,12 +96,15 @@ func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, pat
 	}
 }
 
-func runAge(ctx *types.Context, name, ageOperator, ageValue, ageUnit string) error {
+func runCliAge(ctx *types.Context, name, ageOperator, ageValue, ageUnit string) error {
 	path, err := exec.LookPath(name)
 	if err != nil {
 		return errors.Join(errors.New("could not find command"), err)
 	}
+	return runAge(ctx, path, ageOperator, ageValue, ageUnit)
+}
 
+func runAge(ctx *types.Context, path, ageOperator, ageValue, ageUnit string) error {
 	info, err := os.Stat(path)
 	if err != nil {
 		return errors.Join(errors.New("could not stat command"), err)
