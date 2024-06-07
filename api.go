@@ -46,7 +46,7 @@ type CLICmd struct {
 //
 //nolint:lll,govet
 type FSOCmd struct {
-	LastModifiedTime     AgeCmp     `cmd:"" help:"Check last modified time of fso (2h, 4d). e.g. \"is fso last-modified-time /tmp/log.txt gt 1 d\""`
+	Age AgeCmp `cmd:"" help:"Check age (last modified time) of an fso (2h, 4d). e.g. \"is fso age /tmp/log.txt gt 1 d\""`
 }
 
 // OSCmd type is configuration for OS level checks.

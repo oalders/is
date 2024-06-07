@@ -8,8 +8,8 @@ import (
 )
 
 func (r *FSOCmd) Run(ctx *types.Context) error {
-	if r.LastModifiedTime.Name != "" {
-		return runAge(ctx, r.LastModifiedTime.Name, r.LastModifiedTime.Op, r.LastModifiedTime.Val, r.LastModifiedTime.Unit)
+	if r.Age.Name != "" {
+		return runAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
 	}
 	return errors.New("unimplemented command")
 }
