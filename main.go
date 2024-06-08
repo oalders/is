@@ -13,7 +13,7 @@ func main() {
 		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 		Debug   bool             `help:"turn on debugging statements"`
-		FSO     FSOCmd           `cmd:"" help:"Check fso (file system object). e.g. \"is fso age gte 3 days\""`
+		FSO     FSOCmd           `cmd:"" help:"Check fso (file system object). e.g. \"is fso age gte 3 days\""` //nolint:lll
 		Known   KnownCmd         `cmd:""`
 		OS      OSCmd            `cmd:"" help:"Check OS attributes. e.g. \"is os name eq darwin\""`
 		There   ThereCmd         `cmd:"" help:"Check if command exists. e.g. \"is there git\""`

@@ -44,7 +44,7 @@ type CLICmd struct {
 
 // FSOCmd type is configuration for FSO checks.
 //
-//nolint:lll,govet
+//nolint:lll
 type FSOCmd struct {
 	Age AgeCmp `cmd:"" help:"Check age (last modified time) of an fso (2h, 4d). e.g. \"is fso age /tmp/log.txt gt 1 d\""`
 }
