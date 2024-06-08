@@ -510,6 +510,53 @@ in some cases try to do an optimistic comparison. That is, it will try a string
 comparison first and then a numeric comparison. Hopefully this will "do the
 right thing" for you. If not, please open an issue.
 
+### fso
+
+`fso` is short for filesystem object (file, directory, link, etc). This command
+is very similar to `cli age`. The difference between `cli age` and `fso age` is
+that `fso` will not search your `$PATH`. You may provide either a relative or
+an absolute path.
+
+#### age
+
+Compare against the last modified date of a file.
+
+```bash
+is cli age /tmp/programs.csv lt 18 hours
+```
+
+Compare against the last modified date of a directory.
+
+```bash
+is cli age ~./local/cache gt 1 d
+```
+
+Supported comparisons are:
+
+* `lt`
+* `gt`
+
+Supported units are:
+
+* `s`
+* `second`
+* `seconds`
+* `m`
+* `minute`
+* `minutes`
+* `h`
+* `hour`
+* `hours`
+* `d`
+* `day`
+* `days`
+
+Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
+into account here.
+
+The `--debug` flag can give us some helpful information when troubleshooting
+date math.
+
 ### os
 
 Information specific to the current operating system
