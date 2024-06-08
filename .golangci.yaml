@@ -1,7 +1,6 @@
 ---
 linters:
   disable:
-    - err113
     - nlreturn
     - typecheck
     - wsl
