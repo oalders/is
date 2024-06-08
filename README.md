@@ -68,7 +68,13 @@ $ is known cli version --major zsh
 ### Has gofumpt been modified in the last week?
 
 ```text
-$ is cli age gofumpt lt 7 d
+is cli age gofumpt lt 7 d
+```
+
+### Has a file been modified in the last hour?
+
+```text
+is fso age ./stats.txt lt 1 h
 ```
 
 ### echo the OS name
@@ -183,7 +189,9 @@ is os version-codename unlike ventura
 
 🚨 Leaky abstraction alert!
 
-Regex patterns are passed directly to Golang's `regexp.MatchString`. We can take advantage of this when crafting regexes. For instance, for a case insensitive search:
+Regex patterns are passed directly to Golang's `regexp.MatchString`. We can
+take advantage of this when crafting regexes. For instance, for a case
+insensitive search:
 
 ```text
 is cli output stdout date like "(?i)wed"
@@ -392,14 +400,14 @@ Optional argument to command. Can be used more than once.
 
 Let's match on the results of `uname -m -n`.
 
-```
+```bash
 is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_64"
 ```
 
 If our args don't contain special characters or spaces, we may not need to
 quote them. Let's match on the results of `cat README.md`.
 
-```
+```bash
 is cli output stdout cat --arg README.md like "an inspector for your environment"
 ```
 
@@ -463,7 +471,7 @@ is cli output stdout "bash -c" -a "date|wc -l" eq 1
 Passing negative integers as expected values is a bit tricky, since we don't
 want them to be interpreted as flags.
 
-```
+```bash
 $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
 ```
 
@@ -471,7 +479,7 @@ $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
 
 We can use `--` before the expected value to get around this. 😅
 
-```
+```bash
 $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -- -1
 ```
 
@@ -835,6 +843,7 @@ $ is known cli version --minor tmux
 $ is known cli version --patch tmux
 0
 ```
+
 Please see the docs on `os version` for more information on `--major`,
 `--minor` and `--patch`.
 
