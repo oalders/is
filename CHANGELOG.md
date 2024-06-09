@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5.0 - 2024-06-08
+
+- Add fso subcommand (GH#32) (Olaf Alders)
 - Fix neovim nightly version parsing (GH#28)
 
 ## 0.4.3 - 2024-03-05
