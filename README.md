@@ -929,6 +929,10 @@ Commands:
     Check output of a command. e.g. "is cli output stdout "uname -a" like
     "Kernel Version 22.5"
 
+  fso age <name> <op> <val> <unit>
+    Check age (last modified time) of an fso (2h, 4d). e.g. "is fso age
+    /tmp/log.txt gt 1 d"
+
   known arch [<attr>]
     Print arch without check. e.g. "is known arch"
 
