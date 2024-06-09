@@ -42,6 +42,13 @@ type CLICmd struct {
 	Output  OutputCmp  `cmd:"" help:"Check output of a command. e.g. \"is cli output stdout \"uname -a\" like \"Kernel Version 22.5\""`
 }
 
+// FSOCmd type is configuration for FSO checks.
+//
+//nolint:lll
+type FSOCmd struct {
+	Age AgeCmp `cmd:"" help:"Check age (last modified time) of an fso (2h, 4d). e.g. \"is fso age /tmp/log.txt gt 1 d\""`
+}
+
 // OSCmd type is configuration for OS level checks.
 //
 //nolint:lll

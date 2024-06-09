@@ -68,7 +68,13 @@ $ is known cli version --major zsh
 ### Has gofumpt been modified in the last week?
 
 ```text
-$ is cli age gofumpt lt 7 d
+is cli age gofumpt lt 7 d
+```
+
+### Has a file been modified in the last hour?
+
+```text
+is fso age ./stats.txt lt 1 h
 ```
 
 ### echo the OS name
@@ -183,7 +189,9 @@ is os version-codename unlike ventura
 
 🚨 Leaky abstraction alert!
 
-Regex patterns are passed directly to Golang's `regexp.MatchString`. We can take advantage of this when crafting regexes. For instance, for a case insensitive search:
+Regex patterns are passed directly to Golang's `regexp.MatchString`. We can
+take advantage of this when crafting regexes. For instance, for a case
+insensitive search:
 
 ```text
 is cli output stdout date like "(?i)wed"
@@ -392,14 +400,14 @@ Optional argument to command. Can be used more than once.
 
 Let's match on the results of `uname -m -n`.
 
-```
+```bash
 is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_64"
 ```
 
 If our args don't contain special characters or spaces, we may not need to
 quote them. Let's match on the results of `cat README.md`.
 
-```
+```bash
 is cli output stdout cat --arg README.md like "an inspector for your environment"
 ```
 
@@ -463,7 +471,7 @@ is cli output stdout "bash -c" -a "date|wc -l" eq 1
 Passing negative integers as expected values is a bit tricky, since we don't
 want them to be interpreted as flags.
 
-```
+```bash
 $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
 ```
 
@@ -471,7 +479,7 @@ $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -1
 
 We can use `--` before the expected value to get around this. 😅
 
-```
+```bash
 $ is cli output stdout 'bash -c' -a 'date|wc -l' gt -- -1
 ```
 
@@ -501,6 +509,53 @@ Supported comparisons are:
 in some cases try to do an optimistic comparison. That is, it will try a string
 comparison first and then a numeric comparison. Hopefully this will "do the
 right thing" for you. If not, please open an issue.
+
+### fso
+
+`fso` is short for filesystem object (file, directory, link, etc). This command
+is very similar to `cli age`. The difference between `cli age` and `fso age` is
+that `fso` will not search your `$PATH`. You may provide either a relative or
+an absolute path.
+
+#### age
+
+Compare against the last modified date of a file.
+
+```bash
+is cli age /tmp/programs.csv lt 18 hours
+```
+
+Compare against the last modified date of a directory.
+
+```bash
+is cli age ~./local/cache gt 1 d
+```
+
+Supported comparisons are:
+
+* `lt`
+* `gt`
+
+Supported units are:
+
+* `s`
+* `second`
+* `seconds`
+* `m`
+* `minute`
+* `minutes`
+* `h`
+* `hour`
+* `hours`
+* `d`
+* `day`
+* `days`
+
+Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
+into account here.
+
+The `--debug` flag can give us some helpful information when troubleshooting
+date math.
 
 ### os
 
@@ -835,6 +890,7 @@ $ is known cli version --minor tmux
 $ is known cli version --patch tmux
 0
 ```
+
 Please see the docs on `os version` for more information on `--major`,
 `--minor` and `--patch`.
 
