@@ -21,6 +21,8 @@ func main() {
 		There   ThereCmd         `cmd:"" help:"Check if command exists. e.g. \"is there git\""`
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 		Version kong.VersionFlag `help:"Print version to screen"`
+
+		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions"`
 	}
 
 	parser := kong.Must(&API,
