@@ -22,7 +22,7 @@ func main() {
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 		Version kong.VersionFlag `help:"Print version to screen"`
 
-		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions"`
+		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions. e.g. \"is install-completions\" and then run the command which is printed to your terminal"`
 	}
 
 	parser := kong.Must(&API,
