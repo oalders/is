@@ -27,11 +27,17 @@ builds:
     ignore:
       - goos: darwin
         goarch: arm
+      - goos: netbsd
+        goarch: arm
+      - goos: freebsd
+        goarch: arm
       - goos: windows
     goos:
       - linux
       - windows
       - darwin
+      - netbsd
+      - freebsd
 
 archives:
   - format: tar.gz
