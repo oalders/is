@@ -1,5 +1,10 @@
 # Changes
 
+## 0.5.1 - 2024-06-18
+
+- Add NetBSD and FreeBSD to build targets (GH#33) (Jason A. Crome)
+- Add some simple command line completion (GH#20) (Olaf Alders)
+
 ## 0.5.0 - 2024-06-08
 
 - Add fso subcommand (GH#32) (Olaf Alders)
