@@ -22,13 +22,14 @@ func main() {
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
 		Version kong.VersionFlag `help:"Print version to screen"`
 
-		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions. e.g. \"is install-completions\" and then run the command which is printed to your terminal"`
+		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions. e.g. \"is install-completions\" and then run the command which is printed to your terminal"` //nolint:lll
 	}
 
 	parser := kong.Must(&API,
 		kong.Name("is"),
 		kong.Description("A shell-like example app."),
 		kong.UsageOnError(),
+		kong.Vars{"version": "0.5.0"},
 	)
 
 	// Run kongplete.Complete to handle completion requests
@@ -36,12 +37,11 @@ func main() {
 		kongplete.WithPredictor("file", complete.PredictFiles("*")),
 	)
 
-	ctx := kong.Parse(&API,
-		kong.Vars{
-			"version": "0.5.0",
-		})
+	ctx, err := parser.Parse(os.Args[1:])
+	parser.FatalIfErrorf(err)
+
 	runContext := types.Context{Debug: API.Debug}
-	err := ctx.Run(&runContext)
+	err = ctx.Run(&runContext)
 	ctx.FatalIfErrorf(err)
 
 	if runContext.Success {
