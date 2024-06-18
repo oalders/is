@@ -29,7 +29,7 @@ func main() {
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.5.1"},
+		kong.Vars{"version": "0.5.2"},
 	)
 
 	// Run kongplete.Complete to handle completion requests
