@@ -27,9 +27,9 @@ func main() {
 
 	parser := kong.Must(&API,
 		kong.Name("is"),
-		kong.Description("A shell-like example app."),
+		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.5.0"},
+		kong.Vars{"version": "0.5.1"},
 	)
 
 	// Run kongplete.Complete to handle completion requests
