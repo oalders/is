@@ -894,6 +894,25 @@ $ is known cli version --patch tmux
 Please see the docs on `os version` for more information on `--major`,
 `--minor` and `--patch`.
 
+### install-completions
+
+This is a two step process. First, run
+
+```bash
+is install-completions
+```
+
+Then run the command which is printed to your terminal in order to get
+completion in your current session.
+
+```bash
+$ is install-completions
+complete -C /Users/olaf/local/bin/is is
+```
+
+Or add the command to a `.bashrc` or similar in order to get completion across
+all sessions.
+
 ### --debug
 
 Print some debugging information to `STDOUT`.
@@ -909,6 +928,8 @@ Top level command help.
 
 ```text
 Usage: is <command>
+
+an inspector for your environment
 
 Flags:
   -h, --help       Show context-sensitive help.
@@ -950,6 +971,12 @@ Commands:
 
   user [<sudoer>]
     Info about current user. e.g. "is user sudoer"
+
+  install-completions
+    install shell completions. e.g. "is install-completions" and then run the
+    command which is printed to your terminal to get completion in your current
+    session. add the command to a .bashrc or similar to get completion across
+    all sessions.
 
 Run "is <command> --help" for more information on a command.
 ```
