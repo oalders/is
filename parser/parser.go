@@ -104,6 +104,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"rustc":   fmt.Sprintf(`rustc (%s)\b`, floatRegex),
 		"screen":  fmt.Sprintf(`version (%s)\b`, floatRegex),
 		"sh":      fmt.Sprintf(`version (%s)\b`, floatRegex),
+		"sqlite3": fmt.Sprintf(`(%s)\b`, floatRegex),
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
 		"tar":     fmt.Sprintf(`bsdtar (%s)\b`, floatRegex),
 		"tmux":    fmt.Sprintf(`tmux (%s)\b`, floatWithTrailingLetterRegex),

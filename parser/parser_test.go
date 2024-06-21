@@ -99,6 +99,7 @@ or on the internet at http://perltidy.sourceforge.net.
 		{"sh", "3.2.57", `GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin22)
 Copyright (C) 2007 Free Software Foundation, Inc.
 `},
+		{"sqlite3", "3.46.0", "3.46.0 2024-05-23 13:25:27 96c92aba00c8375bc32fafcdf12429c58bd8aabfcadab6683e35bbb9cdebf19e (64-bit)"},
 		{"tar", "3.5.3", "bsdtar 3.5.3 - libarchive 3.5.3 zlib/1.2.11 liblzma/5.0.5 bz2lib/1.0.8"},
 		{"tcsh", "6.21.00", "tcsh 6.21.00 (Astron) 2019-05-08 (x86_64-apple-darwin) options wide,nls,dl,bye,al,kan,sm,rh,color,filec"},
 		{"trurl", "0.6", "trurl version 0.6 libcurl/7.88.1 [built-with 7.87.0]"},
