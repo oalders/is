@@ -107,6 +107,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"sqlite3": fmt.Sprintf(`(%s)\b`, floatRegex),
 		"ssh":     `OpenSSH_([0-9a-z.]*)\b`,
 		"tar":     fmt.Sprintf(`bsdtar (%s)\b`, floatRegex),
+		"typos":   fmt.Sprintf(`typos-cli (%s)\b`, floatRegex),
 		"tmux":    fmt.Sprintf(`tmux (%s)\b`, floatWithTrailingLetterRegex),
 		"tree":    fmt.Sprintf(`tree (%s)\b`, vStringWithTrailingLetterRegex),
 		"trurl":   fmt.Sprintf(`trurl version (%s)\b`, floatRegex),

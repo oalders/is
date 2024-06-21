@@ -108,6 +108,7 @@ Copyright (C) 2007 Free Software Foundation, Inc.
 			"tree", "v2.1.0",
 			`tree v2.1.0 © 1996 - 2022 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro`,
 		},
+		{"typos", "1.22.7", "typos-cli 1.22.7"},
 		{"ubi", "0.0.24", "ubi 0.0.24"},
 		{
 			"unzip", "6.00",
