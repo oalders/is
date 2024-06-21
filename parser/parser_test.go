@@ -81,6 +81,7 @@ General Public License, which is included in the distribution files.
 Complete documentation for perltidy can be found using 'man perltidy'
 or on the internet at http://perltidy.sourceforge.net.
 `},
+		{"perldoc", "v3.2801", "v3.2801, under perl v5.040000 for darwin"},
 		{
 			"pihole", "v5.17.1",
 			`  Pi-hole version is v5.17.1 (Latest: v5.17.1)
