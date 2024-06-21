@@ -39,6 +39,7 @@ Release-Date: 2023-02-20
 Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
 Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefile libz MultiSSL NTLM NTLM_WB SPNEGO SSL threadsafe UnixSockets`,
 		},
+		{"dig", "9.10.6", "DiG 9.10.6"},
 		{"docker", "20.10.21", "version 20.10.21, build baeda1f"},
 		{"gcc", "14.0.3", "clang version 14.0.3 (clang-1403.0.22.14.1)"},
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},

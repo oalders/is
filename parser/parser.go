@@ -16,6 +16,7 @@ import (
 
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
+		"dig":     "-v",
 		"go":      "version",
 		"lua":     "-v",
 		"openssl": "version",
