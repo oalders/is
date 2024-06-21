@@ -78,6 +78,8 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"csh":     fmt.Sprintf(`(%s)`, semverRegex),
 		"curl":    fmt.Sprintf(`curl (%s)\b`, floatRegex),
 		"docker":  fmt.Sprintf(`version (%s),`, floatRegex),
+		"fpp":     fmt.Sprintf(`version (%s)\b`, floatRegex),
+		"fzf":     fmt.Sprintf(`(%s)\b`, floatRegex),
 		"gcc":     fmt.Sprintf(`clang version (%s)\b`, floatRegex),
 		"git":     fmt.Sprintf(`git version (%s)\s`, floatRegex),
 		"gh":      fmt.Sprintf(`gh version (%s)\b`, floatRegex),

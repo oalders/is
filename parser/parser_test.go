@@ -41,6 +41,8 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 		},
 		{"dig", "9.10.6", "DiG 9.10.6"},
 		{"docker", "20.10.21", "version 20.10.21, build baeda1f"},
+		{"fpp", "0.9.2", "fpp version 0.9.2"},
+		{"fzf", "0.53.0", "0.53.0 (c4a9ccd)"},
 		{"gcc", "14.0.3", "clang version 14.0.3 (clang-1403.0.22.14.1)"},
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},
 		{"go", "1.20.4", "go version go1.20.4 darwin/amd64"},
