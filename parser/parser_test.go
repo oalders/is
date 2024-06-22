@@ -39,7 +39,10 @@ Release-Date: 2023-02-20
 Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
 Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefile libz MultiSSL NTLM NTLM_WB SPNEGO SSL threadsafe UnixSockets`,
 		},
+		{"dig", "9.10.6", "DiG 9.10.6"},
 		{"docker", "20.10.21", "version 20.10.21, build baeda1f"},
+		{"fpp", "0.9.2", "fpp version 0.9.2"},
+		{"fzf", "0.53.0", "0.53.0 (c4a9ccd)"},
 		{"gcc", "14.0.3", "clang version 14.0.3 (clang-1403.0.22.14.1)"},
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},
 		{"go", "1.20.4", "go version go1.20.4 darwin/amd64"},
@@ -80,6 +83,7 @@ General Public License, which is included in the distribution files.
 Complete documentation for perltidy can be found using 'man perltidy'
 or on the internet at http://perltidy.sourceforge.net.
 `},
+		{"perldoc", "v3.2801", "v3.2801, under perl v5.040000 for darwin"},
 		{
 			"pihole", "v5.17.1",
 			`  Pi-hole version is v5.17.1 (Latest: v5.17.1)
@@ -91,9 +95,11 @@ or on the internet at http://perltidy.sourceforge.net.
 		{"python3", "3.11.3", "Python 3.11.3"},
 		{"ripgrep", "13.0.0", "ripgrep 13.0.0"},
 		{"rustc", "1.73.0", "rustc 1.73.0 (cc66ad468 2023-10-03)"},
+		{"screen", "4.08.00", "Screen version 4.08.00 (GNU) 05-Feb-20"},
 		{"sh", "3.2.57", `GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin22)
 Copyright (C) 2007 Free Software Foundation, Inc.
 `},
+		{"sqlite3", "3.46.0", "3.46.0 2024-05-23 13:25:27 96c92aba00c8375bc32fafcdf12429c58bd8aabfcadab6683e35bbb9cdebf19e (64-bit)"},
 		{"tar", "3.5.3", "bsdtar 3.5.3 - libarchive 3.5.3 zlib/1.2.11 liblzma/5.0.5 bz2lib/1.0.8"},
 		{"tcsh", "6.21.00", "tcsh 6.21.00 (Astron) 2019-05-08 (x86_64-apple-darwin) options wide,nls,dl,bye,al,kan,sm,rh,color,filec"},
 		{"trurl", "0.6", "trurl version 0.6 libcurl/7.88.1 [built-with 7.87.0]"},
@@ -102,6 +108,7 @@ Copyright (C) 2007 Free Software Foundation, Inc.
 			"tree", "v2.1.0",
 			`tree v2.1.0 © 1996 - 2022 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro`,
 		},
+		{"typos", "1.22.7", "typos-cli 1.22.7"},
 		{"ubi", "0.0.24", "ubi 0.0.24"},
 		{
 			"unzip", "6.00",
