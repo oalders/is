@@ -1,5 +1,11 @@
 # Changes
 
+## 0.5.3 - 2024-06-22
+
+- Parse versions for: dig, perldoc, fpp, fzf, screen, sqlite3 and typos (GH#35)
+  (Olaf Alders)
+- Improve completion documentation
+
 ## 0.5.2 - 2024-06-18
 
 - Add some simple command line completion (GH#20) (Olaf Alders)
