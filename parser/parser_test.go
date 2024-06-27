@@ -44,6 +44,15 @@ Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefi
 		{"fpp", "0.9.2", "fpp version 0.9.2"},
 		{"fzf", "0.53.0", "0.53.0 (c4a9ccd)"},
 		{"gcc", "14.0.3", "clang version 14.0.3 (clang-1403.0.22.14.1)"},
+		{"grep", "3.4", `grep (GNU grep) 3.4
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Mike Haertel and others; see
+<https://git.sv.gnu.org/cgit/grep.git/tree/AUTHORS>.`},
+		{"grep", "2.6.0", "grep (BSD grep, GNU compatible) 2.6.0-FreeBSD"},
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},
 		{"go", "1.20.4", "go version go1.20.4 darwin/amd64"},
 		{"jq", "1.6", "jq-1.6"},
