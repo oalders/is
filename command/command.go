@@ -18,11 +18,13 @@ func Output(cmd *exec.Cmd, stream string) (string, error) {
 		if err != nil {
 			return "", errors.Join(errors.New("stdout pipe"), err)
 		}
+		defer pipe.Close()
 	case "stderr":
 		pipe, err = cmd.StderrPipe()
 		if err != nil {
 			return "", errors.Join(errors.New("stderr pipe"), err)
 		}
+		defer pipe.Close()
 	case "combined":
 		output, err = cmd.CombinedOutput()
 		if err != nil {
