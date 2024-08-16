@@ -20,6 +20,7 @@ func (r *ThereCmd) Run(ctx *types.Context) error {
 	err := cmd.Run()
 	if err != nil {
 		if ctx.Debug {
+			log.Printf("Error was: %v\n", err)
 			log.Printf("Running \"which %s\"\n", r.Name)
 		}
 		cmd := exec.Command("which", r.Name) //nolint:gosec
