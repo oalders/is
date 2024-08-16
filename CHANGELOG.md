@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5.4 - 2024-08-16
+
+- Run "command -v" via "sh -c" (GH#37) (Olaf Alders)
+
 ## 0.5.3 - 2024-06-22
 
 - Parse versions for: dig, perldoc, fpp, fzf, screen, sqlite3 and typos (GH#35)
