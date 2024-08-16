@@ -1,7 +1,9 @@
 #!/usr/bin/env bats
 
 @test "is --version" {
-  ./is --version
+  run ./is --version
+  [ "$status" -eq 0 ]
+  [ "$output" = "0.5.4" ]
 }
 
 @test "is --help" {
