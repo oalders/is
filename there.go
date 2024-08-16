@@ -5,19 +5,22 @@ import (
 	"errors"
 	"log"
 	"os/exec"
+	"strings"
 
 	"github.com/oalders/is/types"
 )
 
 // Run "is there ...".
 func (r *ThereCmd) Run(ctx *types.Context) error {
-	cmd := exec.Command("command", "-v", r.Name) //nolint:gosec
+	args := []string{"-c", "command -v " + r.Name}
+	cmd := exec.Command("sh", args...)
 	if ctx.Debug {
-		log.Printf("Running \"command -v %s\"\n", r.Name)
+		log.Printf("Running \"sh %s\"\n", strings.Join(args, " "))
 	}
 	err := cmd.Run()
 	if err != nil {
 		if ctx.Debug {
+			log.Printf("Error was: %v\n", err)
 			log.Printf("Running \"which %s\"\n", r.Name)
 		}
 		cmd := exec.Command("which", r.Name) //nolint:gosec
