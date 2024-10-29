@@ -1,6 +1,6 @@
 module github.com/oalders/is
 
-go 1.20
+go 1.23
 
 require (
 	github.com/alecthomas/kong v0.7.1

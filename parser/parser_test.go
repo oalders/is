@@ -55,6 +55,7 @@ Written by Mike Haertel and others; see
 		{"grep", "2.6.0", "grep (BSD grep, GNU compatible) 2.6.0-FreeBSD"},
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},
 		{"go", "1.20.4", "go version go1.20.4 darwin/amd64"},
+		{"hugo", "0.136.5", "hugo v0.136.5+extended darwin/arm64 BuildDate=2024-10-24T12:26:27Z VendorInfo=brew"},
 		{"jq", "1.6", "jq-1.6"},
 		{"less", "633", "less 633 (PCRE2 regular expressions)"},
 		{"lua", "5.4.6", "Lua 5.4.6  Copyright (C) 1994-2023 Lua.org, PUC-Rio"},
