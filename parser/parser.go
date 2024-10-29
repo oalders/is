@@ -17,6 +17,7 @@ import (
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"dig":     "-v",
+		"hugo":    "version",
 		"go":      "version",
 		"lua":     "-v",
 		"openssl": "version",
@@ -87,6 +88,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"gh":      fmt.Sprintf(`gh version (%s)\b`, semverRegex),
 		"go":      fmt.Sprintf(`go version go(%s)\s`, semverRegex),
 		"grep":    fmt.Sprintf(`(%s|%s)`, semverRegex, floatRegex),
+		"hugo":    fmt.Sprintf(`hugo v(%s)\b`, semverRegex),
 		"jq":      fmt.Sprintf(`jq-(%s)\b`, floatRegex),
 		"less":    fmt.Sprintf(`less (%s)\b`, intRegex),
 		"lua":     fmt.Sprintf(`Lua (%s)\b`, semverRegex),
