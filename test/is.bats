@@ -3,7 +3,7 @@
 @test "is --version" {
   run ./is --version
   [ "$status" -eq 0 ]
-  [ "$output" = "0.5.4" ]
+  [ "$output" = "0.5.5" ]
 }
 
 @test "is --help" {

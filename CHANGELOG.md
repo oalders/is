@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5.5 - 2024-10-29
+
+- Add version parsing for hugo
+
 ## 0.5.4 - 2024-08-16
 
 - Run "command -v" via "sh -c" (GH#37) (Olaf Alders)
