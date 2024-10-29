@@ -11,6 +11,7 @@ linters:
     - bodyclose
     - containedctx
     - contextcheck
+    - copyloopvar
     - cyclop
     - decorder
     # - depguard
@@ -25,7 +26,6 @@ linters:
     - exhaustive
     # - exhaustivestruct
     # - exhaustruct
-    - exportloopref
     - forbidigo
     - forcetypeassert
     - funlen
