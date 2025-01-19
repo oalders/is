@@ -20,6 +20,7 @@ func main() {
 		OS      OSCmd            `cmd:"" help:"Check OS attributes. e.g. \"is os name eq darwin\""`
 		There   ThereCmd         `cmd:"" help:"Check if command exists. e.g. \"is there git\""`
 		User    UserCmd          `cmd:"" help:"Info about current user. e.g. \"is user sudoer\""`
+		Var     VarCmd           `cmd:"" help:"Check environment variables. e.g. \"is var EDITOR eq nvim\""` //nolint:lll
 		Version kong.VersionFlag `help:"Print version to screen"`
 
 		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions. e.g. \"is install-completions\" and then run the command which is printed to your terminal to get completion in your current session. add the command to a .bashrc or similar to get completion across all sessions."` //nolint:lll

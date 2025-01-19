@@ -1,6 +1,10 @@
 // package main contains the api for the CLI
 package main
 
+import (
+	"fmt"
+)
+
 type AgeCmp struct {
 	Name string `arg:"" required:"" help:"[name of command or path to command]"`
 	Op   string `arg:"" required:"" enum:"gt,lt" help:"[gt|lt]"`
@@ -66,6 +70,23 @@ type OSCmd struct {
 //nolint:lll
 type UserCmd struct {
 	Sudoer string `arg:"" required:"" default:"sudoer" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
+}
+
+// VarCmd type is configuration for environment variable checks.
+//
+//nolint:lll
+type VarCmd struct {
+	Name    string `arg:"" required:""`
+	Op      string `arg:"" required:"" enum:"set,unset,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Val     string `arg:"" optional:""`
+	Compare string `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
+}
+
+func (r *VarCmd) Validate() error {
+	if r.Op != "set" && r.Op != "unset" && r.Val == "" {
+		return fmt.Errorf("missing required argument: val")
+	}
+	return nil
 }
 
 type KnownCLI struct {
