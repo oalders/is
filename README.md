@@ -19,6 +19,12 @@ can get you up and running in a hurry.
 is cli version tmux gt 3.2 && echo 🥳 || echo 😢
 ```
 
+### Is Neovim the Default Editor?
+
+```bash
+is var EDITOR set && is var EDITOR eq nvim
+```
+
 ### Is this the target Operating System?
 
 ```bash
@@ -755,6 +761,17 @@ This is useful for scripts where we want to install via `sudo`, but we don't
 want the script to be interactive. That means we can skip installing things
 that require `sudo` and handle them in some other place.
 
+### var
+
+Check if environment variables are set, unset or contain a specific value.
+
+```bash
+is var EDITOR set && is var EDITOR like vim
+```
+
+`set` and `unset` don't require arguments, but the other comparison operators
+(eq|ne|gt|gte|in|like|lt|lte|unlike) do.
+
 ### known
 
 Prints known information about a resource to `STDOUT`. Returns `0` on success
@@ -971,6 +988,9 @@ Commands:
 
   user [<sudoer>]
     Info about current user. e.g. "is user sudoer"
+
+  var <name> <op> [<val>]
+    Check environment variables. e.g. "is var EDITOR eq nvim"
 
   install-completions
     install shell completions. e.g. "is install-completions" and then run the
