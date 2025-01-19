@@ -522,13 +522,13 @@ an absolute path.
 Compare against the last modified date of a file.
 
 ```bash
-is cli age /tmp/programs.csv lt 18 hours
+is fso age /tmp/programs.csv lt 18 hours
 ```
 
 Compare against the last modified date of a directory.
 
 ```bash
-is cli age ~./local/cache gt 1 d
+is fso age ~./local/cache gt 1 d
 ```
 
 Supported comparisons are:
