@@ -20,6 +20,7 @@ func CodeName(osVersion string) string {
 
 	// https://en.wikipedia.org/wiki/List_of_Apple_codenames
 	major := map[int]string{
+		15: "sequoia",
 		14: "sonoma",
 		13: "ventura",
 		12: "monterey",
