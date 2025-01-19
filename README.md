@@ -219,11 +219,11 @@ is arch like 64
 
 Supported comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike`
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike`
 
 We can try `is known arch` to get the value for our installed binary or run this
 command with the `--debug` flag.
@@ -279,23 +279,23 @@ fi
 
 Supported comparisons are:
 
-* `lt`
-* `gt`
+- `lt`
+- `gt`
 
 Supported units are:
 
-* `s`
-* `second`
-* `seconds`
-* `m`
-* `minute`
-* `minutes`
-* `h`
-* `hour`
-* `hours`
-* `d`
-* `day`
-* `days`
+- `s`
+- `second`
+- `seconds`
+- `m`
+- `minute`
+- `minutes`
+- `h`
+- `hour`
+- `hours`
+- `d`
+- `day`
+- `days`
 
 Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
 into account here.
@@ -340,15 +340,15 @@ is cli version go gte 1.20
 
 Supported comparisons are:
 
-* `lt`
-* `lte`
-* `eq`
-* `gte`
-* `gt`
-* `in`
-* `ne`
-* `like`
-* `unlike`
+- `lt`
+- `lte`
+- `eq`
+- `gte`
+- `gt`
+- `in`
+- `ne`
+- `like`
+- `unlike`
 
 #### output
 
@@ -423,11 +423,11 @@ Optional argument to command. Defaults to `optimistic`. Because comparisons
 like `eq` mean different things when comparing strings, integers and floats, we
 can tell `is` what sort of a comparison to perform. Our options are:
 
-* float
-* integer
-* string
-* version
-* optimistic
+- float
+- integer
+- string
+- version
+- optimistic
 
 `optimistic` will first try a `string` comparison. If this fails, it will try a
 `version` comparison. This will "Do What I Mean" in a lot of cases, but if we
@@ -501,15 +501,15 @@ is cli output stdout uname --arg="-m" --arg="-n" eq "olafs-mbp-2.lan x86_65" --d
 
 Supported comparisons are:
 
-* `lt`
-* `lte`
-* `eq`
-* `gte`
-* `gt`
-* `in`
-* `ne`
-* `like`
-* `unlike`
+- `lt`
+- `lte`
+- `eq`
+- `gte`
+- `gt`
+- `in`
+- `ne`
+- `like`
+- `unlike`
 
 👉 Nota bene: because `is` doesn't know what you're trying to match, it will,
 in some cases try to do an optimistic comparison. That is, it will try a string
@@ -539,23 +539,23 @@ is cli age ~./local/cache gt 1 d
 
 Supported comparisons are:
 
-* `lt`
-* `gt`
+- `lt`
+- `gt`
 
 Supported units are:
 
-* `s`
-* `second`
-* `seconds`
-* `m`
-* `minute`
-* `minutes`
-* `h`
-* `hour`
-* `hours`
-* `d`
-* `day`
-* `days`
+- `s`
+- `second`
+- `seconds`
+- `m`
+- `minute`
+- `minutes`
+- `h`
+- `hour`
+- `hours`
+- `d`
+- `day`
+- `days`
 
 Note that `d|day|days` is shorthand for 24 hours. DST offsets are not taken
 into account here.
@@ -595,15 +595,15 @@ is os version --major eq 13
 
 Supported comparisons are:
 
-* `lt`
-* `lte`
-* `eq`
-* `gte`
-* `gt`
-* `in`
-* `ne`
-* `like`
-* `unlike`
+- `lt`
+- `lte`
+- `eq`
+- `gte`
+- `gt`
+- `in`
+- `ne`
+- `like`
+- `unlike`
 
 #### name
 
@@ -615,11 +615,11 @@ more build targets.
 
 Available comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike`
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike`
 
 ##### Equality
 
@@ -670,11 +670,11 @@ is os pretty-name eq "Ubuntu 22.04.2 LTS"
 
 Available comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike`
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike`
 
 ##### id
 
@@ -686,11 +686,11 @@ is os id eq ubuntu
 
 Available comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike`
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike`
 
 ##### id-like
 
@@ -700,11 +700,11 @@ is os id-like eq debian
 
 Available comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike``
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike``
 
 ##### version-codename
 
@@ -714,28 +714,28 @@ is os version-codename eq jammy
 
 Available comparisons are:
 
-* `eq`
-* `ne`
-* `in`
-* `like`
-* `unlike`
+- `eq`
+- `ne`
+- `in`
+- `like`
+- `unlike`
 
 On Linux, the value for `version-codename` is taken from `/etc/os-release`. For
 Macs, the values are mapped inside this application.
 
 Possible values for Mac:
 
-* ventura
-* monterey
-* big sur
-* catalina
-* mojave
-* high sierra
-* sierra
-* el capitan
-* yosemite
-* mavericks
-* mountain lion
+- ventura
+- monterey
+- big sur
+- catalina
+- mojave
+- high sierra
+- sierra
+- el capitan
+- yosemite
+- mavericks
+- mountain lion
 
 ### there
 
@@ -769,8 +769,58 @@ Check if environment variables are set, unset or contain a specific value.
 is var EDITOR set && is var EDITOR like vim
 ```
 
-`set` and `unset` don't require arguments, but the other comparison operators
-(eq|ne|gt|gte|in|like|lt|lte|unlike) do.
+#### set
+
+```bash
+is var EDITOR set
+```
+
+#### unset
+
+```bash
+unset EDITOR
+is var EDITOR unset
+```
+
+`set` and `unset` don't require arguments, but the comparison operators do.
+
+Supported comparisons are:
+
+- `lt`
+- `lte`
+- `eq`
+- `gte`
+- `gt`
+- `in`
+- `ne`
+- `like`
+- `unlike`
+
+##### --compare
+
+Optional argument to command. Defaults to `optimistic`. Because comparisons
+like `eq` mean different things when comparing strings, integers and floats, we
+can tell `is` what sort of a comparison to perform. Our options are:
+
+- float
+- integer
+- string
+- version
+- optimistic
+
+`optimistic` will first try a `string` comparison. If this fails, it will try a
+`version` comparison. This will "Do What I Mean" in a lot of cases, but if we
+want to constrain the check to a specific type, we can certainly do that.
+
+💥 alert:
+
+```bash
+FLOATER=1.1 is var FLOATER eq 1.1 --compare integer
+```
+
+```text
+is: error: wanted result must be an integer
+```
 
 ### known
 
@@ -1037,8 +1087,10 @@ Choose from the following options to install `is`.
 
 1. [Download a release](https://github.com/oalders/is/releases)
 1. Use `go install`
-  * `go install github.com/oalders/is@latest`
-  * `go install github.com/oalders/is@v0.5.5`
+
+- `go install github.com/oalders/is@latest`
+- `go install github.com/oalders/is@v0.5.5`
+
 1. Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash

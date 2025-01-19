@@ -76,9 +76,10 @@ type UserCmd struct {
 //
 //nolint:lll
 type VarCmd struct {
-	Name string `arg:"" required:""`
-	Op   string `arg:"" required:"" enum:"set,unset,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
-	Val  string `arg:"" optional:""`
+	Name    string `arg:"" required:""`
+	Op      string `arg:"" required:"" enum:"set,unset,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Val     string `arg:"" optional:""`
+	Compare string `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 
 func (r *VarCmd) Validate() error {

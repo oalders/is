@@ -5,7 +5,6 @@ import (
 	"errors"
 	"os"
 
-	"github.com/oalders/is/compare"
 	"github.com/oalders/is/types"
 )
 
@@ -30,6 +29,6 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 		if !exists {
 			return errors.New("environment variable not set")
 		}
-		return compare.Optimistic(ctx, r.Op, val, r.Val)
+		return compareOutput(ctx, r.Compare, r.Op, val, r.Val)
 	}
 }
