@@ -1,5 +1,10 @@
 # Changes
 
+## 0.6.0 - 2025-01-20
+
+- Add var subcommand
+- Add sequoia to macos code names
+
 ## 0.5.5 - 2024-10-29
 
 - Add version parsing for hugo
