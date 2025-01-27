@@ -94,3 +94,52 @@ teardown() {
   [ "$status" -eq 1 ]
   [[ "$output" == *"wanted result must be an integer"* ]]
 }
+
+@test "is var EMPTY_VAR eq '' should pass" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR eq ""
+  [ "$status" -eq 0 ]
+}
+
+# we can't determine the difference between eq "" and eq with no trailing arg
+@test "'is var EMPTY_VAR eq' should pass" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR eq
+  [ "$status" -eq 0 ]
+}
+
+@test "is var EMPTY_VAR eq \"\" should fail" {
+  run ./is var EMPTY_VAR eq ""
+  [ "$status" -eq 1 ]
+}
+
+@test "is var EMPTY_VAR set should pass" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR set
+  [ "$status" -eq 0 ]
+}
+
+@test "is var EMPTY_VAR unset should fail" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR unset
+  [ "$status" -eq 1 ]
+}
+
+@test "is var EMPTY_VAR ne '' should fail" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR ne ""
+  [ "$status" -eq 1 ]
+}
+
+# we can't determine the difference between ne "" and ne with no trailing arg
+@test "is var EMPTY_VAR ne should fail" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR ne
+  [ "$status" -eq 1 ]
+}
+
+@test "is var EMPTY_VAR ne 'non-empty' should pass" {
+  export EMPTY_VAR=""
+  run ./is var EMPTY_VAR ne "non-empty"
+  [ "$status" -eq 0 ]
+}
