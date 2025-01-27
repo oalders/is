@@ -1115,7 +1115,7 @@ Choose from the following options to install `is`.
 1. [Download a release](https://github.com/oalders/is/releases)
 1. Use `go install`
   * `go install github.com/oalders/is@latest`
-  * `go install github.com/oalders/is@v0.6.0`
+  * `go install github.com/oalders/is@v0.6.1`
 1. Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash
