@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux -o pipefail
+
+go test -v ./...
+go build
+bats test

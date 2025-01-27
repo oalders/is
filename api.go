@@ -82,8 +82,14 @@ type VarCmd struct {
 	Compare string `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 
+// Allow for the following:
+//
+// is var EDITOR eq ""
+// is var EDITOR ne ""
+//
+// .
 func (r *VarCmd) Validate() error {
-	if r.Op != "set" && r.Op != "unset" && r.Val == "" {
+	if r.Op != "set" && r.Op != "unset" && r.Op != "eq" && r.Op != "ne" && r.Val == "" {
 		return fmt.Errorf("missing required argument: val")
 	}
 	return nil

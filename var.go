@@ -2,7 +2,7 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"os"
 
 	"github.com/oalders/is/types"
@@ -27,7 +27,7 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 	default:
 		val, exists := os.LookupEnv(r.Name)
 		if !exists {
-			return errors.New("environment variable not set")
+			return fmt.Errorf("environment variable %s is not set", r.Name)
 		}
 		return compareOutput(ctx, r.Compare, r.Op, val, r.Val)
 	}

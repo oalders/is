@@ -767,6 +767,19 @@ Check if environment variables are set, unset or contain a specific value.
 
 ```bash
 is var EDITOR set && is var EDITOR like vim
+
+is var EDITOR set && is var EDITOR eq ""
+```
+
+`is var` can only operate on environment variables which are available in its
+environment. This means that you may need to export some variables before you
+can invoke `is var`. For example, if you have created a variable in the current
+script, it should be exported before `is var` is used.
+
+```shell
+SLOW_HORSE=rivercartwright
+export SLOW_HORSE
+is var SLOW_HORSE like cart && echo "blue shirt, white tee"
 ```
 
 #### set
@@ -795,6 +808,20 @@ Supported comparisons are:
 - `ne`
 - `like`
 - `unlike`
+
+Both `eq` and `ne` allow for comparisons with an empty string:
+
+```shell
+SET_BUT_EMPTY=
+export SET_BUT_EMPTY
+
+is var SET_BUT_EMPTY set && is var SET_BUT_EMPTY eq ""
+
+NOT_EMPTY=lebowski
+export NOT_EMPTY
+
+is var NOT_EMPTY set && is var NOT_EMPTY ne ""
+```
 
 ##### --compare
 

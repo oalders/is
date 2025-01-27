@@ -1,5 +1,9 @@
 # Changes
 
+- Allow for empty string comparisons via "eq" and "ne" in "is var". e.g.
+  - is var FOO eq ""
+  - is var FOO ne ""
+
 ## 0.6.0 - 2025-01-20
 
 - Add var subcommand
