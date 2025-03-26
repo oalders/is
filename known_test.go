@@ -68,11 +68,29 @@ func TestKnownCmd(t *testing.T) {
 		Success bool
 	}
 	cliTests := []testableCLI{
-		{KnownCmd{CLI: KnownCLI{attr.Version, "gitzzz"}}, false, false},
-		{KnownCmd{CLI: KnownCLI{attr.Version, command}}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Major: true}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Minor: true}, false, true},
-		{KnownCmd{CLI: KnownCLI{attr.Version, command}, Patch: true}, false, true},
+		{KnownCmd{CLI: KnownCLI{
+			Attr: attr.Version,
+			Name: "gitzzz",
+		}}, false, false},
+		{KnownCmd{
+			CLI: KnownCLI{
+				Attr: attr.Version,
+				Name: command,
+			},
+		}, false, true},
+		{KnownCmd{
+			CLI: KnownCLI{
+				Attr:    attr.Version,
+				Name:    command,
+				Version: Version{Major: true},
+			},
+		}, false, true},
+		{KnownCmd{CLI: KnownCLI{Attr: attr.Version, Name: command, Version: Version{
+			Minor: true,
+		}}}, false, true},
+		{KnownCmd{CLI: KnownCLI{Attr: attr.Version, Name: command, Version: Version{
+			Patch: true,
+		}}}, false, true},
 	}
 
 	for _, test := range cliTests {
@@ -101,13 +119,5 @@ func TestKnownCmd(t *testing.T) {
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success, "success")
-	}
-	{
-		ctx := types.Context{Debug: true}
-		cmd := KnownCmd{Major: true}
-		cmd.OS.Attr = "name"
-		err := cmd.Run(&ctx)
-		assert.Error(t, err)
-		assert.False(t, ctx.Success, "success")
 	}
 }

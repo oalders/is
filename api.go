@@ -65,6 +65,21 @@ type OSCmd struct {
 	Patch bool   `xor:"Major,Minor,Patch" help:"Only match on the patch OS version (e.g. major.minor.patch)"`
 }
 
+// Battery type is configuration for battery information.
+//
+//nolint:lll
+type Battery struct {
+	Attr  string `arg:"" required:"" name:"attribute" enum:"charge-rate,count,current-capacity,current-charge,design-capacity,design-voltage,last-full-capacity,state,voltage" help:[charge-rate|count|current-capacity|current-charge|design-capacity|design-voltage|last-full-capacity|state|voltage]`
+	Round bool   `help:"Round float values to the nearest integer"`
+	Nth   int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
+}
+
+type BatteryCmd struct {
+	Battery
+	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Val   string `arg:"" required:""`
+}
+
 // UserCmd type is configuration for user level checks.
 //
 //nolint:lll
@@ -95,25 +110,32 @@ func (r *VarCmd) Validate() error {
 	return nil
 }
 
+type Version struct {
+	Major bool `xor:"Major,Minor,Patch" help:"Only print the major version (e.g. major.minor.patch)"`
+	Minor bool `xor:"Major,Minor,Patch" help:"Only print the minor version (e.g. major.minor.patch)"`
+	Patch bool `xor:"Major,Minor,Patch" help:"Only print the patch version (e.g. major.minor.patch)"`
+}
+
 type KnownCLI struct {
 	Attr string `arg:"" name:"attribute" required:"" enum:"version"`
 	Name string `arg:"" required:""`
+	Version
+}
+
+type KnownOS struct {
+	//nolint:lll
+	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
+	Version
 }
 
 // KnownCmd type is configuration for printing environment info.
-//
-//nolint:lll
 type KnownCmd struct {
 	Arch struct {
 		Attr string `arg:"" required:"" default:"arch" enum:"arch"`
 	} `cmd:"" help:"Print arch without check. e.g. \"is known arch\""`
-	OS struct {
-		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
-	} `cmd:"" help:"Print without check. e.g. \"is known os name\""`
-	CLI   KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
-	Major bool     `xor:"Major,Minor,Patch" help:"Only print the major OS or CLI version (e.g. major.minor.patch)"`
-	Minor bool     `xor:"Major,Minor,Patch" help:"Only print the minor OS or CLI version (e.g. major.minor.patch)"`
-	Patch bool     `xor:"Major,Minor,Patch" help:"Only print the patch OS or CLI version (e.g. major.minor.patch)"`
+	OS      KnownOS    `cmd:"" help:"Print without check. e.g. \"is known os name\""`
+	CLI     KnownCLI   `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
+	Battery Battery `cmd:"" help:"Print battery information. e.g. \"is known battery state\""`
 }
 
 // ThereCmd is configuration for finding executables.
