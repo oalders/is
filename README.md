@@ -1,5 +1,99 @@
 # is: an inspector for your environment
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Introduction](#introduction)
+  * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
+  * [Is Neovim the Default Editor?](#is-neovim-the-default-editor)
+  * [Is this the target Operating System?](#is-this-the-target-operating-system)
+  * [Check the OS with a regex](#check-the-os-with-a-regex)
+  * [Is this a recent macOS?](#is-this-a-recent-macos)
+  * [Who am I?](#who-am-i)
+  * [Do we have go? Then install `goimports`](#do-we-have-go-then-install-goimports)
+  * [What's the version of bash?](#whats-the-version-of-bash)
+  * [What's the major version of zsh?](#whats-the-major-version-of-zsh)
+  * [Has gofumpt been modified in the last week?](#has-gofumpt-been-modified-in-the-last-week)
+  * [Has a file been modified in the last hour?](#has-a-file-been-modified-in-the-last-hour)
+  * [echo the OS name](#echo-the-os-name)
+  * [Get some debugging information about the OS](#get-some-debugging-information-about-the-os)
+  * [Can user sudo without a password?](#can-user-sudo-without-a-password)
+* [Exit Codes are Everything](#exit-codes-are-everything)
+  * [Debugging error Codes](#debugging-error-codes)
+  * [Using a Regex](#using-a-regex)
+    * [Under the Hood](#under-the-hood)
+* [Top Level Commands](#top-level-commands)
+  * [arch](#arch)
+  * [battery](#battery)
+    * [state](#state)
+    * [current-charge](#current-charge)
+    * [count](#count)
+    * [charge-rate](#charge-rate)
+    * [current-capacity](#current-capacity)
+    * [design-capacity](#design-capacity)
+    * [design-voltage](#design-voltage)
+    * [last-full-capacity](#last-full-capacity)
+    * [voltage](#voltage)
+    * [--nth](#--nth)
+    * [--round](#--round)
+  * [cli](#cli)
+    * [age](#age)
+    * [version](#version)
+      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch)
+    * [output](#output)
+      * [stdout](#stdout)
+      * [stderr](#stderr)
+      * [combined](#combined)
+      * [---arg (-a)](#---arg--a)
+      * [--compare](#--compare)
+    * [Tip: Using pipes](#tip-using-pipes)
+    * [Tip: Using Negative Numbers](#tip-using-negative-numbers)
+      * [--debug](#--debug)
+  * [fso](#fso)
+    * [age](#age-1)
+  * [os](#os)
+    * [version](#version-1)
+      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch-1)
+    * [name](#name)
+      * [Equality](#equality)
+      * [Inequality](#inequality)
+      * [In a comma-delimited list](#in-a-comma-delimited-list)
+      * [Regex](#regex)
+      * [pretty-name](#pretty-name)
+      * [id](#id)
+      * [id-like](#id-like)
+      * [version-codename](#version-codename)
+  * [there](#there)
+  * [user](#user)
+    * [sudoer](#sudoer)
+  * [var](#var)
+    * [set](#set)
+    * [unset](#unset)
+      * [--compare](#--compare-1)
+  * [known](#known)
+    * [arch](#arch-1)
+    * [battery](#battery-1)
+    * [os](#os-1)
+      * [name](#name-1)
+      * [pretty-name](#pretty-name-1)
+      * [id](#id-1)
+      * [id-like](#id-like-1)
+      * [version](#version-2)
+      * [version-codename](#version-codename-1)
+    * [cli version](#cli-version)
+  * [install-completions](#install-completions)
+  * [--debug](#--debug-1)
+  * [--help](#--help)
+    * [subcommand --help](#subcommand---help)
+  * [--version](#--version)
+* [Installation](#installation)
+* [Bonus: Easier Version Parsing of Available Tools](#bonus-easier-version-parsing-of-available-tools)
+  * [Go (version)](#go-version)
+  * [Perl (--version)](#perl---version)
+  * [tmux (-V)](#tmux--v)
+
+<!-- vim-markdown-toc -->
+
 <p align="center">
   <img src="logo.png" />
 </p>
@@ -248,6 +342,160 @@ wasm
 ```
 
 however, there are available binaries for only some of these values.
+
+### battery
+
+```shell
+./is battery --help
+Usage: is battery <attribute> <op> <val>
+
+Check battery attributes. e.g. "is battery state eq charging"
+
+Arguments:
+  <attribute>    [charge-rate|count|current-capacity|current-charge|design-capacity|design-voltage|last-full-capacity|state|voltage]
+  <op>           [eq|ne|gt|gte|in|like|lt|lte|unlike]
+  <val>
+
+Flags:
+  -h, --help       Show context-sensitive help.
+      --debug      turn on debugging statements
+      --version    Print version to screen
+
+      --nth=1      Specify which battery to use (1 for the first battery)
+      --round      Round float values to the nearest integer
+```
+
+Compare against battery attributes for power management. This is useful for writing scripts that depend on battery state or charge level.
+
+```bash
+is battery state eq charging
+```
+
+```bash
+is battery current-charge lt 20 && notify-send "Battery Low" "Battery level below 20%"
+```
+
+#### state
+
+Check the current state of the battery:
+
+```bash
+is battery state eq charging
+```
+
+```bash
+is battery state in charging,full
+```
+
+```bash
+is battery state like discharg
+```
+
+Possible states include:
+- charging
+- discharging
+- idle
+- empty
+- full
+- unknown
+- undefined
+
+#### current-charge
+
+Check the current charge percentage of the battery:
+
+```bash
+is battery current-charge lt 15 && echo "Battery critically low!"
+```
+
+#### count
+
+Check the number of batteries detected in the system:
+
+```bash
+is battery count gt 0 || echo "No battery found"
+```
+
+#### charge-rate
+
+This is the current (momentary) charge rate (in mW). It is always non-negative, check `is battery state` to see whether it means charging or discharging.
+
+See <https://github.com/distatus/battery/blob/master/battery.go>
+
+#### current-capacity
+
+Check the current (momentary) capacity in mWh:
+
+```bash
+is battery current-capacity gt 7000
+```
+
+#### design-capacity
+
+Check the design capacity in mWh:
+
+```bash
+is battery design-capacity gt 7000
+```
+
+#### design-voltage
+
+Check the design voltage in mWh:
+
+```bash
+is battery design-voltage gt 13
+```
+
+#### last-full-capacity
+
+Check the capacity at last full charge in mWh:
+
+```bash
+is battery last-full-capacity gt 7000
+```
+
+#### voltage
+
+Check the current battery voltage in V:
+
+```bash
+is battery voltage gt 10
+```
+
+#### --nth
+
+Specify which battery to check if multiple batteries are present:
+
+```bash
+is battery --nth=2 state eq charging
+```
+
+#### --round
+
+Round float values to the nearest integer:
+
+```bash
+is battery --round current-charge eq 85
+```
+
+Without `--round`:
+
+```bash
+is battery current-charge eq 85.4
+```
+
+Supported comparisons are:
+- `lt`
+- `lte`
+- `eq`
+- `gte`
+- `gt`
+- `in`
+- `ne`
+- `like`
+- `unlike`
+
+
 
 ### cli
 
@@ -879,6 +1127,53 @@ wasm
 ```
 
 however, there are available binaries for only some of these values.
+
+#### battery
+
+Get information about the system battery without performing a check.
+
+```text
+$ is known battery state
+charging
+```
+
+```text
+$ is known battery current-charge
+85.4
+```
+
+You can specify which battery to query with `--nth`:
+
+```text
+$ is known battery --nth=2 state
+discharging
+```
+
+Round float values to the nearest integer:
+
+```text
+$ is known battery --round current-charge
+85
+```
+
+Available attributes:
+
+* state (one of)
+	* 	undefined
+	*  unknown
+	*  empty
+	*  full
+	*  charging
+	*  discharging
+	*  idle
+* current-charge (mWh)
+* count (int)
+* charge-rate (V)
+* current-capacity (mWh)
+* design-capacity (mWh)
+* design-voltage (V)
+* last-full-capacity (mWh)
+* voltage (V)
 
 #### os
 

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/oalders/is/attr"
+	"github.com/oalders/is/battery"
 	"github.com/oalders/is/os"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
@@ -18,28 +19,36 @@ import (
 
 // Run "is known ...".
 //
-//nolint:gocritic
+//nolint:cyclop
 func (r *KnownCmd) Run(ctx *types.Context) error {
 	result := ""
 	var err error
 
-	isVersion, segment, err := isVersion(r)
-	if err != nil {
-		return err
-	}
-
-	if r.OS.Attr != "" {
+	switch {
+	case r.OS.Attr != "":
 		result, err = os.Info(ctx, r.OS.Attr)
-	} else if r.CLI.Attr != "" {
+	case r.CLI.Attr != "":
 		result, err = runCLI(ctx, r.CLI.Name)
-	} else if r.Arch.Attr != "" {
+	case r.Battery.Attr != "":
+		result, err = battery.GetAttrAsString(
+			ctx,
+			r.Battery.Attr,
+			r.Battery.Round,
+			r.Battery.Nth,
+		)
+	case r.Arch.Attr != "":
 		result = runtime.GOARCH
 	}
 	if err != nil {
 		return err
 	}
 
-	if len(result) > 0 && isVersion {
+	isVersion, segment, err := isVersion(r)
+	if err != nil {
+		return err
+	}
+
+	if result != "" && isVersion {
 		got, err := version.NewVersion(result)
 		if err != nil {
 			return fmt.Errorf("parse version from output: %w", err)
@@ -48,7 +57,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		result = fmt.Sprintf("%d", segments[segment])
 	}
 
-	if len(result) > 0 {
+	if result != "" {
 		ctx.Success = true
 	}
 
@@ -58,18 +67,19 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	return err
 }
 
+//nolint:cyclop
 func isVersion(r *KnownCmd) (bool, uint, error) { //nolint:varnamelen
 	if r.OS.Attr == attr.Version || r.CLI.Attr == attr.Version {
 		switch {
-		case r.Major:
+		case r.OS.Major || r.CLI.Major:
 			return true, 0, nil
-		case r.Minor:
+		case r.OS.Minor || r.CLI.Minor:
 			return true, 1, nil
-		case r.Patch:
+		case r.OS.Patch || r.CLI.Patch:
 			return true, 2, nil
 		}
 	}
-	if r.Major || r.Minor || r.Patch {
+	if r.OS.Major || r.OS.Minor || r.OS.Patch || r.CLI.Major || r.CLI.Minor || r.CLI.Patch {
 		return false, 0, errors.New("--major, --minor and --patch can only be used with version")
 	}
 	return false, 0, nil
@@ -91,9 +101,7 @@ func runCLI(ctx *types.Context, cliName string) (string, error) {
 		return "", err
 	}
 	if len(result) > 0 {
-		if err != nil {
-			result = strings.TrimRight(result, "\n")
-		}
+		result = strings.TrimRight(result, "\n")
 	}
 	return result, err
 }

@@ -12,7 +12,7 @@ type AgeCmp struct {
 	Unit string `arg:"" required:"" enum:"s,second,seconds,m,minute,minutes,h,hour,hours,d,day,days"`
 }
 
-//nolint:lll,govet
+//nolint:lll,govet,nolintlint
 type OutputCmp struct {
 	Stream  string   `arg:"" required:"" enum:"stdout,stderr,combined" help:"[output stream to capture: (stdout|stderr|combined)]"`
 	Command string   `arg:"" required:"" help:"[name of command or path to command plus any arguments e.g. \"uname -a\"]"`
@@ -22,7 +22,7 @@ type OutputCmp struct {
 	Compare string   `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 
-//nolint:lll
+//nolint:lll,govet,nolintlint
 type VersionCmp struct {
 	Name  string `arg:"" required:"" help:"[name of command or path to command]"`
 	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
@@ -39,7 +39,7 @@ type ArchCmd struct {
 
 // CLICmd type is configuration for CLI checks.
 //
-//nolint:lll,govet
+//nolint:lll,govet,nolintlint
 type CLICmd struct {
 	Version VersionCmp `cmd:"" help:"Check version of command. e.g. \"is cli version tmux gte 3\""`
 	Age     AgeCmp     `cmd:"" help:"Check last modified time of cli (2h, 4d). e.g. \"is cli age tmux gt 1 d\""`
@@ -48,14 +48,14 @@ type CLICmd struct {
 
 // FSOCmd type is configuration for FSO checks.
 //
-//nolint:lll
+//nolint:lll,govet,nolintlint
 type FSOCmd struct {
 	Age AgeCmp `cmd:"" help:"Check age (last modified time) of an fso (2h, 4d). e.g. \"is fso age /tmp/log.txt gt 1 d\""`
 }
 
 // OSCmd type is configuration for OS level checks.
 //
-//nolint:lll
+//nolint:lll,govet,nolintlint
 type OSCmd struct {
 	Attr  string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
 	Op    string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
@@ -65,16 +65,32 @@ type OSCmd struct {
 	Patch bool   `xor:"Major,Minor,Patch" help:"Only match on the patch OS version (e.g. major.minor.patch)"`
 }
 
+// Battery type is configuration for battery information.
+//
+//nolint:lll,govet,nolintlint
+type Battery struct {
+	Attr  string `arg:"" required:"" name:"attribute" enum:"charge-rate,count,current-capacity,current-charge,design-capacity,design-voltage,last-full-capacity,state,voltage" help:"[charge-rate|count|current-capacity|current-charge|design-capacity|design-voltage|last-full-capacity|state|voltage]"`
+	Nth   int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
+	Round bool   `help:"Round float values to the nearest integer"`
+}
+
+//nolint:lll,govet,nolintlint
+type BatteryCmd struct {
+	Battery
+	Op  string `arg:"" required:"" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Val string `arg:"" required:""`
+}
+
 // UserCmd type is configuration for user level checks.
 //
-//nolint:lll
+//nolint:lll,govet,nolintlint
 type UserCmd struct {
 	Sudoer string `arg:"" required:"" default:"sudoer" enum:"sudoer" help:"is current user a passwordless sudoer. e.g. \"is user sudoer\""`
 }
 
 // VarCmd type is configuration for environment variable checks.
 //
-//nolint:lll
+//nolint:lll,govet,nolintlint
 type VarCmd struct {
 	Name    string `arg:"" required:""`
 	Op      string `arg:"" required:"" enum:"set,unset,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
@@ -95,25 +111,32 @@ func (r *VarCmd) Validate() error {
 	return nil
 }
 
+type Version struct {
+	Major bool `xor:"Major,Minor,Patch" help:"Only print the major version (e.g. major.minor.patch)"`
+	Minor bool `xor:"Major,Minor,Patch" help:"Only print the minor version (e.g. major.minor.patch)"`
+	Patch bool `xor:"Major,Minor,Patch" help:"Only print the patch version (e.g. major.minor.patch)"`
+}
+
 type KnownCLI struct {
 	Attr string `arg:"" name:"attribute" required:"" enum:"version"`
 	Name string `arg:"" required:""`
+	Version
+}
+
+type KnownOS struct {
+	//nolint:lll
+	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
+	Version
 }
 
 // KnownCmd type is configuration for printing environment info.
-//
-//nolint:lll
 type KnownCmd struct {
 	Arch struct {
 		Attr string `arg:"" required:"" default:"arch" enum:"arch"`
 	} `cmd:"" help:"Print arch without check. e.g. \"is known arch\""`
-	OS struct {
-		Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
-	} `cmd:"" help:"Print without check. e.g. \"is known os name\""`
-	CLI   KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
-	Major bool     `xor:"Major,Minor,Patch" help:"Only print the major OS or CLI version (e.g. major.minor.patch)"`
-	Minor bool     `xor:"Major,Minor,Patch" help:"Only print the minor OS or CLI version (e.g. major.minor.patch)"`
-	Patch bool     `xor:"Major,Minor,Patch" help:"Only print the patch OS or CLI version (e.g. major.minor.patch)"`
+	OS      KnownOS  `cmd:"" help:"Print without check. e.g. \"is known os name\""`
+	CLI     KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
+	Battery Battery  `cmd:"" help:"Print battery information. e.g. \"is known battery state\""`
 }
 
 // ThereCmd is configuration for finding executables.
