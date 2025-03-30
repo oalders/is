@@ -1,9 +1,5 @@
----
+version: "2"
 linters:
-  disable:
-    - nlreturn
-    - typecheck
-    - wsl
   enable:
     - asasalint
     - asciicheck
@@ -14,22 +10,17 @@ linters:
     - copyloopvar
     - cyclop
     - decorder
-    # - depguard
     - dogsled
     - dupl
     - dupword
     - durationcheck
-    - errcheck
     - errchkjson
     - errname
     - errorlint
     - exhaustive
-    # - exhaustivestruct
-    # - exhaustruct
     - forbidigo
     - forcetypeassert
     - funlen
-    - gci
     - gochecknoglobals
     - gochecknoinits
     - gocognit
@@ -38,24 +29,14 @@ linters:
     - gocyclo
     - godot
     - godox
-    - gofmt
-    - gofumpt
     - goheader
-    - goimports
-    # - golint
-    # - gomnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname
     - gosec
-    - gosimple
-    - govet
     - grouper
-    # - ifshort
     - importas
-    - ineffassign
     - interfacebloat
-    # - interfacer
     - ireturn
     - lll
     - loggercheck
@@ -69,7 +50,6 @@ linters:
     - noctx
     - nolintlint
     - nonamedreturns
-    # - nosnakecase
     - nosprintfhostport
     - paralleltest
     - prealloc
@@ -80,38 +60,57 @@ linters:
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
-    # - structcheck
-    - stylecheck
     - tagliatelle
-    - tenv
     - testableexamples
     - testpackage
     - thelper
     - tparallel
     - unconvert
     - unparam
-    - unused
     - usestdlibvars
-    # - varcheck
     - varnamelen
     - wastedassign
     - whitespace
     - wrapcheck
-linters-settings:
-  funlen:
-    lines: 75
-    statements: 40
-  govet:
-    enable:
-      - fieldalignment
-  lll:
-    line-length: 100
-  wrapcheck:
-    ignorePackageGlobs:
-    - github.com/oalders/is/*
-issues:
-  exclude-rules:
-    # disable funlen for test funcs
-    - source: "^func Test"
-      linters:
-        - funlen
+  disable:
+    - nlreturn
+    - wsl
+  settings:
+    funlen:
+      lines: 75
+      statements: 40
+    govet:
+      enable:
+        - fieldalignment
+    lll:
+      line-length: 100
+    wrapcheck:
+      ignore-package-globs:
+        - github.com/oalders/is/*
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - funlen
+        source: ^func Test
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
