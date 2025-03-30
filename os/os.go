@@ -76,7 +76,7 @@ func Aggregated(ctx *types.Context) (string, error) {
 	}
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
-		return "", errors.Join(fmt.Errorf("could not marshal indented JSON (%+v)", release), err)
+		return "", fmt.Errorf("could not marshal indented JSON (%+v): %w", release, err)
 	}
 
 	return string(data), nil

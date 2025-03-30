@@ -3,6 +3,7 @@ package reader
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -19,12 +20,12 @@ func MaybeReadINI(ctx *types.Context, path string) (*types.OSRelease, error) {
 		if errors.Is(err, os.ErrNotExist) {
 			return nil, nil //nolint:nilnil
 		}
-		return nil, errors.Join(errors.New("could not stat file"), err)
+		return nil, fmt.Errorf("could not stat file: %w", err)
 	}
 
 	cfg, err := ini.Load(path)
 	if err != nil {
-		return nil, errors.Join(errors.New("could not load file"), err)
+		return nil, fmt.Errorf("could not load file: %w", err)
 	}
 
 	section := cfg.Section("")

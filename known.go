@@ -42,7 +42,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	if len(result) > 0 && isVersion {
 		got, err := version.NewVersion(result)
 		if err != nil {
-			return errors.Join(errors.New("parse version from output"), err)
+			return fmt.Errorf("parse version from output: %w", err)
 		}
 		segments := got.Segments()
 		result = fmt.Sprintf("%d", segments[segment])

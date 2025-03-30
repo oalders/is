@@ -1,7 +1,6 @@
 package age
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -32,15 +31,12 @@ func StringToDuration(val, rawUnit string) (*time.Duration, error) {
 
 	value, err := strconv.Atoi(val)
 	if err != nil {
-		return nil, errors.Join(fmt.Errorf(
-			"%s does not appear to be an integer",
-			val,
-		), err)
+		return nil, fmt.Errorf("%s does not appear to be an integer: %w", val, err)
 	}
 	durationString := fmt.Sprintf("%d%s", value*unitMultiplier, unit)
 	dur, err := time.ParseDuration(durationString)
 	if err != nil {
-		err = errors.Join(errors.New("cannot parse duration"), err)
+		err = fmt.Errorf("cannot parse duration: %w", err)
 	}
 	return &dur, err
 }
