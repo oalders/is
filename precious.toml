@@ -7,6 +7,15 @@ cmd = [
 ]
 ok_exit_codes = 0
 
+[commands.goimports]
+type = "tidy"
+include = ["**/*.go",]
+cmd = [
+    "goimports",
+    "-w",
+]
+ok_exit_codes = 0
+
 [commands.golangci-lint]
 type = "lint"
 include = ["**/*.go",]
