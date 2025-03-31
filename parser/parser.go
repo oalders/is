@@ -2,7 +2,6 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -40,15 +39,15 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	cmd := exec.Command(cliName, arg)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return "", errors.Join(errors.New("command output"), err)
+		return "", fmt.Errorf("command output: %w", err)
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return "", errors.Join(errors.New("error output"), err)
+		return "", fmt.Errorf("error output: %w", err)
 	}
 
 	if err := cmd.Start(); err != nil {
-		return "", errors.Join(errors.New("starting command"), err)
+		return "", fmt.Errorf("starting command: %w", err)
 	}
 
 	output, _ := io.ReadAll(stdout)

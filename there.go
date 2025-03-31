@@ -3,6 +3,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os/exec"
 	"strings"
@@ -29,7 +30,7 @@ func (r *ThereCmd) Run(ctx *types.Context) error {
 			if e := (&exec.ExitError{}); errors.As(err, &e) {
 				return nil
 			}
-			return errors.Join(errors.New("command run error"), err)
+			return fmt.Errorf("command run error: %w", err)
 		}
 	}
 	ctx.Success = true

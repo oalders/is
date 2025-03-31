@@ -55,11 +55,11 @@ func Floats(ctx *types.Context, operator, g, w string) error { //nolint:varnamel
 	}
 	got, err := strconv.ParseFloat(g, 32)
 	if err != nil {
-		return errors.Join(errors.New("wanted result must be a float"), err)
+		return fmt.Errorf("wanted result must be a float: %w", err)
 	}
 	want, err := strconv.ParseFloat(w, 32)
 	if err != nil {
-		return errors.Join(errors.New("command output is not a float"), err)
+		return fmt.Errorf("command output is not a float: %w", err)
 	}
 
 	if ctx.Debug {
@@ -89,11 +89,11 @@ func Integers(ctx *types.Context, operator, g, w string) error { //nolint:varnam
 	}
 	got, err := strconv.Atoi(g)
 	if err != nil {
-		return errors.Join(errors.New("wanted result must be an integer"), err)
+		return fmt.Errorf("wanted result must be an integer: %w", err)
 	}
 	want, err := strconv.Atoi(w)
 	if err != nil {
-		return errors.Join(errors.New("command output is not an integer"), err)
+		return fmt.Errorf("command output is not an integer: %w", err)
 	}
 
 	if ctx.Debug {
@@ -122,7 +122,7 @@ func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segmen
 	}
 	got, err := version.NewVersion(gotStr)
 	if err != nil {
-		return errors.Join(errors.New("parse version from output"), err)
+		return fmt.Errorf("parse version from output: %w", err)
 	}
 
 	segments := got.Segments()
@@ -213,8 +213,7 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 
 	if err != nil {
 		ctx.Success = false
-		comparison := fmt.Sprintf(`compare strings "%s" %s "%s"`, got, operator, want)
-		return errors.Join(errors.New(comparison), err)
+		return fmt.Errorf(`compare strings "%s" %s "%s": %w`, got, operator, want, err)
 	}
 	if operator == ops.Unlike {
 		success = !success
