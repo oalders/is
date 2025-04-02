@@ -45,6 +45,5 @@ func (r *BatteryCmd) Run(ctx *types.Context) error {
 	default:
 		return errors.New("unexpected type for " + r.Val)
 	}
-	ctx.Success = true
 	return nil
 }
