@@ -13,6 +13,7 @@ import (
 func main() {
 	var API struct { //nolint:govet
 		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
+		Battery BatteryCmd       `cmd:"" help:"Check battery attributes. e.g. \"is battery state eq charging\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 		Debug   bool             `help:"turn on debugging statements"`
 		FSO     FSOCmd           `cmd:"" help:"Check fso (file system object). e.g. \"is fso age gte 3 days\""` //nolint:lll
@@ -30,7 +31,7 @@ func main() {
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.6.0"},
+		kong.Vars{"version": "0.6.1"},
 	)
 
 	// Run kongplete.Complete to handle completion requests

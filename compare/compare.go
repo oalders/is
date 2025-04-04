@@ -20,6 +20,9 @@ type Number interface {
 }
 
 func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T) {
+	if ctx.Debug {
+		fmt.Printf("Evaluating %v %s %v\n", got, operator, want)
+	}
 	switch operator {
 	case ops.Eq:
 		ctx.Success = got == want
@@ -33,6 +36,8 @@ func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T
 		ctx.Success = got < want
 	case ops.Lte:
 		ctx.Success = got <= want
+	default:
+		panic(operator + " is not a valid operator")
 	}
 }
 
