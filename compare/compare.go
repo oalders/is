@@ -196,7 +196,6 @@ func Versions( //nolint:cyclop
 }
 
 func Strings(ctx *types.Context, operator, got, want string) error {
-	var err error
 	var success bool
 
 	maybeDebug(ctx, "strings", operator, got, want)
@@ -213,16 +212,17 @@ func Strings(ctx *types.Context, operator, got, want string) error {
 	case ops.Ne:
 		success = got != want
 	case ops.Like, ops.Unlike:
-		success, err = regexp.MatchString(want, got)
+		matched, err := regexp.MatchString(want, got)
+		if err != nil {
+			return fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
+		}
+		ctx.Success = matched
+		if operator == ops.Unlike {
+			ctx.Success = !matched
+		}
+		return nil
 	}
 
-	if err != nil {
-		ctx.Success = false
-		return fmt.Errorf(`compare strings "%s" %s "%s": %w`, got, operator, want, err)
-	}
-	if operator == ops.Unlike {
-		success = !success
-	}
 	ctx.Success = success
 	return nil
 }
