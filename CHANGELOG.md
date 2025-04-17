@@ -1,5 +1,7 @@
 # Changes
 
+## 0.6.1 - 2025-01-27
+
 - Allow for empty string comparisons via "eq" and "ne" in "is var". e.g.
   - is var FOO eq ""
   - is var FOO ne ""

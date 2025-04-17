@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os/exec"
 	"strings"
@@ -18,7 +19,10 @@ func (r *UserCmd) Run(ctx *types.Context) error {
 	cmd := exec.Command("sudo", "-n", "true")
 	output, err := command.Output(cmd, "stderr")
 	if err != nil {
-		return err
+		if !errors.Is(err, exec.ErrNotFound) {
+			return err
+		}
+		return nil
 	}
 	if strings.Contains(output, "password") {
 		return nil

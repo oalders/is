@@ -30,7 +30,7 @@ func main() {
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.6.0"},
+		kong.Vars{"version": "0.6.1"},
 	)
 
 	// Run kongplete.Complete to handle completion requests
