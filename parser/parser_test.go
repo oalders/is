@@ -56,6 +56,7 @@ Written by Mike Haertel and others; see
 		{"gh", "2.30.0", "gh version 2.30.0 (2023-05-30)"},
 		{"go", "1.20.4", "go version go1.20.4 darwin/amd64"},
 		{"golangci-lint", "2.0.2", "golangci-lint has version 2.0.2 built with go1.24.1 from 2b224c2c on 2025-03-25T21:36:18Z"},
+		{"gopls", "0.15.2", "golang.org/x/tools/gopls v0.15.2"},
 		{"hugo", "0.136.5", "hugo v0.136.5+extended darwin/arm64 BuildDate=2024-10-24T12:26:27Z VendorInfo=brew"},
 		{"jq", "1.6", "jq-1.6"},
 		{"less", "633", "less 633 (PCRE2 regular expressions)"},
