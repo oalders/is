@@ -87,6 +87,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 		"gh":            fmt.Sprintf(`gh version (%s)\b`, semverRegex),
 		"go":            fmt.Sprintf(`go version go(%s)\s`, semverRegex),
 		"golangci-lint": fmt.Sprintf(`golangci-lint has version (%s)\s`, semverRegex),
+		"gopls":         fmt.Sprintf(`gopls v(%s)\b`, semverRegex),
 		"grep":          fmt.Sprintf(`(%s|%s)`, semverRegex, floatRegex),
 		"hugo":          fmt.Sprintf(`hugo v(%s)\b`, semverRegex),
 		"jq":            fmt.Sprintf(`jq-(%s)\b`, floatRegex),
