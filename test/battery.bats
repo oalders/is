@@ -18,6 +18,10 @@ setup() {
     ./is battery count gt 0
 }
 
+@test "is battery charge-rate gt 0 --round" {
+    ./is battery charge-rate gt 0 --round
+}
+
 @test "is battery charge-rate gt 0" {
     ./is battery charge-rate gt 0
 }
@@ -46,6 +50,12 @@ setup() {
     ./is battery state like char
 }
 
-@test "is battery voltage gt 0" {
-    ./is battery voltage gt 0
+@test "is battery voltage gt 0 --debug" {
+    ./is battery voltage gt 0 --debug
+}
+
+@test "is battery --nth 77 voltage gt 0" {
+  run ./is battery --nth 77 voltage gt 0
+  [[ $status -ne 0 ]]
+  [[ "$output" == *"battery 77 requested, but only"* ]]
 }

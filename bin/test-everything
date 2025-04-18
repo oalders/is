@@ -2,6 +2,20 @@
 
 set -eux -o pipefail
 
-go test -v ./...
-go build
-bats test
+GOCOVERDIR=$(mktemp -d)
+export GOCOVERDIR
+
+# Run tests
+go test -coverprofile=coverage.out ./...
+go build -cover
+bats -r test
+
+# Merge and analyze coverage data
+mkdir -p coverage
+go tool covdata merge -i="$GOCOVERDIR" -o=coverage
+go tool covdata textfmt -i=coverage -o=coverage/coverage.out
+go tool cover -func=coverage/coverage.out
+go tool cover -html=coverage/coverage.out -o coverage.html
+
+# Cleanup
+rm -rf "$GOCOVERDIR"

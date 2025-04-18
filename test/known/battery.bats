@@ -14,12 +14,18 @@ setup() {
     [[ "${output}" == *"Usage: is known battery <attribute>"* ]]
 }
 
+@test "is known battery charge-rate --nth 0" {
+    run ./is known battery charge-rate --nth 0
+    [ "${status}" -eq 1 ]
+    [[ "${output}" == *"use --nth 1 to get the first battery"* ]]
+}
+
 @test "is known battery count" {
     ./is known battery count
 }
 
-@test "is known battery charge-rate" {
-    ./is known battery charge-rate
+@test "is known battery charge-rate --round" {
+    ./is known battery charge-rate --round
 }
 
 @test "is known battery current-capacity" {
