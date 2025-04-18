@@ -1,5 +1,12 @@
 # Changes
 
+## 0.7.0 - 2025-04-18
+
+- Add "is battery" and "is known battery" subcommands
+- Add version parsing for golangci-lint
+- Add version parsing for gopls
+- Suppress "is user sudoer" error message when "sudo" is not installed
+
 ## 0.6.1 - 2025-01-27
 
 - Allow for empty string comparisons via "eq" and "ne" in "is var". e.g.
