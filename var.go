@@ -29,6 +29,8 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 		if !exists {
 			return fmt.Errorf("environment variable %s is not set", r.Name)
 		}
-		return compareOutput(ctx, r.Compare, r.Op, val, r.Val)
+		success, err := compareOutput(ctx, r.Compare, r.Op, val, r.Val)
+		ctx.Success = success
+		return err
 	}
 }

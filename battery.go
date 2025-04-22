@@ -11,6 +11,8 @@ import (
 )
 
 // Run "is battery ...".
+//
+//nolint:cyclop
 func (r *BatteryCmd) Run(ctx *types.Context) error {
 	attr, err := battery.GetAttr(ctx, r.Attr, r.Nth)
 	ctx.Success = false
@@ -28,7 +30,11 @@ func (r *BatteryCmd) Run(ctx *types.Context) error {
 				err,
 			)
 		}
-		compare.IntegersOrFloats(ctx, r.Op, got, want)
+		ok, err := compare.IntegersOrFloats(ctx, r.Op, got, want)
+		if err != nil {
+			return err
+		}
+		ctx.Success = ok
 	case int:
 		want, err := strconv.ParseInt(r.Val, 0, 32)
 		if err != nil {
@@ -37,11 +43,17 @@ func (r *BatteryCmd) Run(ctx *types.Context) error {
 				err,
 			)
 		}
-		compare.IntegersOrFloats(ctx, r.Op, got, int(want))
-	case string:
-		if err := compare.Strings(ctx, r.Op, got, r.Val); err != nil {
+		ok, err := compare.IntegersOrFloats(ctx, r.Op, got, int(want))
+		if err != nil {
 			return err
 		}
+		ctx.Success = ok
+	case string:
+		ok, err := compare.Strings(ctx, r.Op, got, r.Val)
+		if err != nil {
+			return err
+		}
+		ctx.Success = ok
 	default:
 		return errors.New("unexpected type for " + r.Val)
 	}

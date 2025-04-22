@@ -21,9 +21,8 @@ import (
 //
 //nolint:cyclop
 func (r *KnownCmd) Run(ctx *types.Context) error {
-	result := ""
 	var err error
-
+	var result string
 	switch {
 	case r.OS.Attr != "":
 		result, err = os.Info(ctx, r.OS.Attr)
@@ -39,6 +38,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	case r.Arch.Attr != "":
 		result = runtime.GOARCH
 	}
+
 	if err != nil {
 		return err
 	}
@@ -49,9 +49,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 	}
 
 	if result != "" && isVersion {
-		got, err := version.NewVersion(result)
-		if err != nil {
-			return fmt.Errorf("parse version from output: %w", err)
+		got, versionErr := version.NewVersion(result)
+		if versionErr != nil {
+			return fmt.Errorf("parse version from output: %w", versionErr)
 		}
 		segments := got.Segments()
 		result = fmt.Sprintf("%d", segments[segment])
