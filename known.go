@@ -21,35 +21,32 @@ import (
 //
 //nolint:cyclop
 func (r *KnownCmd) Run(ctx *types.Context) error {
-	var err error
-	var result string
-	switch {
-	case r.OS.Attr != "":
-		result, err = os.Info(ctx, r.OS.Attr)
-	case r.CLI.Attr != "":
-		result, err = runCLI(ctx, r.CLI.Name)
-	case r.Battery.Attr != "":
-		result, err = battery.GetAttrAsString(
-			ctx,
-			r.Battery.Attr,
-			r.Battery.Round,
-			r.Battery.Nth,
-		)
-	case r.Arch.Attr != "":
-		result = runtime.GOARCH
+	result := ""
+	{
+		var err error
+
+		switch {
+		case r.OS.Attr != "":
+			result, err = os.Info(ctx, r.OS.Attr)
+		case r.CLI.Attr != "":
+			result, err = runCLI(ctx, r.CLI.Name)
+		case r.Battery.Attr != "":
+			result, err = battery.GetAttrAsString(
+				ctx,
+				r.Battery.Attr,
+				r.Battery.Round,
+				r.Battery.Nth,
+			)
+		case r.Arch.Attr != "":
+			result = runtime.GOARCH
+		}
+		if err != nil {
+			return err
+		}
 	}
 
-	if err != nil {
-		return err
-	}
-
-	isVersion, segment, err := isVersion(r)
-	if err != nil {
-		return err
-	}
-
-	if result != "" && isVersion {
-		got, versionErr := version.NewVersion(result)
+	if result != "" {
+		isVersion, segment, versionErr := isVersion(r)
 		if versionErr != nil {
 			return fmt.Errorf("parse version from output: %w", versionErr)
 		}
@@ -63,8 +60,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 
 	//nolint:forbidigo
 	fmt.Println(result)
-
-	return err
+	return nil
 }
 
 //nolint:cyclop
