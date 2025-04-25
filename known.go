@@ -2,6 +2,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -37,6 +38,26 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 				r.Battery.Round,
 				r.Battery.Nth,
 			)
+		case r.Summary.Attr != "":
+			if r.Summary.Attr == "os" {
+				result, err = os.Aggregated(ctx)
+				if err != nil {
+					return err
+				}
+			} else if r.Summary.Attr == "battery" {
+				batt, err := battery.Get(ctx, r.Summary.Nth)
+				if err != nil {
+					return err
+				}
+				data, err := json.MarshalIndent(batt, "", "    ")
+				if err != nil {
+					return errors.Join(
+						fmt.Errorf("could not marshal indented JSON (%+v)", batt),
+						err,
+					)
+				}
+				result = string(data)
+			}
 		case r.Arch.Attr != "":
 			result = runtime.GOARCH
 		}

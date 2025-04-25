@@ -105,10 +105,9 @@ func linuxOS(ctx *types.Context, argName string) (string, error) {
 
 func maybeDebug(ctx *types.Context) {
 	if ctx.Debug {
-		os, err := Aggregated(ctx)
-		if err != nil {
-			log.Printf("getting os info %s", err)
-		}
-		log.Printf("%s\n", os)
+		log.Printf(
+			"Run %q to see available os data\n",
+			"is known summary os",
+		)
 	}
 }

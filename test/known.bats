@@ -69,3 +69,7 @@ bats_require_minimum_version 1.5.0
 @test "is known os version --patch" {
     ./is known os version --patch
 }
+
+@test "is known summary os" {
+    ./is known summary os
+}

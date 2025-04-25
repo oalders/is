@@ -55,3 +55,11 @@ setup() {
 @test "is known battery voltage" {
     ./is known battery voltage
 }
+
+@test "is known summary battery" {
+    ./is known summary battery
+}
+
+@test "is known summary battery --json" {
+    ./is known summary battery --json
+}
