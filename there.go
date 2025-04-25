@@ -13,26 +13,50 @@ import (
 
 // Run "is there ...".
 func (r *ThereCmd) Run(ctx *types.Context) error {
-	args := []string{"-c", "command -v " + r.Name}
-	cmd := exec.Command("sh", args...)
-	if ctx.Debug {
-		log.Printf("Running \"sh %s\"\n", strings.Join(args, " "))
+	err := runCommand(ctx, r.Name)
+	if err == nil {
+		ctx.Success = true
+		return nil
 	}
-	err := cmd.Run()
+	if ctx.Debug {
+		log.Printf("🚀 which %s\n", r.Name)
+		log.Printf("💥 %v\n", err)
+	}
+
+	err = runWhich(ctx, r.Name)
 	if err != nil {
-		if ctx.Debug {
-			log.Printf("Error was: %v\n", err)
-			log.Printf("Running \"which %s\"\n", r.Name)
+		if e := (&exec.ExitError{}); errors.As(err, &e) {
+			return nil
 		}
-		cmd := exec.Command("which", r.Name) //nolint:gosec
-		err := cmd.Run()
-		if err != nil {
-			if e := (&exec.ExitError{}); errors.As(err, &e) {
-				return nil
-			}
-			return fmt.Errorf("command run error: %w", err)
-		}
+		return err
 	}
 	ctx.Success = true
 	return nil
+}
+
+func runCommand(ctx *types.Context, name string) error {
+	args := []string{"-c", "command -v " + name}
+	if ctx.Debug {
+		log.Printf("🚀 sh -c %q\n", strings.Join(args[1:], " "))
+	}
+	cmd := exec.Command("sh", args...)
+	output, err := cmd.Output()
+	if ctx.Debug && len(output) != 0 {
+		log.Printf("😅 %s", output)
+	}
+	return err //nolint:wrapcheck
+}
+
+func runWhich(ctx *types.Context, name string) error {
+	cmd := exec.Command("which", name)
+	output, err := cmd.Output()
+	if ctx.Debug {
+		if len(output) != 0 {
+			log.Printf("😅 %s", output)
+		}
+		if err != nil {
+			log.Printf("💥 %v\n", err)
+		}
+	}
+	return fmt.Errorf("command run error: %w", err)
 }
