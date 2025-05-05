@@ -63,6 +63,9 @@
       * [id-like](#id-like)
       * [version-codename](#version-codename)
   * [there](#there)
+    * [--verbose](#--verbose)
+    * [--all](#--all)
+    * [--json](#--json)
   * [user](#user)
     * [sudoer](#sudoer)
   * [var](#var)
@@ -994,6 +997,70 @@ be found.
 
 ```bash
 is there tmux && echo "we have tmux"
+```
+
+#### --verbose
+
+`--verbose` is only useful without the `--all` or `--json` flags, since they
+imply `--verbose`. Using this flag you can see the path and version of the
+first binary which is in your `$PATH`.
+
+
+```shell
+is there bash --verbose
+┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Path                   ┃ Version ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ /opt/homebrew/bin/bash ┃ 5.2.37  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+```
+
+#### --all
+
+The all switch adds command output, which is an ASCII table of all of
+the binaries which have been found, as well as their versions. This is
+essentially a wrapper around `which -a`, with added version parsing.
+
+```shell
+$ is there bash --all
+┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Path                   ┃ Version ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ /opt/homebrew/bin/bash ┃ 5.2.37  ┃
+┃ /bin/bash              ┃ 3.2.57  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+```
+
+#### --json
+
+```shell
+is there bash --json
+```
+
+```json
+[
+    {
+        "path": "/opt/homebrew/bin/bash",
+        "version": "5.2.37"
+    }
+]
+```
+
+```shell
+is there bash --all --json
+```
+
+```json
+[
+    {
+        "path": "/opt/homebrew/bin/bash",
+        "version": "5.2.37"
+    },
+    {
+        "path": "/bin/bash",
+        "version": "3.2.57"
+    }
+]
 ```
 
 ### user

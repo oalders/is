@@ -13,17 +13,19 @@ import (
 
 // Run "is there ...".
 func (r *ThereCmd) Run(ctx *types.Context) error {
-	err := runCommand(ctx, r.Name)
-	if err == nil {
-		ctx.Success = true
-		return nil
-	}
-	if ctx.Debug {
-		log.Printf("🚀 which %s\n", r.Name)
-		log.Printf("💥 %v\n", err)
+	if !r.All && !r.Verbose && !r.JSON {
+		err := runCommand(ctx, r.Name)
+		if err == nil {
+			ctx.Success = true
+			return nil
+		}
+		if ctx.Debug {
+			log.Printf("🚀 which %s\n", r.Name)
+			log.Printf("💥 %v\n", err)
+		}
 	}
 
-	err = runWhich(ctx, r.Name)
+	err := runWhich(ctx, r.Name, r.All, r.JSON)
 	if err != nil {
 		if e := (&exec.ExitError{}); errors.As(err, &e) {
 			return nil
@@ -47,10 +49,16 @@ func runCommand(ctx *types.Context, name string) error {
 	return err //nolint:wrapcheck
 }
 
-func runWhich(ctx *types.Context, name string) error {
-	cmd := exec.Command("which", name)
+//nolint:cyclop
+func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
+	args := []string{name}
+	if all {
+		args = append([]string{"-a"}, args...)
+	}
+	cmd := exec.Command("which", args...)
 	output, err := cmd.Output()
 	if ctx.Debug {
+		log.Printf("Running: which %s", strings.Join(args, " "))
 		if len(output) != 0 {
 			log.Printf("😅 %s", output)
 		}
@@ -58,5 +66,44 @@ func runWhich(ctx *types.Context, name string) error {
 			log.Printf("💥 %v\n", err)
 		}
 	}
-	return fmt.Errorf("command run error: %w", err)
+	if err != nil {
+		return fmt.Errorf("command run error: %w", err)
+	}
+	found := strings.Split(strings.TrimSpace(
+		string(output),
+	), "\n")
+
+	if asJSON {
+		results := make([]map[string]string, 0, len(found))
+		for _, v := range found {
+			version, err := runCLI(ctx, v)
+			if err != nil {
+				return err
+			}
+			results = append(results, map[string]string{"path": v, "version": version})
+		}
+		encoded, err := toJSON(results)
+		if err != nil {
+			return err
+		}
+		success(ctx, encoded)
+		return nil
+	}
+
+	headers := []string{
+		"Path",
+		"Version",
+	}
+
+	rows := make([][]string, 0, len(found))
+
+	for _, path := range found {
+		version, err := runCLI(ctx, path)
+		if err != nil {
+			return err
+		}
+		rows = append(rows, []string{path, version})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
 }
