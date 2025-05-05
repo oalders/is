@@ -1,6 +1,5 @@
 # is: an inspector for your environment
 
-
 <!-- vim-markdown-toc GFM -->
 
 * [Introduction](#introduction)
@@ -395,6 +394,7 @@ is battery state like discharg
 ```
 
 Possible states include:
+
 - charging
 - discharging
 - idle
@@ -488,6 +488,7 @@ is battery current-charge eq 85.4
 ```
 
 Supported comparisons are:
+
 - `lt`
 - `lte`
 - `eq`
@@ -497,8 +498,6 @@ Supported comparisons are:
 - `ne`
 - `like`
 - `unlike`
-
-
 
 ### cli
 
