@@ -18,8 +18,10 @@ ok_exit_codes = 0
 
 [commands.golangci-lint]
 type = "lint"
+invoke = "per-dir"
+working_dir = "root"
+path_args = "dir"
 include = ["**/*.go",]
-run_mode = "dirs"
 cmd = [
     "golangci-lint",
     "run",
