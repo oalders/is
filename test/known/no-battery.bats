@@ -3,8 +3,8 @@
 bats_require_minimum_version 1.5.0
 
 setup() {
-    if ./is battery count eq 0; then
-        skip "Skipping battery tests as no battery found"
+    if ./is battery count gt 0; then
+        skip "Skipping the battery tests if a battery has been found"
     fi
 }
 
@@ -46,10 +46,6 @@ setup() {
 
 @test "is known battery last-full-capacity" {
     ./is known battery last-full-capacity
-}
-
-@test "is known battery state" {
-    ./is battery count gt 0 && ./is known battery state
 }
 
 @test "is known battery voltage" {

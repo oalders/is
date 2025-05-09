@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eux -o pipefail
+
+go install mvdan.cc/gofumpt@latest
+go install golang.org/x/tools/cmd/goimports@latest
+
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh |
+    sh -s -- -b "$(go env GOPATH)/bin" latest
+
+env | sort
+mkdir -p ~/.local/bin
+
+curl --silent --location \
+https://raw.githubusercontent.com/houseabsolute/ubi/master/bootstrap/bootstrap-ubi.sh |
+    TARGET=~/.local/bin sh
+
+ubi --project houseabsolute/omegasort --in ~/.local/bin
+ubi --project houseabsolute/precious --in ~/.local/bin
