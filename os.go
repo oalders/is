@@ -11,6 +11,8 @@ import (
 )
 
 // Run "is os ...".
+//
+//nolint:funlen
 func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 	attr, err := os.Info(ctx, r.Attr)
 	ctx.Success = false // os.Info set success to true
@@ -23,20 +25,28 @@ func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 	case "version":
 		switch {
 		case r.Major:
-			return compare.VersionSegment(ctx, r.Op, attr, r.Val, 0)
+			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 0)
+			ctx.Success = success
+			return err
 		case r.Minor:
-			return compare.VersionSegment(ctx, r.Op, attr, r.Val, 1)
+			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 1)
+			ctx.Success = success
+			return err
 		case r.Patch:
-			return compare.VersionSegment(ctx, r.Op, attr, r.Val, 2)
+			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 2)
+			ctx.Success = success
+			return err
 		}
 
 		if r.Op == ops.Like || r.Op == ops.Unlike {
-			return compare.Strings(ctx, r.Op, attr, r.Val)
+			success, err := compare.Strings(ctx, r.Op, attr, r.Val)
+			ctx.Success = success
+			return err
 		}
 
-		err = compare.Versions(ctx, r.Op, attr, r.Val)
+		success, err := compare.Versions(ctx, r.Op, attr, r.Val)
+		ctx.Success = success
 		if err != nil {
-			ctx.Success = false
 			return err
 		}
 	default:
@@ -51,9 +61,11 @@ func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 
 		switch r.Op {
 		case ops.Eq, ops.In, ops.Ne, ops.Like, ops.Unlike:
-			err = compare.Strings(ctx, r.Op, attr, r.Val)
+			success, err := compare.Strings(ctx, r.Op, attr, r.Val)
+			ctx.Success = success
+			return err
 		}
 	}
 
-	return err
+	return nil
 }

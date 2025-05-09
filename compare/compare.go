@@ -19,115 +19,126 @@ type Number interface {
 	int | float32 | float64
 }
 
-func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T) {
+func IntegersOrFloats[T Number](ctx *types.Context, operator string, got, want T) (bool, error) {
 	if ctx.Debug {
 		log.Printf("Evaluating %v %s %v\n", got, operator, want)
 	}
+
 	switch operator {
 	case ops.Eq:
-		ctx.Success = got == want
+		return got == want, nil
 	case ops.Ne:
-		ctx.Success = got != want
+		return got != want, nil
 	case ops.Gt:
-		ctx.Success = got > want
+		return got > want, nil
 	case ops.Gte:
-		ctx.Success = got >= want
+		return got >= want, nil
 	case ops.Lt:
-		ctx.Success = got < want
+		return got < want, nil
 	case ops.Lte:
-		ctx.Success = got <= want
+		return got <= want, nil
 	default:
-		panic(operator + " is not a valid operator")
+		return false, fmt.Errorf("unsupported operator: %s", operator)
 	}
 }
 
-func Floats(ctx *types.Context, operator, g, w string) error { //nolint:varnamelen
+func Floats(ctx *types.Context, operator, g, w string) (bool, error) { //nolint:varnamelen
 	if operator == ops.In {
 		wantList, err := want2List(w)
 		if err != nil {
-			return err
+			return false, err
 		}
 		for _, v := range wantList {
-			err := Floats(ctx, ops.Eq, g, v)
+			success, err := Floats(ctx, ops.Eq, g, v)
 			if err != nil {
-				return err
+				return false, err
 			}
-			if ctx.Success {
-				return nil
+			if success {
+				return true, nil
 			}
 		}
-		return nil
+		return false, nil
 	}
 	got, err := strconv.ParseFloat(g, 32)
 	if err != nil {
-		return fmt.Errorf("wanted result must be a float: %w", err)
+		return false, fmt.Errorf("wanted result must be a float: %w", err)
 	}
 	want, err := strconv.ParseFloat(w, 32)
 	if err != nil {
-		return fmt.Errorf("command output is not a float: %w", err)
+		return false, fmt.Errorf("command output is not a float: %w", err)
 	}
 
 	if ctx.Debug {
 		log.Printf("compare floats %f %s %f", got, operator, want)
 	}
-	IntegersOrFloats(ctx, operator, got, want)
-	return nil
+	success, err := IntegersOrFloats(ctx, operator, got, want)
+	if err != nil {
+		return false, err
+	}
+	return success, nil
 }
 
-func Integers(ctx *types.Context, operator, g, w string) error { //nolint:varnamelen
+func Integers(ctx *types.Context, operator, g, w string) (bool, error) { //nolint:varnamelen
 	if operator == ops.In {
 		wantList, err := want2List(w)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		for _, v := range wantList {
-			err := Integers(ctx, ops.Eq, g, v)
+			success, err := Integers(ctx, ops.Eq, g, v)
 			if err != nil {
-				return err
+				return false, err
 			}
-			if ctx.Success {
-				return nil
+			if success {
+				return true, nil
 			}
 		}
-		return nil
+		return false, nil
 	}
 	got, err := strconv.Atoi(g)
 	if err != nil {
-		return fmt.Errorf("wanted result must be an integer: %w", err)
+		return false, fmt.Errorf("wanted result must be an integer: %w", err)
 	}
 	want, err := strconv.Atoi(w)
 	if err != nil {
-		return fmt.Errorf("command output is not an integer: %w", err)
+		return false, fmt.Errorf("command output is not an integer: %w", err)
 	}
 
 	if ctx.Debug {
 		log.Printf("compare integers %d %s %d", got, operator, want)
 	}
-	IntegersOrFloats(ctx, operator, got, want)
-	return nil
+	success, err := IntegersOrFloats(ctx, operator, got, want)
+	if err != nil {
+		return false, err
+	}
+	return success, nil
 }
 
-func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segment uint) error {
+func VersionSegment(
+	ctx *types.Context,
+	operator, gotStr, wantStr string,
+	segment uint,
+) (bool, error) {
 	if operator == ops.In {
 		wantList, err := want2List(wantStr)
 		if err != nil {
-			return err
+			return false, err
 		}
 		for _, v := range wantList {
-			err := VersionSegment(ctx, ops.Eq, gotStr, v, segment)
+			success, err := VersionSegment(ctx, ops.Eq, gotStr, v, segment)
 			if err != nil {
-				return err
+				return false, err
 			}
-			if ctx.Success {
-				return nil
+			if success {
+				return true, nil
 			}
 		}
-		return nil
+		return false, nil
 	}
 	got, err := version.NewVersion(gotStr)
 	if err != nil {
-		return fmt.Errorf("parse version from output: %w", err)
+		return false, fmt.Errorf("parse version from output: %w", err)
 	}
 
 	segments := got.Segments()
@@ -143,98 +154,107 @@ func VersionSegment(ctx *types.Context, operator, gotStr, wantStr string, segmen
 func Versions( //nolint:cyclop
 	ctx *types.Context,
 	operator, gotStr, wantStr string,
-) error {
-	var success bool
+) (bool, error) {
 	maybeDebug(ctx, "versions", operator, gotStr, wantStr)
 
 	switch operator {
 	case ops.In:
 		wantList, err := want2List(wantStr)
 		if err != nil {
-			return err
+			return false, err
 		}
 		for _, v := range wantList {
-			err := Versions(ctx, ops.Eq, gotStr, v)
+			success, err := Versions(ctx, ops.Eq, gotStr, v)
 			if err != nil {
-				return err
+				return false, err
 			}
-			if ctx.Success {
-				return nil
+			if success {
+				return true, nil
 			}
 		}
-		return nil
+		return false, nil
 	case ops.Like, ops.Unlike:
 		return Strings(ctx, operator, gotStr, wantStr)
 	}
 
 	got, err := version.NewVersion(gotStr)
 	if err != nil {
-		return err
+		return false, err
 	}
 	want, err := version.NewVersion(wantStr)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	switch operator {
 	case ops.Eq:
-		success = got.Equal(want)
+		return got.Equal(want), nil
 	case ops.Ne:
-		success = got.Compare(want) != 0
+		return got.Compare(want) != 0, nil
 	case ops.Lt:
-		success = got.LessThan(want)
+		return got.LessThan(want), nil
 	case ops.Lte:
-		success = got.Compare(want) <= 0
+		return got.Compare(want) <= 0, nil
 	case ops.Gt:
-		success = got.GreaterThan(want)
+		return got.GreaterThan(want), nil
 	case ops.Gte:
-		success = got.Compare(want) >= 0
+		return got.Compare(want) >= 0, nil
+	default:
+		return false, fmt.Errorf("unsupported operator: %s", operator)
 	}
-
-	ctx.Success = success
-	return nil
 }
 
-func Strings(ctx *types.Context, operator, got, want string) error {
-	var success bool
-
+//nolint:cyclop
+func Strings(ctx *types.Context, operator, got, want string) (bool, error) {
 	maybeDebug(ctx, "strings", operator, got, want)
 
 	switch operator {
 	case ops.Eq:
-		success = got == want
+		return got == want, nil
 	case ops.In:
 		wantList, err := want2List(want)
 		if err != nil {
-			return err
+			return false, err
 		}
-		success = slices.Contains(wantList, got)
+		return slices.Contains(wantList, got), nil
 	case ops.Ne:
-		success = got != want
-	case ops.Like, ops.Unlike:
 		matched, err := regexp.MatchString(want, got)
 		if err != nil {
-			return fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
+			return false, fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
 		}
 		ctx.Success = matched
 		if operator == ops.Unlike {
 			ctx.Success = !matched
 		}
-		return nil
+		return got != want, nil
+	case ops.Like:
+		success, err := regexp.MatchString(want, got)
+		if err != nil {
+			return false, fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
+		}
+		return success, nil
+	case ops.Unlike:
+		success, err := regexp.MatchString(want, got)
+		if err != nil {
+			return false, fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
+		}
+		return !success, nil
+	default:
+		return false, fmt.Errorf("unsupported operator: %s", operator)
 	}
-
-	ctx.Success = success
-	return nil
 }
 
 //nolint:cyclop
-func Optimistic(ctx *types.Context, operator, got, want string) error {
+func Optimistic(ctx *types.Context, operator, got, want string) bool {
 	stringy := []string{ops.Eq, ops.In, ops.Ne, ops.Like, ops.Unlike}
 	reg := []string{ops.Like, ops.Unlike}
 	if slices.Contains(stringy, operator) {
-		err := Strings(ctx, operator, got, want)
-		if err != nil || ctx.Success || slices.Contains(reg, operator) {
-			return err
+		success, err := Strings(ctx, operator, got, want)
+		if err != nil && ctx.Debug {
+			log.Printf("cannot compare strings: %s", err)
+		}
+		if success || slices.Contains(reg, operator) {
+			return success
 		}
 	}
 
@@ -242,23 +262,31 @@ func Optimistic(ctx *types.Context, operator, got, want string) error {
 	// string or a numeric comparison, so we'll suppress the error message
 	// unless debugging is enabled.
 
-	if err := Integers(ctx, operator, got, want); err == nil {
-		return nil
-	} else if ctx.Debug {
-		log.Printf("cannot compare integers: %s", err)
+	{
+		success, err := Integers(ctx, operator, got, want)
+		if err != nil && ctx.Debug {
+			log.Printf("cannot compare integers: %s", err)
+		}
+		if success {
+			return true
+		}
 	}
 
-	if err := Floats(ctx, operator, got, want); err == nil {
-		return nil
-	} else if ctx.Debug {
-		log.Printf("cannot compare floats: %s", err)
+	{
+		success, err := Floats(ctx, operator, got, want)
+		if err != nil && ctx.Debug {
+			log.Printf("cannot compare floats: %s", err)
+		}
+		if success {
+			return true
+		}
 	}
 
-	err := Versions(ctx, operator, got, want)
+	success, err := Versions(ctx, operator, got, want)
 	if err != nil && ctx.Debug {
 		log.Printf("cannot compare versions: %s", err)
 	}
-	return nil
+	return success
 }
 
 func want2List(want string) ([]string, error) {

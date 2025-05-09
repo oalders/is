@@ -9,5 +9,7 @@ import (
 
 // Run "is arch ...".
 func (r *ArchCmd) Run(ctx *types.Context) error {
-	return compare.Strings(ctx, r.Op, runtime.GOARCH, r.Val)
+	success, err := compare.Strings(ctx, r.Op, runtime.GOARCH, r.Val)
+	ctx.Success = success
+	return err
 }

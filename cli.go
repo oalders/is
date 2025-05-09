@@ -32,23 +32,35 @@ func execCommand(ctx *types.Context, stream, cmd string, args []string) (string,
 // Run "is cli ...".
 func (r *CLICmd) Run(ctx *types.Context) error {
 	if r.Age.Name != "" {
-		return runCliAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
+		success, err := runCliAge(ctx, r.Age.Name, r.Age.Op, r.Age.Val, r.Age.Unit)
+		ctx.Success = success
+		return err
 	}
 	if r.Version.Name != "" {
-		output, err := parser.CLIOutput(ctx, r.Version.Name)
-		if err != nil {
-			return err
+		output, parserErr := parser.CLIOutput(ctx, r.Version.Name)
+		if parserErr != nil {
+			return parserErr
 		}
+		var success bool
+		var err error
 		switch {
 		case r.Version.Major:
-			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 0)
+			success, err = compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 0)
+			ctx.Success = success
+			return err
 		case r.Version.Minor:
-			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 1)
+			success, err = compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 1)
+			ctx.Success = success
+			return err
 		case r.Version.Patch:
-			return compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 2)
+			success, err = compare.VersionSegment(ctx, r.Version.Op, output, r.Version.Val, 2)
+			ctx.Success = success
+			return err
 		}
 
-		return compare.Versions(ctx, r.Version.Op, output, r.Version.Val)
+		success, err = compare.Versions(ctx, r.Version.Op, output, r.Version.Val)
+		ctx.Success = success
+		return err
 	}
 
 	output, err := execCommand(ctx, r.Output.Stream, r.Output.Command, r.Output.Arg)
@@ -56,10 +68,15 @@ func (r *CLICmd) Run(ctx *types.Context) error {
 		return err
 	}
 
-	return compareOutput(ctx, r.Output.Compare, r.Output.Op, output, r.Output.Val)
+	success, err := compareOutput(ctx, r.Output.Compare, r.Output.Op, output, r.Output.Val)
+	ctx.Success = success
+	return err
 }
 
-func compareOutput(ctx *types.Context, comparisonType, operator, output, want string) error {
+func compareOutput(
+	ctx *types.Context,
+	comparisonType, operator, output, want string,
+) (bool, error) {
 	switch comparisonType {
 	case "string":
 		return compare.Strings(ctx, operator, output, want)
@@ -70,20 +87,15 @@ func compareOutput(ctx *types.Context, comparisonType, operator, output, want st
 	case "float":
 		return compare.Floats(ctx, operator, output, want)
 	default:
-		return compare.Optimistic(ctx, operator, output, want)
+		return compare.Optimistic(ctx, operator, output, want), nil
 	}
 }
 
-func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) {
+func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, path string) bool {
 	// Returns -1 if cli age is older than target time
 	// Returns 0 if they are the same
 	// Returns 1 if cli age is younger than target time
-	compare := modTime.Compare(targetTime)
-	if (operator == ops.Gt || operator == ops.Gte) && compare < 1 {
-		ctx.Success = true
-	} else if (operator == ops.Lt || operator == ops.Lte) && compare >= 0 {
-		ctx.Success = true
-	}
+
 	if ctx.Debug {
 		translate := map[string]string{"gt": "before", "lt": "after"}
 		log.Printf(
@@ -94,28 +106,35 @@ func compareAge(ctx *types.Context, modTime, targetTime time.Time, operator, pat
 			targetTime.Format("2006-01-02 15:04:05"),
 		)
 	}
+
+	compare := modTime.Compare(targetTime)
+	if (operator == ops.Gt || operator == ops.Gte) && compare < 1 {
+		return true
+	} else if (operator == ops.Lt || operator == ops.Lte) && compare >= 0 {
+		return true
+	}
+	return false
 }
 
-func runCliAge(ctx *types.Context, name, ageOperator, ageValue, ageUnit string) error {
+func runCliAge(ctx *types.Context, name, ageOperator, ageValue, ageUnit string) (bool, error) {
 	path, err := exec.LookPath(name)
 	if err != nil {
-		return fmt.Errorf("could not find command: %w", err)
+		return false, fmt.Errorf("could not find command: %w", err)
 	}
 	return runAge(ctx, path, ageOperator, ageValue, ageUnit)
 }
 
-func runAge(ctx *types.Context, path, ageOperator, ageValue, ageUnit string) error {
+func runAge(ctx *types.Context, path, ageOperator, ageValue, ageUnit string) (bool, error) {
 	info, err := os.Stat(path)
 	if err != nil {
-		return fmt.Errorf("could not stat command: %w", err)
+		return false, fmt.Errorf("could not stat command: %w", err)
 	}
 
 	dur, err := age.StringToDuration(ageValue, ageUnit)
 	if err != nil {
-		return err
+		return false, err
 	}
-	targetTime := time.Now().Add(*dur)
 
-	compareAge(ctx, info.ModTime(), targetTime, ageOperator, path)
-	return err
+	targetTime := time.Now().Add(*dur)
+	return compareAge(ctx, info.ModTime(), targetTime, ageOperator, path), nil
 }

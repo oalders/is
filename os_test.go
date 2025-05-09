@@ -33,7 +33,6 @@ func TestOSInfo(t *testing.T) {
 		ctx := types.Context{Debug: true}
 		found, err := os.Info(&ctx, v)
 		assert.NoError(t, err, v)
-		assert.True(t, ctx.Success, v)
 		assert.NotEmpty(t, found, v)
 	}
 }

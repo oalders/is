@@ -23,7 +23,6 @@ const (
 func Info(ctx *types.Context, argName string) (string, error) {
 	maybeDebug(ctx)
 	if argName == attr.Name {
-		ctx.Success = true
 		return runtime.GOOS, nil
 	}
 
@@ -35,25 +34,19 @@ func Info(ctx *types.Context, argName string) (string, error) {
 		return "", nil
 	}
 
-	result := ""
 	macVersion, err := mac.Version()
 	if err != nil {
-		return result, err
-	}
-	switch argName {
-	case attr.Version:
-		result = macVersion
-	case attr.VersionCodename:
-		name := mac.CodeName(macVersion)
-		if name != "" {
-			result = name
-		}
-	}
-	if result != "" {
-		ctx.Success = true
+		return "", err
 	}
 
-	return result, nil
+	switch argName {
+	case attr.Version:
+		return macVersion, nil
+	case attr.VersionCodename:
+		return mac.CodeName(macVersion), nil
+	}
+
+	return "", nil
 }
 
 func Aggregated(ctx *types.Context) (string, error) {
@@ -67,9 +60,9 @@ func Aggregated(ctx *types.Context) (string, error) {
 	release.Name = runtime.GOOS
 
 	if runtime.GOOS == darwin {
-		v, err := mac.Version()
-		if err != nil {
-			return "", err
+		v, versionErr := mac.Version()
+		if versionErr != nil {
+			return "", versionErr
 		}
 		release.Version = v
 		release.VersionCodeName = mac.CodeName(release.Version)
@@ -105,9 +98,9 @@ func linuxOS(ctx *types.Context, argName string) (string, error) {
 		result = release.VersionCodeName
 	}
 	if result != "" {
-		ctx.Success = true
+		return result, nil
 	}
-	return result, err
+	return "", nil
 }
 
 func maybeDebug(ctx *types.Context) {
