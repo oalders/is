@@ -136,7 +136,7 @@ func success(ctx *types.Context, msg string) {
 
 func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
 	if attr == "os" {
-		result, err := is_os.Aggregated(ctx)
+		result, err := is_os.AsJSON(ctx)
 		if err != nil {
 			return err
 		}

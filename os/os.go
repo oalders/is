@@ -49,7 +49,7 @@ func Info(ctx *types.Context, argName string) (string, error) {
 	return "", nil
 }
 
-func Aggregated(ctx *types.Context) (string, error) {
+func AsJSON(ctx *types.Context) (string, error) {
 	release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 	if err != nil {
 		return "", err
