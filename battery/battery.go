@@ -38,7 +38,6 @@ var attributeMap = map[string]string{ //nolint: gochecknoglobals
 	"voltage":            "Voltage",
 }
 
-//nolint:cyclop
 func Get(ctx *types.Context, nth int) (*Battery, error) {
 	if nth == 0 {
 		return nil, errors.New("use --nth 1 to get the first battery")

@@ -77,6 +77,7 @@ type Battery struct {
 type Summary struct {
 	Attr string `arg:"" required:"" name:"attribute" enum:"battery,os" help:"[battery|os]"`
 	Nth  int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
+	JSON bool   `help:"print summary as JSON"`
 }
 
 //nolint:lll,govet,nolintlint
@@ -142,7 +143,7 @@ type KnownCmd struct {
 	OS      KnownOS  `cmd:"" help:"Print without check. e.g. \"is known os name\""`
 	CLI     KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
 	Battery Battery  `cmd:"" help:"Print battery information. e.g. \"is known battery state\""`
-	Summary Summary  `cmd:"" help:"JSON summary of available data."`
+	Summary Summary  `cmd:"" help:"summary of available data."`
 }
 
 // ThereCmd is configuration for finding executables.
