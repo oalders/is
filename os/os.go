@@ -49,10 +49,10 @@ func Info(ctx *types.Context, argName string) (string, error) {
 	return "", nil
 }
 
-func AsJSON(ctx *types.Context) (string, error) {
+func ReleaseSummary(ctx *types.Context) (*types.OSRelease, error) {
 	release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if release == nil {
 		release = &types.OSRelease{}
@@ -62,10 +62,18 @@ func AsJSON(ctx *types.Context) (string, error) {
 	if runtime.GOOS == darwin {
 		v, versionErr := mac.Version()
 		if versionErr != nil {
-			return "", versionErr
+			return nil, versionErr
 		}
 		release.Version = v
 		release.VersionCodeName = mac.CodeName(release.Version)
+	}
+	return release, nil
+}
+
+func AsJSON(ctx *types.Context) (string, error) {
+	release, err := ReleaseSummary(ctx)
+	if err != nil {
+		return "", err
 	}
 	data, err := json.MarshalIndent(release, "", "    ")
 	if err != nil {
