@@ -193,20 +193,40 @@ i'm on darwin for sure
 
 macOS:
 
-```text
-$ is known os name --debug
+```shell
+$ is known summary os
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Attribute        ┃ Value   ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ name             ┃ darwin  ┃
+┃ version          ┃ 15.4.1  ┃
+┃ version-codename ┃ sequoia ┃
+┃ id               ┃         ┃
+┃ id-like          ┃         ┃
+┃ pretty-name      ┃         ┃
+┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+```
+
+```shell
+$ is known summary os --json
+```
+
+```json
 {
     "name": "darwin",
-    "version": "13.4",
-    "version-codename": "ventura"
+    "version": "15.4.1",
+    "version-codename": "sequoia"
 }
-darwin
+```
 ```
 
 Linux:
 
-```text
-is known os name --debug
+```shell
+$ is known summary os --json
+```
+
+```json
 {
     "id": "ubuntu",
     "id-like": "debian",
@@ -215,7 +235,6 @@ is known os name --debug
     "version": "22.04",
     "version-codename": "jammy"
 }
-linux
 ```
 
 ### Can user sudo without a password?
