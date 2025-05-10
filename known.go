@@ -136,50 +136,102 @@ func success(ctx *types.Context, msg string) {
 
 func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
 	if attr == "os" {
-		result, err := is_os.AsJSON(ctx)
+		return osSummary(ctx, asJSON)
+	}
+	if attr == "battery" {
+		return batterySummary(ctx, nth, asJSON)
+	}
+	return fmt.Errorf("unknown attribute: %s", attr)
+}
+
+func toJSON(record any) (string, error) {
+	data, err := json.MarshalIndent(record, "", "    ")
+	if err != nil {
+		return "", fmt.Errorf("could not marshal indented JSON (%+v): %w", record, err)
+	}
+
+	return string(data), nil
+}
+
+func osSummary(ctx *types.Context, asJSON bool) error {
+	summary, err := is_os.ReleaseSummary(ctx)
+	if err != nil {
+		return err
+	}
+	if asJSON {
+		result, err := toJSON(summary)
 		if err != nil {
 			return err
 		}
 		success(ctx, result)
 		return nil
 	}
-	if attr == "battery" {
-		batt, err := battery.Get(ctx, nth)
+	headers := []string{
+		"Attribute",
+		"Value",
+	}
+
+	rows := [][]string{
+		{"name", summary.Name},
+		{"version", summary.Version},
+		{"version-codename", summary.VersionCodeName},
+		{"id", summary.ID},
+		{"id-like", summary.IDLike},
+		{"pretty-name", summary.PrettyName},
+	}
+
+	if summary.ID != "" {
+		rows = append(rows, []string{"id", summary.ID})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
+}
+
+func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
+	summary, err := battery.Get(ctx, nth)
+	if err != nil {
+		return err
+	}
+	if asJSON {
+		if summary.Count == 0 {
+			result, err := toJSON(map[string]int{"count": 0})
+			if err != nil {
+				return err
+			}
+			success(ctx, result)
+			return nil
+		}
+		result, err := toJSON(summary)
 		if err != nil {
 			return err
 		}
-		if asJSON {
-			data, err := json.MarshalIndent(batt, "", "    ")
-			if err != nil {
-				return errors.Join(
-					fmt.Errorf("could not marshal indented JSON (%+v)", batt),
-					err,
-				)
-			}
-			success(ctx, string(data))
-			return nil
-		}
-
-		headers := []string{
-			"Attribute",
-			"Value",
-			"Units",
-		}
-
-		rows := [][]string{
-			{"battery-number", fmt.Sprintf("%d", batt.BatteryNumber)},
-			{"charge-rate", fmt.Sprintf("%v", batt.ChargeRate), "mW"},
-			{"count", fmt.Sprintf("%d", batt.Count)},
-			{"current-capacity", fmt.Sprintf("%v", batt.CurrentCapacity), "mWh"},
-			{"current-charge", fmt.Sprintf("%v", batt.CurrentCharge), "%"},
-			{"design-capacity", fmt.Sprintf("%v", batt.DesignCapacity), "mWh"},
-			{"design-voltage", fmt.Sprintf("%v", batt.DesignVoltage), "mWh"},
-			{"last-full-capacity", fmt.Sprintf("%v", batt.LastFullCapacity), "mWh"},
-			{"state", fmt.Sprintf("%v", batt.State), ""},
-			{"voltage", fmt.Sprintf("%v", batt.Voltage), "V"},
-		}
-		success(ctx, tabular(headers, rows))
+		success(ctx, result)
 		return nil
 	}
-	return fmt.Errorf("unknown attribute: %s", attr)
+
+	headers := []string{
+		"Attribute",
+		"Value",
+	}
+
+	var rows [][]string
+
+	if summary.Count > 0 {
+		rows = [][]string{
+			{"battery-number", fmt.Sprintf("%d", summary.BatteryNumber)},
+			{"charge-rate", fmt.Sprintf("%v mW", summary.ChargeRate)},
+			{"count", fmt.Sprintf("%d", summary.Count)},
+			{"current-capacity", fmt.Sprintf("%v mWh", summary.CurrentCapacity)},
+			{"current-charge", fmt.Sprintf("%v %%", summary.CurrentCharge)},
+			{"design-capacity", fmt.Sprintf("%v mWh", summary.DesignCapacity)},
+			{"design-voltage", fmt.Sprintf("%v mWh", summary.DesignVoltage)},
+			{"last-full-capacity", fmt.Sprintf("%v mWh", summary.LastFullCapacity)},
+			{"state", fmt.Sprintf("%v", summary.State)},
+			{"voltage", fmt.Sprintf("%v V", summary.Voltage)},
+		}
+	} else {
+		rows = append(rows, []string{"count", "0"})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
 }

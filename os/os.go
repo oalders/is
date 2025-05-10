@@ -2,9 +2,7 @@
 package os
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"runtime"
 
@@ -68,19 +66,6 @@ func ReleaseSummary(ctx *types.Context) (*types.OSRelease, error) {
 		release.VersionCodeName = mac.CodeName(release.Version)
 	}
 	return release, nil
-}
-
-func AsJSON(ctx *types.Context) (string, error) {
-	release, err := ReleaseSummary(ctx)
-	if err != nil {
-		return "", err
-	}
-	data, err := json.MarshalIndent(release, "", "    ")
-	if err != nil {
-		return "", fmt.Errorf("could not marshal indented JSON (%+v): %w", release, err)
-	}
-
-	return string(data), nil
 }
 
 func linuxOS(ctx *types.Context, argName string) (string, error) {
