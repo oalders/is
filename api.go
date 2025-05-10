@@ -148,5 +148,8 @@ type KnownCmd struct {
 
 // ThereCmd is configuration for finding executables.
 type ThereCmd struct {
-	Name string `arg:"" required:""`
+	Name    string `arg:"" required:""`
+	All     bool   `help:"Print all found binaries"`
+	JSON    bool   `help:"Print output in JSON format"`
+	Verbose bool   `help:"Show binary versions"`
 }
