@@ -2,16 +2,20 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"runtime"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 	"github.com/oalders/is/attr"
 	"github.com/oalders/is/battery"
-	"github.com/oalders/is/os"
+	is_os "github.com/oalders/is/os"
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
@@ -21,40 +25,47 @@ import (
 //
 //nolint:cyclop
 func (r *KnownCmd) Run(ctx *types.Context) error {
-	var err error
-	var result string
-	switch {
-	case r.OS.Attr != "":
-		result, err = os.Info(ctx, r.OS.Attr)
-	case r.CLI.Attr != "":
-		result, err = runCLI(ctx, r.CLI.Name)
-	case r.Battery.Attr != "":
-		result, err = battery.GetAttrAsString(
-			ctx,
-			r.Battery.Attr,
-			r.Battery.Round,
-			r.Battery.Nth,
-		)
-	case r.Arch.Attr != "":
-		result = runtime.GOARCH
-	}
+	result := ""
+	{
+		var err error
 
-	if err != nil {
-		return err
-	}
-
-	isVersion, segment, err := isVersion(r)
-	if err != nil {
-		return err
-	}
-
-	if result != "" && isVersion {
-		got, versionErr := version.NewVersion(result)
-		if versionErr != nil {
-			return fmt.Errorf("parse version from output: %w", versionErr)
+		switch {
+		case r.Summary.Attr != "":
+			return summary(ctx, r.Summary.Attr, r.Summary.Nth, r.Summary.JSON)
+		case r.OS.Attr != "":
+			result, err = is_os.Info(ctx, r.OS.Attr)
+		case r.CLI.Attr != "":
+			result, err = runCLI(ctx, r.CLI.Name)
+		case r.Battery.Attr != "":
+			result, err = battery.GetAttrAsString(
+				ctx,
+				r.Battery.Attr,
+				r.Battery.Round,
+				r.Battery.Nth,
+			)
+		case r.Arch.Attr != "":
+			success(ctx, runtime.GOARCH)
+			return nil
 		}
-		segments := got.Segments()
-		result = fmt.Sprintf("%d", segments[segment])
+		if err != nil {
+			return err
+		}
+	}
+
+	if result != "" {
+		isVersion, segment, versionErr := isVersion(r)
+		if versionErr != nil {
+			return versionErr
+		}
+
+		if isVersion {
+			got, versionErr := version.NewVersion(result)
+			if versionErr != nil {
+				return fmt.Errorf("parse version from output: %w", versionErr)
+			}
+			segments := got.Segments()
+			result = fmt.Sprintf("%d", segments[segment])
+		}
 	}
 
 	if result != "" {
@@ -63,8 +74,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 
 	//nolint:forbidigo
 	fmt.Println(result)
-
-	return err
+	return nil
 }
 
 //nolint:cyclop
@@ -104,4 +114,124 @@ func runCLI(ctx *types.Context, cliName string) (string, error) {
 		result = strings.TrimRight(result, "\n")
 	}
 	return result, err
+}
+
+func tabular(headers []string, rows [][]string) string {
+	renderer := lipgloss.NewRenderer(os.Stdout)
+
+	return table.New().
+		Headers(headers...).
+		Rows(rows...).
+		Border(lipgloss.ThickBorder()).
+		BorderStyle(renderer.NewStyle().Foreground(lipgloss.Color("238"))).
+		StyleFunc(func(_, _ int) lipgloss.Style {
+			return renderer.NewStyle().Padding(0, 1)
+		}).String()
+}
+
+func success(ctx *types.Context, msg string) {
+	fmt.Println(msg) //nolint:forbidigo
+	ctx.Success = true
+}
+
+func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
+	if attr == "os" {
+		return osSummary(ctx, asJSON)
+	}
+	if attr == "battery" {
+		return batterySummary(ctx, nth, asJSON)
+	}
+	return fmt.Errorf("unknown attribute: %s", attr)
+}
+
+func toJSON(record any) (string, error) {
+	data, err := json.MarshalIndent(record, "", "    ")
+	if err != nil {
+		return "", fmt.Errorf("could not marshal indented JSON (%+v): %w", record, err)
+	}
+
+	return string(data), nil
+}
+
+func osSummary(ctx *types.Context, asJSON bool) error {
+	summary, err := is_os.ReleaseSummary(ctx)
+	if err != nil {
+		return err
+	}
+	if asJSON {
+		result, err := toJSON(summary)
+		if err != nil {
+			return err
+		}
+		success(ctx, result)
+		return nil
+	}
+	headers := []string{
+		"Attribute",
+		"Value",
+	}
+
+	rows := [][]string{
+		{"name", summary.Name},
+		{"version", summary.Version},
+		{"version-codename", summary.VersionCodeName},
+		{"id", summary.ID},
+		{"id-like", summary.IDLike},
+		{"pretty-name", summary.PrettyName},
+	}
+
+	if summary.ID != "" {
+		rows = append(rows, []string{"id", summary.ID})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
+}
+
+func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
+	summary, err := battery.Get(ctx, nth)
+	if err != nil {
+		return err
+	}
+	if asJSON {
+		if summary.Count == 0 {
+			result, err := toJSON(map[string]int{"count": 0})
+			if err != nil {
+				return err
+			}
+			success(ctx, result)
+			return nil
+		}
+		result, err := toJSON(summary)
+		if err != nil {
+			return err
+		}
+		success(ctx, result)
+		return nil
+	}
+
+	headers := []string{
+		"Attribute",
+		"Value",
+	}
+
+	var rows [][]string
+
+	if summary.Count > 0 {
+		rows = [][]string{
+			{"battery-number", fmt.Sprintf("%d", summary.BatteryNumber)},
+			{"charge-rate", fmt.Sprintf("%v mW", summary.ChargeRate)},
+			{"count", fmt.Sprintf("%d", summary.Count)},
+			{"current-capacity", fmt.Sprintf("%v mWh", summary.CurrentCapacity)},
+			{"current-charge", fmt.Sprintf("%v %%", summary.CurrentCharge)},
+			{"design-capacity", fmt.Sprintf("%v mWh", summary.DesignCapacity)},
+			{"design-voltage", fmt.Sprintf("%v mWh", summary.DesignVoltage)},
+			{"last-full-capacity", fmt.Sprintf("%v mWh", summary.LastFullCapacity)},
+			{"state", fmt.Sprintf("%v", summary.State)},
+			{"voltage", fmt.Sprintf("%v V", summary.Voltage)},
+		}
+	} else {
+		rows = append(rows, []string{"count", "0"})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
 }

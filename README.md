@@ -1,6 +1,5 @@
 # is: an inspector for your environment
 
-
 <!-- vim-markdown-toc GFM -->
 
 * [Introduction](#introduction)
@@ -81,6 +80,9 @@
       * [version](#version-2)
       * [version-codename](#version-codename-1)
     * [cli version](#cli-version)
+    * [summary](#summary)
+      * [battery](#battery-2)
+      * [os](#os-2)
   * [install-completions](#install-completions)
   * [--debug](#--debug-1)
   * [--help](#--help)
@@ -392,6 +394,7 @@ is battery state like discharg
 ```
 
 Possible states include:
+
 - charging
 - discharging
 - idle
@@ -485,6 +488,7 @@ is battery current-charge eq 85.4
 ```
 
 Supported comparisons are:
+
 - `lt`
 - `lte`
 - `eq`
@@ -494,8 +498,6 @@ Supported comparisons are:
 - `ne`
 - `like`
 - `unlike`
-
-
 
 ### cli
 
@@ -1282,6 +1284,44 @@ $ is known cli version --patch tmux
 
 Please see the docs on `os version` for more information on `--major`,
 `--minor` and `--patch`.
+
+#### summary
+
+`summary` is a special subcommand, which aggregates known data for another
+subcommand and emits it to `STDOUT` as `json`. This replaces the previous
+behaviour of `--debug` for `is known battery` and `is known os`.
+
+##### battery
+
+`is known summary battery`
+
+```json
+{
+    "state": "discharging",
+    "battery-number": 1,
+    "count": 1,
+    "charge-rate": 5700.2,
+    "current-capacity": 69231.52,
+    "current-charge": 91,
+    "design-capacity": 74620.8,
+    "design-voltage": 12.955,
+    "last-full-capacity": 75942.21,
+    "voltage": 12.955
+}
+```
+
+##### os
+
+`is known summary os`
+
+```json
+{
+    "name": "darwin",
+    "version": "15.4.1",
+    "version-codename": "sequoia"
+}
+```
+
 
 ### install-completions
 

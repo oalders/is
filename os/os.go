@@ -2,9 +2,7 @@
 package os
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"runtime"
 
@@ -49,10 +47,10 @@ func Info(ctx *types.Context, argName string) (string, error) {
 	return "", nil
 }
 
-func Aggregated(ctx *types.Context) (string, error) {
+func ReleaseSummary(ctx *types.Context) (*types.OSRelease, error) {
 	release, err := reader.MaybeReadINI(ctx, osReleaseFile)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if release == nil {
 		release = &types.OSRelease{}
@@ -62,17 +60,12 @@ func Aggregated(ctx *types.Context) (string, error) {
 	if runtime.GOOS == darwin {
 		v, versionErr := mac.Version()
 		if versionErr != nil {
-			return "", versionErr
+			return nil, versionErr
 		}
 		release.Version = v
 		release.VersionCodeName = mac.CodeName(release.Version)
 	}
-	data, err := json.MarshalIndent(release, "", "    ")
-	if err != nil {
-		return "", fmt.Errorf("could not marshal indented JSON (%+v): %w", release, err)
-	}
-
-	return string(data), nil
+	return release, nil
 }
 
 func linuxOS(ctx *types.Context, argName string) (string, error) {
@@ -105,10 +98,9 @@ func linuxOS(ctx *types.Context, argName string) (string, error) {
 
 func maybeDebug(ctx *types.Context) {
 	if ctx.Debug {
-		os, err := Aggregated(ctx)
-		if err != nil {
-			log.Printf("getting os info %s", err)
-		}
-		log.Printf("%s\n", os)
+		log.Printf(
+			"Run %q to see available os data\n",
+			"is known summary os",
+		)
 	}
 }

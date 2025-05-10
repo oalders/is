@@ -14,8 +14,13 @@ bats -r test
 mkdir -p coverage
 go tool covdata merge -i="$GOCOVERDIR" -o=coverage
 go tool covdata textfmt -i=coverage -o=coverage/coverage.out
+
+# Generate reports
 go tool cover -func=coverage/coverage.out
-go tool cover -html=coverage/coverage.out -o coverage.html
+go tool cover -html=coverage/coverage.out -o coverage/coverage.html
+
+# Create a copy specifically for Codecov
+cp coverage/coverage.out codecov.out
 
 # Cleanup
 rm -rf "$GOCOVERDIR"

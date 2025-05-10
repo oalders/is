@@ -1,7 +1,6 @@
 package battery
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -39,7 +38,6 @@ var attributeMap = map[string]string{ //nolint: gochecknoglobals
 	"voltage":            "Voltage",
 }
 
-//nolint:cyclop
 func Get(ctx *types.Context, nth int) (*Battery, error) {
 	if nth == 0 {
 		return nil, errors.New("use --nth 1 to get the first battery")
@@ -80,11 +78,10 @@ func Get(ctx *types.Context, nth int) (*Battery, error) {
 	}
 
 	if ctx.Debug {
-		data, err := json.MarshalIndent(batt, "", "    ")
-		if err != nil {
-			return &batt, errors.Join(fmt.Errorf("could not marshal indented JSON (%+v)", batt), err)
-		}
-		log.Printf("%s\n", data)
+		log.Printf(
+			"Run %q to see all available battery data\n",
+			"is known summary battery",
+		)
 	}
 	return &batt, nil
 }

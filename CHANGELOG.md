@@ -1,5 +1,7 @@
 # Changes
 
+* Add "is known summary battery" and "is known summary os"
+
 ## 0.7.0 - 2025-04-18
 
 - Add "is battery" and "is known battery" subcommands
