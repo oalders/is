@@ -1,6 +1,15 @@
 # Changes
 
-* Add "is known summary battery" and "is known summary os"
+- Replace some debugging output via:
+    - Add "is known summary battery"
+    - Add "is known summary battery --json"
+    - Add "is known summary os"
+    - Add "is known summary os --json"
+- Add "is there [binary-name] --verbose"
+- Add "is there [binary-name] --verbose --json"
+- Wrap "which -a"
+    - Add "is there [binary-name] --all"
+    - Add "is there [binary-name] --all --json"
 
 ## 0.7.0 - 2025-04-18
 
