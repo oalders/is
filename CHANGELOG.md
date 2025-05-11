@@ -1,5 +1,7 @@
 # Changes
 
+## 0.8.0 - 2025-05-10
+
 - Replace some debugging output via:
     - Add "is known summary battery"
     - Add "is known summary battery --json"
