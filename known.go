@@ -175,13 +175,16 @@ func osSummary(ctx *types.Context, asJSON bool) error {
 		{"name", summary.Name},
 		{"version", summary.Version},
 		{"version-codename", summary.VersionCodeName},
-		{"id", summary.ID},
-		{"id-like", summary.IDLike},
-		{"pretty-name", summary.PrettyName},
 	}
 
 	if summary.ID != "" {
 		rows = append(rows, []string{"id", summary.ID})
+	}
+	if summary.IDLike != "" {
+		rows = append(rows, []string{"id-like", summary.IDLike})
+	}
+	if summary.PrettyName != "" {
+		rows = append(rows, []string{"pretty-name", summary.PrettyName})
 	}
 	success(ctx, tabular(headers, rows))
 	return nil

@@ -1,5 +1,9 @@
 # Changes
 
+## 0.8.1 - 2025-05-30
+
+- Fix a bug where "id" showed up twice in a Linux os info summary
+
 ## 0.8.0 - 2025-05-10
 
 - Replace some debugging output via:
