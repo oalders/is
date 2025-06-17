@@ -18,6 +18,7 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		"dig":     "-v",
 		"hugo":    "version",
 		"go":      "version",
+		"gopls":   "version",
 		"lua":     "-v",
 		"openssl": "version",
 		"perldoc": "-V",
