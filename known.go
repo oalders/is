@@ -21,6 +21,11 @@ import (
 	"github.com/oalders/is/version"
 )
 
+const (
+	manpath = "MANPATH"
+	path    = "PATH"
+)
+
 // Run "is known ...".
 //
 //nolint:cyclop
@@ -259,7 +264,7 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 			if len(parts) == 2 {
 				env[name] = value
 			}
-			if name == "PATH" || name == "MANPATH" {
+			if name == path || name == manpath {
 				path := strings.Split(value, ":")
 				env[name] = path
 			}
@@ -277,7 +282,7 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 		parts := strings.SplitN(env, "=", 2)
 		name := parts[0]
 		value := parts[1]
-		if name == "PATH" || name == "MANPATH" {
+		if name == path || name == manpath {
 			path := strings.Split(value, ":")
 			value = strings.Join(path, "\n")
 		}
@@ -292,11 +297,11 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 func getEnv(name string, asJSON bool) (string, error) {
 	value := os.Getenv(name)
 	if asJSON {
-		var path []string
-		if name == "PATH" || name == "MANPATH" {
-			path = strings.Split(value, ":")
+		var paths []string
+		if name == path || name == manpath {
+			paths = strings.Split(value, ":")
 		}
-		result, err := toJSON(path)
+		result, err := toJSON(paths)
 		if err != nil {
 			return "", err
 		}
