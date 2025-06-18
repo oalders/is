@@ -294,26 +294,34 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 
 func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
 	value, set := os.LookupEnv(name)
-	if asJSON {
-		var values []string
-		if set && (name == path || name == manpath) {
-			values = strings.Split(value, ":")
-		} else if set {
-			values = append(values, value)
-		} else {
-			values = nil
-		}
-		result, err := toJSON(values)
-		if err != nil {
-			return "", err
-		}
-		if values != nil {
+
+	if !asJSON {
+		if set {
 			ctx.Success = true
 		}
-		return result, nil
+		return value, nil
 	}
+
+	// Handle JSON output
+	values := []string{}
+
+	switch {
+	case set && (name == path || name == manpath):
+		values = strings.Split(value, ":")
+	case set:
+		values = append(values, value)
+	default:
+		values = nil
+	}
+
+	result, err := toJSON(values)
+	if err != nil {
+		return "", err
+	}
+
 	if set {
 		ctx.Success = true
 	}
-	return value, nil
+
+	return result, nil
 }

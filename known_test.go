@@ -187,7 +187,7 @@ func Test_getEnv(t *testing.T) {
 		assert.Equal(t, "[\n    \"something\"\n]", strings.TrimSpace(value))
 	})
 
-	t.Run("non-existent variable", func(t *testing.T) {
+	t.Run("non-existent variable", func(t *testing.T) { //nolint:paralleltest,nolintlint
 		ctx := types.Context{}
 		// Test non-existent variable with non-JSON mode
 		value, err := getEnv(&ctx, "NON_EXISTENT_VAR", false)
