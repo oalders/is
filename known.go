@@ -42,7 +42,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		case r.CLI.Attr != "":
 			result, err = runCLI(ctx, r.CLI.Name)
 		case r.Var.Name != "":
-			result, err = getEnv(r.Var.Name, r.Var.JSON)
+			result, err = getEnv(ctx, r.Var.Name, r.Var.JSON)
 		case r.Battery.Attr != "":
 			result, err = battery.GetAttrAsString(
 				ctx,
@@ -75,7 +75,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		}
 	}
 
-	if result != "" {
+	if r.Var.Name == "" && result != "" {
 		ctx.Success = true
 	}
 
@@ -292,18 +292,28 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 	return nil
 }
 
-func getEnv(name string, asJSON bool) (string, error) {
-	value := os.Getenv(name)
+func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
+	value, set := os.LookupEnv(name)
 	if asJSON {
-		var paths []string
-		if name == path || name == manpath {
-			paths = strings.Split(value, ":")
+		var values []string
+		if set && (name == path || name == manpath) {
+			values = strings.Split(value, ":")
+		} else if set {
+			values = append(values, value)
+		} else {
+			values = nil
 		}
-		result, err := toJSON(paths)
+		result, err := toJSON(values)
 		if err != nil {
 			return "", err
 		}
+		if values != nil {
+			ctx.Success = true
+		}
 		return result, nil
+	}
+	if set {
+		ctx.Success = true
 	}
 	return value, nil
 }

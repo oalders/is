@@ -5,11 +5,13 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/oalders/is/attr"
 	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //nolint:unparam
@@ -120,4 +122,82 @@ func TestKnownCmd(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success, "success")
 	}
+}
+
+func Test_getEnv(t *testing.T) {
+	t.Run("regular environment variable", func(t *testing.T) {
+		ctx := types.Context{}
+		// Setup
+		testVarName := "TEST_ENV_VAR"
+		testValue := "test_value"
+		t.Setenv(testVarName, testValue)
+
+		// Test non-JSON retrieval
+		value, err := getEnv(&ctx, testVarName, false)
+		require.True(t, ctx.Success)
+		require.NoError(t, err)
+		assert.Equal(t, testValue, value)
+	})
+
+	t.Run("path environment variable as JSON", func(t *testing.T) {
+		ctx := types.Context{}
+		// Setup
+		pathValue := "/usr/bin:/usr/local/bin:/bin"
+		t.Setenv(path, pathValue)
+
+		// Test JSON retrieval
+		value, err := getEnv(&ctx, path, true)
+		require.NoError(t, err)
+		assert.Contains(t, value, "/usr/bin")
+		assert.Contains(t, value, "/usr/local/bin")
+		assert.Contains(t, value, "/bin")
+
+		// Verify it's valid JSON
+		assert.True(t, strings.HasPrefix(value, "["))
+		assert.True(t, strings.HasSuffix(value, "]"))
+	})
+
+	t.Run("manpath environment variable as JSON", func(t *testing.T) {
+		ctx := types.Context{}
+		// Setup
+		manpathValue := "/usr/share/man:/usr/local/share/man"
+		t.Setenv(manpath, manpathValue)
+
+		// Test JSON retrieval
+		value, err := getEnv(&ctx, manpath, true)
+		require.NoError(t, err)
+		assert.Contains(t, value, "/usr/share/man")
+		assert.Contains(t, value, "/usr/local/share/man")
+
+		// Verify it's valid JSON
+		assert.True(t, strings.HasPrefix(value, "["))
+		assert.True(t, strings.HasSuffix(value, "]"))
+	})
+
+	t.Run("non-path variable as JSON returns empty array", func(t *testing.T) {
+		ctx := types.Context{}
+		// Setup
+		testVarName := "REGULAR_VAR"
+		testValue := "something"
+		t.Setenv(testVarName, testValue)
+
+		// Test JSON retrieval for non-path/manpath variable
+		value, err := getEnv(&ctx, testVarName, true)
+		require.NoError(t, err)
+		assert.Equal(t, "[\n    \"something\"\n]", strings.TrimSpace(value))
+	})
+
+	t.Run("non-existent variable", func(t *testing.T) {
+		ctx := types.Context{}
+		// Test non-existent variable with non-JSON mode
+		value, err := getEnv(&ctx, "NON_EXISTENT_VAR", false)
+		require.NoError(t, err)
+		assert.Equal(t, "", value)
+
+		// Test non-existent variable with JSON mode
+		value, err = getEnv(&ctx, "NON_EXISTENT_VAR", true)
+		require.NoError(t, err)
+		assert.Equal(t, "null", strings.TrimSpace(value))
+		require.False(t, ctx.Success)
+	})
 }
