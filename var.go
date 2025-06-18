@@ -11,22 +11,16 @@ import (
 func (r *VarCmd) Run(ctx *types.Context) error {
 	ctx.Success = false
 
+	val, set := os.LookupEnv(r.Name)
 	switch r.Op {
 	case "set":
-		_, exists := os.LookupEnv(r.Name)
-		if exists {
-			ctx.Success = true
-		}
+		ctx.Success = set
 		return nil
 	case "unset":
-		_, exists := os.LookupEnv(r.Name)
-		if !exists {
-			ctx.Success = true
-		}
+		ctx.Success = !set
 		return nil
 	default:
-		val, exists := os.LookupEnv(r.Name)
-		if !exists {
+		if !set {
 			return fmt.Errorf("environment variable %s is not set", r.Name)
 		}
 		success, err := compareOutput(ctx, r.Compare, r.Op, val, r.Val)
