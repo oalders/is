@@ -277,7 +277,7 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 		return nil
 	}
 
-	var rows [][]string
+	rows := make([][]string, 0)
 	for _, env := range os.Environ() {
 		parts := strings.SplitN(env, "=", 2)
 		name := parts[0]
@@ -286,9 +286,7 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 			path := strings.Split(value, ":")
 			value = strings.Join(path, "\n")
 		}
-		if len(parts) == 2 {
-			rows = append(rows, []string{name, value})
-		}
+		rows = append(rows, []string{name, value})
 	}
 	success(ctx, tabular(headers, rows))
 	return nil
