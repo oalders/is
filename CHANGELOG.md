@@ -1,5 +1,9 @@
 # Changes
 
+## 0.8.2 - 2025-06-17
+
+- Fix gopls version parsing
+
 ## 0.8.1 - 2025-05-30
 
 - Fix a bug where "id" showed up twice in a Linux os info summary
