@@ -250,26 +250,37 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
 }
 
 func envSummary(ctx *types.Context, asJSON bool) error {
-	headers := []string{
-		"Name",
-		"Value",
+	envMap := make(map[string]any)
+	rows := make([][]string, 0, len(os.Environ()))
+
+	for _, entry := range os.Environ() {
+		parts := strings.SplitN(entry, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		name, value := parts[0], parts[1]
+
+		if name == path || name == manpath {
+			pathParts := strings.Split(value, ":")
+			if asJSON {
+				envMap[name] = pathParts
+			} else {
+				rows = append(rows, []string{name, strings.Join(pathParts, "\n")})
+			}
+			continue
+		}
+
+		// Handle regular environment variables
+		if asJSON {
+			envMap[name] = value
+		} else {
+			rows = append(rows, []string{name, value})
+		}
 	}
 
 	if asJSON {
-		env := make(map[string]any)
-		for _, v := range os.Environ() {
-			parts := strings.SplitN(v, "=", 2)
-			name := parts[0]
-			value := parts[1]
-			if len(parts) == 2 {
-				env[name] = value
-			}
-			if name == path || name == manpath {
-				path := strings.Split(value, ":")
-				env[name] = path
-			}
-		}
-		result, err := toJSON(env)
+		result, err := toJSON(envMap)
 		if err != nil {
 			return err
 		}
@@ -277,17 +288,8 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 		return nil
 	}
 
-	rows := make([][]string, 0)
-	for _, env := range os.Environ() {
-		parts := strings.SplitN(env, "=", 2)
-		name := parts[0]
-		value := parts[1]
-		if name == path || name == manpath {
-			path := strings.Split(value, ":")
-			value = strings.Join(path, "\n")
-		}
-		rows = append(rows, []string{name, value})
-	}
+	// Tabular output
+	headers := []string{"Name", "Value"}
 	success(ctx, tabular(headers, rows))
 	return nil
 }
