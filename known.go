@@ -36,6 +36,8 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			result, err = is_os.Info(ctx, r.OS.Attr)
 		case r.CLI.Attr != "":
 			result, err = runCLI(ctx, r.CLI.Name)
+		case r.Var.Name != "":
+			result, err = getEnv(r.Var.Name, r.Var.JSON)
 		case r.Battery.Attr != "":
 			result, err = battery.GetAttrAsString(
 				ctx,
@@ -237,4 +239,20 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
 	}
 	success(ctx, tabular(headers, rows))
 	return nil
+}
+
+func getEnv(name string, asJSON bool) (string, error) {
+	value := os.Getenv(name)
+	if asJSON {
+		var path []string
+		if name == "PATH" || name == "MANPATH" {
+			path = strings.Split(value, ":")
+		}
+		result, err := toJSON(path)
+		if err != nil {
+			return "", err
+		}
+		return result, nil
+	}
+	return value, nil
 }

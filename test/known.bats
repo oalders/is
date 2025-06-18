@@ -73,3 +73,7 @@ bats_require_minimum_version 1.5.0
 @test "is known summary os" {
     ./is known summary os
 }
+
+@test "is known var PATH" {
+    ./is known var PATH
+}
