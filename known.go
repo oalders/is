@@ -143,6 +143,9 @@ func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
 	if attr == "battery" {
 		return batterySummary(ctx, nth, asJSON)
 	}
+	if attr == "var" {
+		return envSummary(ctx, asJSON)
+	}
 	return fmt.Errorf("unknown attribute: %s", attr)
 }
 
@@ -236,6 +239,51 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
 		}
 	} else {
 		rows = append(rows, []string{"count", "0"})
+	}
+	success(ctx, tabular(headers, rows))
+	return nil
+}
+
+func envSummary(ctx *types.Context, asJSON bool) error {
+	headers := []string{
+		"Name",
+		"Value",
+	}
+
+	if asJSON {
+		env := make(map[string]any)
+		for _, v := range os.Environ() {
+			parts := strings.SplitN(v, "=", 2)
+			name := parts[0]
+			value := parts[1]
+			if len(parts) == 2 {
+				env[name] = value
+			}
+			if name == "PATH" || name == "MANPATH" {
+				path := strings.Split(value, ":")
+				env[name] = path
+			}
+		}
+		result, err := toJSON(env)
+		if err != nil {
+			return err
+		}
+		success(ctx, result)
+		return nil
+	}
+
+	var rows [][]string
+	for _, env := range os.Environ() {
+		parts := strings.SplitN(env, "=", 2)
+		name := parts[0]
+		value := parts[1]
+		if name == "PATH" || name == "MANPATH" {
+			path := strings.Split(value, ":")
+			value = strings.Join(path, "\n")
+		}
+		if len(parts) == 2 {
+			rows = append(rows, []string{name, value})
+		}
 	}
 	success(ctx, tabular(headers, rows))
 	return nil
