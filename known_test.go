@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -199,5 +200,72 @@ func Test_getEnv(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, "null", strings.TrimSpace(value))
 		require.False(t, ctx.Success)
+	})
+}
+
+func Test_envSummary(t *testing.T) {
+	t.Run("tabular output", func(t *testing.T) {
+		// Set up test environment
+		t.Setenv("TEST_VAR", "test_value")
+		t.Setenv("PATH", "/usr/bin:/usr/local/bin")
+
+		// Create context and capture stdout
+		ctx := &types.Context{}
+		originalStdout := os.Stdout
+		r, w, err := os.Pipe() //nolint:varnamelen
+		require.NoError(t, err)
+		os.Stdout = w
+
+		// Test the function
+		err = envSummary(ctx, false)
+		require.NoError(t, err)
+
+		// Restore stdout
+		w.Close()
+		os.Stdout = originalStdout
+
+		// Read output
+		var output strings.Builder
+		_, err = io.Copy(&output, r)
+		require.NoError(t, err)
+
+		// Basic validations
+		assert.True(t, ctx.Success)
+		assert.Contains(t, output.String(), "TEST_VAR")
+		assert.Contains(t, output.String(), "test_value")
+		assert.Contains(t, output.String(), "PATH")
+	})
+
+	t.Run("JSON output", func(t *testing.T) {
+		// Set up test environment
+		t.Setenv("TEST_VAR", "test_value")
+		t.Setenv("PATH", "/usr/bin:/usr/local/bin")
+
+		// Create context and capture stdout
+		ctx := &types.Context{}
+		originalStdout := os.Stdout
+		r, w, err := os.Pipe() //nolint:varnamelen
+		require.NoError(t, err)
+		os.Stdout = w
+
+		// Test the function
+		err = envSummary(ctx, true)
+		require.NoError(t, err)
+
+		// Restore stdout
+		w.Close()
+		os.Stdout = originalStdout
+
+		// Read output
+		var output strings.Builder
+		_, err = io.Copy(&output, r)
+		require.NoError(t, err)
+
+		// Basic validations
+		assert.True(t, ctx.Success)
+		assert.Contains(t, output.String(), "TEST_VAR")
+		assert.Contains(t, output.String(), "test_value")
+		assert.Contains(t, output.String(), "PATH")
+		assert.Contains(t, output.String(), "/usr/bin")
 	})
 }
