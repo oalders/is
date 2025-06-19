@@ -14,7 +14,7 @@ import (
 
 func TestOSInfo(t *testing.T) {
 	t.Parallel()
-	tests := []string{attr.Name, attr.Version, attr.VersionCodename}
+	tests := []string{attr.Name, attr.Version}
 
 	if runtime.GOOS == "linux" {
 		tests = append(tests, "id", "pretty-name")

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eux -o pipefail
+
+go build -o /bin/is
