@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -253,7 +254,10 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 	envMap := make(map[string]any)
 	rows := make([][]string, 0, len(os.Environ()))
 
-	for _, entry := range os.Environ() {
+	envVars := os.Environ()
+	sort.Strings(envVars)
+
+	for _, entry := range envVars {
 		parts := strings.SplitN(entry, "=", 2)
 		if len(parts) != 2 {
 			continue
