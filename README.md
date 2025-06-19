@@ -2,100 +2,23 @@
 
 <!-- vim-markdown-toc GFM -->
 
-* [Introduction](#introduction)
-  * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
-  * [Is Neovim the Default Editor?](#is-neovim-the-default-editor)
-  * [Is this the target Operating System?](#is-this-the-target-operating-system)
-  * [Check the OS with a regex](#check-the-os-with-a-regex)
-  * [Is this a recent macOS?](#is-this-a-recent-macos)
-  * [Who am I?](#who-am-i)
-  * [Do we have go? Then install `goimports`](#do-we-have-go-then-install-goimports)
-  * [What's the version of bash?](#whats-the-version-of-bash)
-  * [What's the major version of zsh?](#whats-the-major-version-of-zsh)
-  * [Has gofumpt been modified in the last week?](#has-gofumpt-been-modified-in-the-last-week)
-  * [Has a file been modified in the last hour?](#has-a-file-been-modified-in-the-last-hour)
-  * [echo the OS name](#echo-the-os-name)
-  * [Get some debugging information about the OS](#get-some-debugging-information-about-the-os)
-  * [Can user sudo without a password?](#can-user-sudo-without-a-password)
-* [Exit Codes are Everything](#exit-codes-are-everything)
-  * [Debugging error Codes](#debugging-error-codes)
-  * [Using a Regex](#using-a-regex)
-    * [Under the Hood](#under-the-hood)
-* [Top Level Commands](#top-level-commands)
-  * [arch](#arch)
-  * [battery](#battery)
-    * [state](#state)
-    * [current-charge](#current-charge)
-    * [count](#count)
-    * [charge-rate](#charge-rate)
-    * [current-capacity](#current-capacity)
-    * [design-capacity](#design-capacity)
-    * [design-voltage](#design-voltage)
-    * [last-full-capacity](#last-full-capacity)
-    * [voltage](#voltage)
-    * [--nth](#--nth)
-    * [--round](#--round)
-  * [cli](#cli)
-    * [age](#age)
-    * [version](#version)
-      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch)
-    * [output](#output)
-      * [stdout](#stdout)
-      * [stderr](#stderr)
-      * [combined](#combined)
-      * [---arg (-a)](#---arg--a)
-      * [--compare](#--compare)
-    * [Tip: Using pipes](#tip-using-pipes)
-    * [Tip: Using Negative Numbers](#tip-using-negative-numbers)
-      * [--debug](#--debug)
-  * [fso](#fso)
-    * [age](#age-1)
-  * [os](#os)
-    * [version](#version-1)
-      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch-1)
-    * [name](#name)
-      * [Equality](#equality)
-      * [Inequality](#inequality)
-      * [In a comma-delimited list](#in-a-comma-delimited-list)
-      * [Regex](#regex)
-      * [pretty-name](#pretty-name)
-      * [id](#id)
-      * [id-like](#id-like)
-      * [version-codename](#version-codename)
-  * [there](#there)
-    * [--verbose](#--verbose)
-    * [--all](#--all)
-    * [--json](#--json)
-  * [user](#user)
-    * [sudoer](#sudoer)
-  * [var](#var)
-    * [set](#set)
-    * [unset](#unset)
-      * [--compare](#--compare-1)
-  * [known](#known)
-    * [arch](#arch-1)
-    * [battery](#battery-1)
-    * [os](#os-1)
-      * [name](#name-1)
-      * [pretty-name](#pretty-name-1)
-      * [id](#id-1)
-      * [id-like](#id-like-1)
-      * [version](#version-2)
-      * [version-codename](#version-codename-1)
-    * [cli version](#cli-version)
-    * [summary](#summary)
-      * [battery](#battery-2)
-      * [os](#os-2)
-  * [install-completions](#install-completions)
-  * [--debug](#--debug-1)
-  * [--help](#--help)
-    * [subcommand --help](#subcommand---help)
-  * [--version](#--version)
-* [Installation](#installation)
-* [Bonus: Easier Version Parsing of Available Tools](#bonus-easier-version-parsing-of-available-tools)
-  * [Go (version)](#go-version)
-  * [Perl (--version)](#perl---version)
-  * [tmux (-V)](#tmux--v)
+  * [Introduction](#introduction)
+    * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
+    * [Is Neovim the Default Editor?](#is-neovim-the-default-editor)
+    * [Is this the target Operating System?](#is-this-the-target-operating-system)
+    * [Check the OS with a regex](#check-the-os-with-a-regex)
+    * [Is this a recent macOS?](#is-this-a-recent-macos)
+    * [Who am I?](#who-am-i)
+    * [Do we have go? Then install `goimports`](#do-we-have-go-then-install-goimports)
+    * [What's the version of bash?](#whats-the-version-of-bash)
+    * [What's the major version of zsh?](#whats-the-major-version-of-zsh)
+    * [Has gofumpt been modified in the last week?](#has-gofumpt-been-modified-in-the-last-week)
+    * [Has a file been modified in the last hour?](#has-a-file-been-modified-in-the-last-hour)
+    * [echo the OS name](#echo-the-os-name)
+    * [Get some debugging information about the OS](#get-some-debugging-information-about-the-os)
+* [!/bin/bash](#binbash)
+* [!/usr/bin/env bash](#usrbinenv-bash)
+* [Or choose a different dir in your $PATH](#or-choose-a-different-dir-in-your-path)
 
 <!-- vim-markdown-toc -->
 
@@ -1371,6 +1294,50 @@ $ is known cli version --patch tmux
 Please see the docs on `os version` for more information on `--major`,
 `--minor` and `--patch`.
 
+#### var
+
+```shell
+$ is known var PATH
+/opt/homebrew/opt/sqlite3/bin:/Users/olaf/.plenv/shims:/Users/olaf/.plenv/bin:/Users/olaf/dot-files/bin:/Users/olaf/go/bin:/Users/olaf/dot-files/src/git-fuzzy/bin:/Users/olaf/.cargo/bin:/Users/olaf/dot-files/node_modules/.bin:/Users/olaf/.local/bin:/Users/olaf/.local/share/nvim/mason/bin:/Applications/WezTerm.app/Contents/MacOS:/opt/homebrew/sbin:/opt/homebrew/bin:/Users/olaf/local/bin/nvim-macos/bin:/Users/olaf/Library/Python/3.11/bin:/Users/olaf/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/MacGPG2/bin
+```
+
+This is not so useful on its own, but combined with `--json` it can give you a readable `$PATH`.
+
+```
+$ is known var PATH --json
+[
+    "/opt/homebrew/opt/sqlite3/bin",
+    "/Users/olaf/.plenv/shims",
+    "/Users/olaf/.plenv/bin",
+    "/Users/olaf/dot-files/bin",
+    "/Users/olaf/go/bin",
+    "/Users/olaf/dot-files/src/git-fuzzy/bin",
+    "/Users/olaf/.cargo/bin",
+    "/Users/olaf/dot-files/node_modules/.bin",
+    "/Users/olaf/.local/bin",
+    "/Users/olaf/.local/share/nvim/mason/bin",
+    "/Applications/WezTerm.app/Contents/MacOS",
+    "/opt/homebrew/sbin",
+    "/opt/homebrew/bin",
+    "/Users/olaf/local/bin/nvim-macos/bin",
+    "/Users/olaf/Library/Python/3.11/bin",
+    "/Users/olaf/local/bin",
+    "/usr/local/bin",
+    "/System/Cryptexes/App/usr/bin",
+    "/usr/bin",
+    "/bin",
+    "/usr/sbin",
+    "/sbin",
+    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin",
+    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin",
+    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin",
+    "/usr/local/MacGPG2/bin"
+]
+```
+
+Now we can do something like `is known var PATH --json | jq .[1]` to get the
+second item in the list.
+
 #### summary
 
 `summary` is a special subcommand, which aggregates known data for another
@@ -1408,6 +1375,14 @@ behaviour of `--debug` for `is known battery` and `is known os`.
 }
 ```
 
+##### var
+
+```shell
+is known summary var
+```
+
+This will emit your environment variables in a tabular layout. It will split
+`PATH` and `MANPATH` on newlines, to make them easier to read.
 
 ### install-completions
 
