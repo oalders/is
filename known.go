@@ -132,6 +132,7 @@ func tabular(headers []string, rows [][]string) string {
 		Rows(rows...).
 		Border(lipgloss.ThickBorder()).
 		BorderStyle(renderer.NewStyle().Foreground(lipgloss.Color("238"))).
+		BorderRow(true).
 		StyleFunc(func(_, _ int) lipgloss.Style {
 			return renderer.NewStyle().Padding(0, 1)
 		}).String()
