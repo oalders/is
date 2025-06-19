@@ -1,0 +1,9 @@
+---
+services:
+  dev:
+    image: golang:1.24.4-alpine
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
