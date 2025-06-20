@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -19,6 +20,11 @@ import (
 	"github.com/oalders/is/parser"
 	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
+)
+
+const (
+	manpath = "MANPATH"
+	path    = "PATH"
 )
 
 // Run "is known ...".
@@ -36,6 +42,8 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			result, err = is_os.Info(ctx, r.OS.Attr)
 		case r.CLI.Attr != "":
 			result, err = runCLI(ctx, r.CLI.Name)
+		case r.Var.Name != "":
+			result, err = getEnv(ctx, r.Var.Name, r.Var.JSON)
 		case r.Battery.Attr != "":
 			result, err = battery.GetAttrAsString(
 				ctx,
@@ -68,7 +76,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 		}
 	}
 
-	if result != "" {
+	if r.Var.Name == "" && result != "" {
 		ctx.Success = true
 	}
 
@@ -124,6 +132,7 @@ func tabular(headers []string, rows [][]string) string {
 		Rows(rows...).
 		Border(lipgloss.ThickBorder()).
 		BorderStyle(renderer.NewStyle().Foreground(lipgloss.Color("238"))).
+		BorderRow(true).
 		StyleFunc(func(_, _ int) lipgloss.Style {
 			return renderer.NewStyle().Padding(0, 1)
 		}).String()
@@ -140,6 +149,9 @@ func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
 	}
 	if attr == "battery" {
 		return batterySummary(ctx, nth, asJSON)
+	}
+	if attr == "var" {
+		return envSummary(ctx, asJSON)
 	}
 	return fmt.Errorf("unknown attribute: %s", attr)
 }
@@ -237,4 +249,79 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
 	}
 	success(ctx, tabular(headers, rows))
 	return nil
+}
+
+func envSummary(ctx *types.Context, asJSON bool) error {
+	envMap := make(map[string]any)
+	rows := make([][]string, 0, len(os.Environ()))
+
+	envVars := os.Environ()
+	sort.Strings(envVars)
+
+	for _, entry := range envVars {
+		parts := strings.SplitN(entry, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		name, value := parts[0], parts[1]
+
+		if name == path || name == manpath {
+			pathParts := strings.Split(value, ":")
+			if asJSON {
+				envMap[name] = pathParts
+			} else {
+				rows = append(rows, []string{name, strings.Join(pathParts, "\n")})
+			}
+			continue
+		}
+
+		// Handle regular environment variables
+		if asJSON {
+			envMap[name] = value
+		} else {
+			rows = append(rows, []string{name, value})
+		}
+	}
+
+	if asJSON {
+		result, err := toJSON(envMap)
+		if err != nil {
+			return err
+		}
+		success(ctx, result)
+		return nil
+	}
+
+	// Tabular output
+	headers := []string{"Name", "Value"}
+	success(ctx, tabular(headers, rows))
+	return nil
+}
+
+func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
+	value, set := os.LookupEnv(name)
+	ctx.Success = set
+
+	if !asJSON {
+		return value, nil
+	}
+
+	values := []string{}
+
+	switch {
+	case set && (name == path || name == manpath):
+		values = strings.Split(value, ":")
+	case set:
+		values = append(values, value)
+	default:
+		values = nil
+	}
+
+	result, err := toJSON(values)
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }

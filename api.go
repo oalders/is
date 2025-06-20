@@ -75,7 +75,7 @@ type Battery struct {
 }
 
 type Summary struct {
-	Attr string `arg:"" required:"" name:"attribute" enum:"battery,os" help:"[battery|os]"`
+	Attr string `arg:"" required:"" name:"attribute" enum:"battery,os,var" help:"[battery|os|var]"`
 	Nth  int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
 	JSON bool   `help:"print summary as JSON"`
 }
@@ -129,6 +129,11 @@ type KnownCLI struct {
 	Version
 }
 
+type KnownVar struct {
+	Name string `arg:"" required:""`
+	JSON bool   `help:"Print output in JSON format"`
+}
+
 type KnownOS struct {
 	//nolint:lll
 	Attr string `arg:"" required:"" name:"attribute" help:"[id|id-like|pretty-name|name|version|version-codename]"`
@@ -142,6 +147,7 @@ type KnownCmd struct {
 	} `cmd:"" help:"Print arch without check. e.g. \"is known arch\""`
 	OS      KnownOS  `cmd:"" help:"Print without check. e.g. \"is known os name\""`
 	CLI     KnownCLI `cmd:"" help:"Print without check. e.g. \"is known cli version git\""`
+	Var     KnownVar `cmd:"" help:"Print env var without a check. e.g. \"is known var PATH\""`
 	Battery Battery  `cmd:"" help:"Print battery information. e.g. \"is known battery state\""`
 	Summary Summary  `cmd:"" help:"summary of available data."`
 }
