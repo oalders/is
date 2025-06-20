@@ -122,11 +122,10 @@ $ is known summary os
 ┃ Attribute        ┃ Value   ┃
 ┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
 ┃ name             ┃ darwin  ┃
-┃ version          ┃ 15.4.1  ┃
-┃ version-codename ┃ sequoia ┃
-┃ id               ┃         ┃
-┃ id-like          ┃         ┃
-┃ pretty-name      ┃         ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ version          ┃ 13.7.6  ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ version-codename ┃ ventura ┃
 ┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
 ```
 
@@ -950,11 +949,11 @@ first binary which is in your `$PATH`.
 
 ```shell
 is there bash --verbose
-┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
-┃ Path                   ┃ Version ┃
-┣━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
-┃ /opt/homebrew/bin/bash ┃ 5.2.37  ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Path                ┃ Version ┃
+┣━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ /usr/local/bin/bash ┃ 5.2.37  ┃
+┗━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
 ```
 
 #### --all
@@ -965,12 +964,13 @@ essentially a wrapper around `which -a`, with added version parsing.
 
 ```shell
 $ is there bash --all
-┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
-┃ Path                   ┃ Version ┃
-┣━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
-┃ /opt/homebrew/bin/bash ┃ 5.2.37  ┃
-┃ /bin/bash              ┃ 3.2.57  ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Path                ┃ Version ┃
+┣━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ /usr/local/bin/bash ┃ 5.2.37  ┃
+┣━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ /bin/bash           ┃ 3.2.57  ┃
+┗━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
 ```
 
 #### --json
@@ -1298,7 +1298,7 @@ Please see the docs on `os version` for more information on `--major`,
 
 ```shell
 $ is known var PATH
-/opt/homebrew/opt/sqlite3/bin:/Users/olaf/.plenv/shims:/Users/olaf/.plenv/bin:/Users/olaf/dot-files/bin:/Users/olaf/go/bin:/Users/olaf/dot-files/src/git-fuzzy/bin:/Users/olaf/.cargo/bin:/Users/olaf/dot-files/node_modules/.bin:/Users/olaf/.local/bin:/Users/olaf/.local/share/nvim/mason/bin:/Applications/WezTerm.app/Contents/MacOS:/opt/homebrew/sbin:/opt/homebrew/bin:/Users/olaf/local/bin/nvim-macos/bin:/Users/olaf/Library/Python/3.11/bin:/Users/olaf/local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/MacGPG2/bin
+/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
 This is not so useful on its own, but combined with `--json` it can give you a readable `$PATH`.
@@ -1306,32 +1306,14 @@ This is not so useful on its own, but combined with `--json` it can give you a r
 ```
 $ is known var PATH --json
 [
-    "/opt/homebrew/opt/sqlite3/bin",
-    "/Users/olaf/.plenv/shims",
-    "/Users/olaf/.plenv/bin",
-    "/Users/olaf/dot-files/bin",
-    "/Users/olaf/go/bin",
-    "/Users/olaf/dot-files/src/git-fuzzy/bin",
-    "/Users/olaf/.cargo/bin",
-    "/Users/olaf/dot-files/node_modules/.bin",
-    "/Users/olaf/.local/bin",
-    "/Users/olaf/.local/share/nvim/mason/bin",
-    "/Applications/WezTerm.app/Contents/MacOS",
-    "/opt/homebrew/sbin",
-    "/opt/homebrew/bin",
-    "/Users/olaf/local/bin/nvim-macos/bin",
-    "/Users/olaf/Library/Python/3.11/bin",
-    "/Users/olaf/local/bin",
+    "/go/bin",
+    "/usr/local/go/bin",
+    "/usr/local/sbin",
     "/usr/local/bin",
-    "/System/Cryptexes/App/usr/bin",
-    "/usr/bin",
-    "/bin",
     "/usr/sbin",
+    "/usr/bin",
     "/sbin",
-    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin",
-    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin",
-    "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin",
-    "/usr/local/MacGPG2/bin"
+    "/bin"
 ]
 ```
 
@@ -1365,13 +1347,42 @@ behaviour of `--debug` for `is known battery` and `is known os`.
 
 ##### os
 
-`is known summary os`
+```shell
+$ is known summary os
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ Attribute   ┃ Value              ┃
+┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━┫
+┃ name        ┃ linux              ┃
+┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━┫
+┃ version     ┃ 3.22.0             ┃
+┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━┫
+┃ id          ┃ alpine             ┃
+┣━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━┫
+┃ pretty-name ┃ Alpine Linux v3.22 ┃
+┗━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━┛
+```
+
+```shell
+$ is known summary os
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Attribute        ┃ Value   ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ name             ┃ darwin  ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ version          ┃ 13.7.6  ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━┫
+┃ version-codename ┃ ventura ┃
+┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━┛
+```
+
+`is known summary os --json`
 
 ```json
 {
-    "name": "darwin",
-    "version": "15.4.1",
-    "version-codename": "sequoia"
+    "id": "alpine",
+    "name": "linux",
+    "pretty-name": "Alpine Linux v3.22",
+    "version": "3.22.0"
 }
 ```
 
@@ -1383,6 +1394,64 @@ is known summary var
 
 This will emit your environment variables in a tabular layout. It will split
 `PATH` and `MANPATH` on newlines, to make them easier to read.
+
+```shell
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Name           ┃ Value             ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ GOLANG_VERSION ┃ 1.24.4            ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ GOPATH         ┃ /go               ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ GOTOOLCHAIN    ┃ local             ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ HOME           ┃ /root             ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ HOSTNAME       ┃ bb7d32c277e9      ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ PATH           ┃ /go/bin           ┃
+┃                ┃ /usr/local/go/bin ┃
+┃                ┃ /usr/local/sbin   ┃
+┃                ┃ /usr/local/bin    ┃
+┃                ┃ /usr/sbin         ┃
+┃                ┃ /usr/bin          ┃
+┃                ┃ /sbin             ┃
+┃                ┃ /bin              ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ PWD            ┃ /workspace        ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ SHLVL          ┃ 1                 ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━┫
+┃ TERM           ┃ xterm             ┃
+┗━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━┛
+```
+
+```shell
+is known summary var --json
+```
+
+```json
+{
+    "GOLANG_VERSION": "1.24.4",
+    "GOPATH": "/go",
+    "GOTOOLCHAIN": "local",
+    "HOME": "/root",
+    "HOSTNAME": "bb7d32c277e9",
+    "PATH": [
+        "/go/bin",
+        "/usr/local/go/bin",
+        "/usr/local/sbin",
+        "/usr/local/bin",
+        "/usr/sbin",
+        "/usr/bin",
+        "/sbin",
+        "/bin"
+    ],
+    "PWD": "/workspace",
+    "SHLVL": "1",
+    "TERM": "xterm"
+}
+```
 
 ### install-completions
 
