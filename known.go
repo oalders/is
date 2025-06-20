@@ -301,15 +301,12 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 
 func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
 	value, set := os.LookupEnv(name)
+	ctx.Success = set
 
 	if !asJSON {
-		if set {
-			ctx.Success = true
-		}
 		return value, nil
 	}
 
-	// Handle JSON output
 	values := []string{}
 
 	switch {
@@ -324,10 +321,6 @@ func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
 	result, err := toJSON(values)
 	if err != nil {
 		return "", err
-	}
-
-	if set {
-		ctx.Success = true
 	}
 
 	return result, nil
