@@ -216,18 +216,24 @@ func Test_envSummary(t *testing.T) {
 		require.NoError(t, err)
 		os.Stdout = w
 
-		// Test the function
-		err = envSummary(ctx, false)
-		require.NoError(t, err)
-
-		// Restore stdout
-		w.Close()
-		os.Stdout = originalStdout
+		// Create a channel to signal when writing is done
+		done := make(chan error)
+		go func() {
+			summaryErr := envSummary(ctx, false)
+			w.Close() // Close writer after function completes
+			done <- summaryErr
+		}()
 
 		// Read output
 		var output strings.Builder
 		_, err = io.Copy(&output, r)
 		require.NoError(t, err)
+
+		// Wait for writing to complete and check error
+		require.NoError(t, <-done)
+
+		// Restore stdout
+		os.Stdout = originalStdout
 
 		// Basic validations
 		assert.True(t, ctx.Success)
@@ -248,18 +254,24 @@ func Test_envSummary(t *testing.T) {
 		require.NoError(t, err)
 		os.Stdout = w
 
-		// Test the function
-		err = envSummary(ctx, true)
-		require.NoError(t, err)
-
-		// Restore stdout
-		w.Close()
-		os.Stdout = originalStdout
+		// Create a channel to signal when writing is done
+		done := make(chan error)
+		go func() {
+			summaryErr := envSummary(ctx, true)
+			w.Close() // Close writer after function completes
+			done <- summaryErr
+		}()
 
 		// Read output
 		var output strings.Builder
 		_, err = io.Copy(&output, r)
 		require.NoError(t, err)
+
+		// Wait for writing to complete and check error
+		require.NoError(t, <-done)
+
+		// Restore stdout
+		os.Stdout = originalStdout
 
 		// Basic validations
 		assert.True(t, ctx.Success)
