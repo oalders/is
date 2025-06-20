@@ -186,9 +186,11 @@ func osSummary(ctx *types.Context, asJSON bool) error {
 	rows := [][]string{
 		{"name", summary.Name},
 		{"version", summary.Version},
-		{"version-codename", summary.VersionCodeName},
 	}
 
+	if summary.VersionCodeName != "" {
+		rows = append(rows, []string{"version-codename", summary.VersionCodeName})
+	}
 	if summary.ID != "" {
 		rows = append(rows, []string{"id", summary.ID})
 	}
