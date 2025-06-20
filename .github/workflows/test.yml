@@ -26,6 +26,12 @@ jobs:
       - name: Install bats
         run: npm install -g bats
 
+      - name: Display summaries
+        run: |
+          go build .
+          ./is known summary os --md >> $GITHUB_STEP_SUMMARY
+          ./is known summary var --md >> $GITHUB_STEP_SUMMARY
+
       - name: Test everything
         run: ./bin/test-everything
 
@@ -53,6 +59,12 @@ jobs:
 
       - name: Install executables required for testing
         run: brew install tmux
+
+      - name: Display summaries
+        run: |
+          go build .
+          ./is known summary os --md >> $GITHUB_STEP_SUMMARY
+          ./is known summary var --md >> $GITHUB_STEP_SUMMARY
 
       - name: Test everything
         run: ./bin/test-everything
