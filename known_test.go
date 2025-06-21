@@ -219,7 +219,7 @@ func Test_envSummary(t *testing.T) {
 		// Create a channel to signal when writing is done
 		done := make(chan error)
 		go func() {
-			summaryErr := envSummary(ctx, false)
+			summaryErr := envSummary(ctx, false, false)
 			w.Close() // Close writer after function completes
 			done <- summaryErr
 		}()
@@ -257,7 +257,7 @@ func Test_envSummary(t *testing.T) {
 		// Create a channel to signal when writing is done
 		done := make(chan error)
 		go func() {
-			summaryErr := envSummary(ctx, true)
+			summaryErr := envSummary(ctx, true, false)
 			w.Close() // Close writer after function completes
 			done <- summaryErr
 		}()
