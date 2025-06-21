@@ -2,4 +2,4 @@
 
 set -eux -o pipefail
 
-go build -o /bin/is
+go build -o /usr/local/bin/is

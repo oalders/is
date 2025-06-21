@@ -104,6 +104,6 @@ func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
 		}
 		rows = append(rows, []string{path, version})
 	}
-	success(ctx, tabular(headers, rows))
+	success(ctx, tabular(headers, rows, false))
 	return nil
 }
