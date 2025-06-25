@@ -2,23 +2,103 @@
 
 <!-- vim-markdown-toc GFM -->
 
-  * [Introduction](#introduction)
-    * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
-    * [Is Neovim the Default Editor?](#is-neovim-the-default-editor)
-    * [Is this the target Operating System?](#is-this-the-target-operating-system)
-    * [Check the OS with a regex](#check-the-os-with-a-regex)
-    * [Is this a recent macOS?](#is-this-a-recent-macos)
-    * [Who am I?](#who-am-i)
-    * [Do we have go? Then install `goimports`](#do-we-have-go-then-install-goimports)
-    * [What's the version of bash?](#whats-the-version-of-bash)
-    * [What's the major version of zsh?](#whats-the-major-version-of-zsh)
-    * [Has gofumpt been modified in the last week?](#has-gofumpt-been-modified-in-the-last-week)
-    * [Has a file been modified in the last hour?](#has-a-file-been-modified-in-the-last-hour)
-    * [echo the OS name](#echo-the-os-name)
-    * [Get some debugging information about the OS](#get-some-debugging-information-about-the-os)
-* [!/bin/bash](#binbash)
-* [!/usr/bin/env bash](#usrbinenv-bash)
-* [Or choose a different dir in your $PATH](#or-choose-a-different-dir-in-your-path)
+* [Introduction](#introduction)
+  * [Is the minimum version of this tool available?](#is-the-minimum-version-of-this-tool-available)
+  * [Is Neovim the Default Editor?](#is-neovim-the-default-editor)
+  * [Is this the target Operating System?](#is-this-the-target-operating-system)
+  * [Check the OS with a regex](#check-the-os-with-a-regex)
+  * [Is this a recent macOS?](#is-this-a-recent-macos)
+  * [Who am I?](#who-am-i)
+  * [Do we have go? Then install `goimports`](#do-we-have-go-then-install-goimports)
+  * [What's the version of bash?](#whats-the-version-of-bash)
+  * [What's the major version of zsh?](#whats-the-major-version-of-zsh)
+  * [Has gofumpt been modified in the last week?](#has-gofumpt-been-modified-in-the-last-week)
+  * [Has a file been modified in the last hour?](#has-a-file-been-modified-in-the-last-hour)
+  * [echo the OS name](#echo-the-os-name)
+  * [Get some debugging information about the OS](#get-some-debugging-information-about-the-os)
+  * [Pretty-Print Summaries in GitHub Actions](#pretty-print-summaries-in-github-actions)
+  * [Can user sudo without a password?](#can-user-sudo-without-a-password)
+* [Exit Codes are Everything](#exit-codes-are-everything)
+  * [Debugging error Codes](#debugging-error-codes)
+  * [Using a Regex](#using-a-regex)
+    * [Under the Hood](#under-the-hood)
+* [Top Level Commands](#top-level-commands)
+  * [arch](#arch)
+  * [battery](#battery)
+    * [state](#state)
+    * [current-charge](#current-charge)
+    * [count](#count)
+    * [charge-rate](#charge-rate)
+    * [current-capacity](#current-capacity)
+    * [design-capacity](#design-capacity)
+    * [design-voltage](#design-voltage)
+    * [last-full-capacity](#last-full-capacity)
+    * [voltage](#voltage)
+    * [--nth](#--nth)
+    * [--round](#--round)
+  * [cli](#cli)
+    * [age](#age)
+    * [version](#version)
+      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch)
+    * [output](#output)
+      * [stdout](#stdout)
+      * [stderr](#stderr)
+      * [combined](#combined)
+      * [---arg (-a)](#---arg--a)
+      * [--compare](#--compare)
+    * [Tip: Using pipes](#tip-using-pipes)
+    * [Tip: Using Negative Numbers](#tip-using-negative-numbers)
+      * [--debug](#--debug)
+  * [fso](#fso)
+    * [age](#age-1)
+  * [os](#os)
+    * [version](#version-1)
+      * [version segments --major | --minor | --patch](#version-segments---major----minor----patch-1)
+    * [name](#name)
+      * [Equality](#equality)
+      * [Inequality](#inequality)
+      * [In a comma-delimited list](#in-a-comma-delimited-list)
+      * [Regex](#regex)
+      * [pretty-name](#pretty-name)
+      * [id](#id)
+      * [id-like](#id-like)
+      * [version-codename](#version-codename)
+  * [there](#there)
+    * [--verbose](#--verbose)
+    * [--all](#--all)
+    * [--json](#--json)
+  * [user](#user)
+    * [sudoer](#sudoer)
+  * [var](#var)
+    * [set](#set)
+    * [unset](#unset)
+      * [--compare](#--compare-1)
+  * [known](#known)
+    * [arch](#arch-1)
+    * [battery](#battery-1)
+    * [os](#os-1)
+      * [name](#name-1)
+      * [pretty-name](#pretty-name-1)
+      * [id](#id-1)
+      * [id-like](#id-like-1)
+      * [version](#version-2)
+      * [version-codename](#version-codename-1)
+    * [cli version](#cli-version)
+    * [var](#var-1)
+    * [summary](#summary)
+      * [battery](#battery-2)
+      * [os](#os-2)
+      * [var](#var-2)
+  * [install-completions](#install-completions)
+  * [--debug](#--debug-1)
+  * [--help](#--help)
+    * [subcommand --help](#subcommand---help)
+  * [--version](#--version)
+* [Installation](#installation)
+* [Bonus: Easier Version Parsing of Available Tools](#bonus-easier-version-parsing-of-available-tools)
+  * [Go (version)](#go-version)
+  * [Perl (--version)](#perl---version)
+  * [tmux (-V)](#tmux--v)
 
 <!-- vim-markdown-toc -->
 
@@ -130,7 +210,7 @@ $ is known summary os
 ```
 
 ```shell
-$ is known summary os --json
+is known summary os --json
 ```
 
 ```json
@@ -140,23 +220,42 @@ $ is known summary os --json
     "version-codename": "sequoia"
 }
 ```
-```
-
-Linux:
 
 ```shell
-$ is known summary os --json
+is known summary os --md
 ```
 
-```json
-{
-    "id": "ubuntu",
-    "id-like": "debian",
-    "name": "linux",
-    "pretty-name": "Ubuntu 22.04.2 LTS",
-    "version": "22.04",
-    "version-codename": "jammy"
-}
+
+| Attribute | Value |
+|---|---|
+| name | linux |
+| version | 3.22.0 |
+| id | alpine |
+| pretty-name | Alpine Linux v3.22 |
+
+
+### Pretty-Print Summaries in GitHub Actions
+
+After you have `is` installed, you can echo markdown tables to the
+`$GITHUB_STEP_SUMMARY` environment variable. This will give you a readable
+tables that live outside of the log files.
+
+```yaml
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install ubi
+        uses: oalders/install-ubi-action@v0.0.2
+
+      - name: Install "is"
+        run: sudo ubi --project oalders/is --in /usr/local/bin
+
+      - name: Display summaries
+        run: |
+          is known summary os  --md >> $GITHUB_STEP_SUMMARY
+          is known summary var --md >> $GITHUB_STEP_SUMMARY
+
 ```
 
 ### Can user sudo without a password?
@@ -1452,6 +1551,24 @@ is known summary var --json
     "TERM": "xterm"
 }
 ```
+
+```shell
+is known summary var --md
+```
+
+
+| Name | Value |
+|---|---|
+| GOLANG_VERSION | 1.24.4 |
+| GOPATH | /go |
+| GOTOOLCHAIN | local |
+| HOME | /root |
+| HOSTNAME | 44db2d2f4c32 |
+| PATH | /go/bin<br>/usr/local/go/bin<br>/usr/local/sbin<br>/usr/local/bin<br>/usr/sbin<br>/usr/bin<br>/sbin<br>/bin |
+| PWD | /workspace |
+| SHLVL | 1 |
+| TERM | xterm |
+
 
 ### install-completions
 
