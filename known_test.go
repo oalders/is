@@ -219,7 +219,7 @@ func Test_envSummary(t *testing.T) {
 		// Create a channel to signal when writing is done
 		done := make(chan error)
 		go func() {
-			summaryErr := envSummary(ctx, false)
+			summaryErr := envSummary(ctx, false, false)
 			w.Close() // Close writer after function completes
 			done <- summaryErr
 		}()
@@ -257,7 +257,7 @@ func Test_envSummary(t *testing.T) {
 		// Create a channel to signal when writing is done
 		done := make(chan error)
 		go func() {
-			summaryErr := envSummary(ctx, true)
+			summaryErr := envSummary(ctx, true, false)
 			w.Close() // Close writer after function completes
 			done <- summaryErr
 		}()
@@ -280,4 +280,68 @@ func Test_envSummary(t *testing.T) {
 		assert.Contains(t, output.String(), "PATH")
 		assert.Contains(t, output.String(), "/usr/bin")
 	})
+}
+
+func TestMarkdown(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct { //nolint:govet
+		name     string
+		headers  []string
+		rows     [][]string
+		expected string
+	}{
+		{
+			name:     "empty input",
+			headers:  []string{},
+			rows:     [][]string{},
+			expected: "|  |\n|\n",
+		},
+		{
+			name:    "single header, no rows",
+			headers: []string{"Header"},
+			rows:    [][]string{},
+			expected: "| Header |\n" +
+				"|---|\n",
+		},
+		{
+			name:    "multiple headers, no rows",
+			headers: []string{"Header1", "Header2", "Header3"},
+			rows:    [][]string{},
+			expected: "| Header1 | Header2 | Header3 |\n" +
+				"|---|---|---|\n",
+		},
+		{
+			name:    "with data rows",
+			headers: []string{"Name", "Value"},
+			rows: [][]string{
+				{"key1", "value1"},
+				{"key2", "value2"},
+			},
+			expected: "| Name | Value |\n" +
+				"|---|---|\n" +
+				"| key1 | value1 |\n" +
+				"| key2 | value2 |\n",
+		},
+		{
+			name:    "with newlines in data",
+			headers: []string{"Name", "Value"},
+			rows: [][]string{
+				{"key1", "line1\nline2"},
+				{"key2", "value2"},
+			},
+			expected: "| Name | Value |\n" +
+				"|---|---|\n" +
+				"| key1 | line1<br>line2 |\n" +
+				"| key2 | value2 |\n",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			result := markdown(tt.headers, tt.rows)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
 }

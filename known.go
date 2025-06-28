@@ -37,7 +37,7 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 
 		switch {
 		case r.Summary.Attr != "":
-			return summary(ctx, r.Summary.Attr, r.Summary.Nth, r.Summary.JSON)
+			return summary(ctx, r.Summary.Attr, r.Summary.Nth, r.Summary.JSON, r.Summary.MD)
 		case r.OS.Attr != "":
 			result, err = is_os.Info(ctx, r.OS.Attr)
 		case r.CLI.Attr != "":
@@ -124,7 +124,10 @@ func runCLI(ctx *types.Context, cliName string) (string, error) {
 	return result, err
 }
 
-func tabular(headers []string, rows [][]string) string {
+func tabular(headers []string, rows [][]string, asMarkdown bool) string {
+	if asMarkdown {
+		return markdown(headers, rows)
+	}
 	renderer := lipgloss.NewRenderer(os.Stdout)
 
 	return table.New().
@@ -138,20 +141,42 @@ func tabular(headers []string, rows [][]string) string {
 		}).String()
 }
 
+func markdown(headers []string, rows [][]string) string {
+	var buf strings.Builder
+
+	// Header row.
+	buf.WriteString("| " + strings.Join(headers, " | ") + " |\n")
+
+	// Separator row.
+	buf.WriteString("|")
+	for range headers {
+		buf.WriteString("---|")
+	}
+	buf.WriteString("\n")
+
+	// Data rows.
+	for _, row := range rows {
+		row[1] = strings.ReplaceAll(row[1], "\n", "<br>")
+		buf.WriteString("| " + strings.Join(row, " | ") + " |\n")
+	}
+
+	return buf.String()
+}
+
 func success(ctx *types.Context, msg string) {
 	fmt.Println(msg) //nolint:forbidigo
 	ctx.Success = true
 }
 
-func summary(ctx *types.Context, attr string, nth int, asJSON bool) error {
+func summary(ctx *types.Context, attr string, nth int, asJSON bool, asMarkdown bool) error {
 	if attr == "os" {
-		return osSummary(ctx, asJSON)
+		return osSummary(ctx, asJSON, asMarkdown)
 	}
 	if attr == "battery" {
-		return batterySummary(ctx, nth, asJSON)
+		return batterySummary(ctx, nth, asJSON, asMarkdown)
 	}
 	if attr == "var" {
-		return envSummary(ctx, asJSON)
+		return envSummary(ctx, asJSON, asMarkdown)
 	}
 	return fmt.Errorf("unknown attribute: %s", attr)
 }
@@ -165,7 +190,7 @@ func toJSON(record any) (string, error) {
 	return string(data), nil
 }
 
-func osSummary(ctx *types.Context, asJSON bool) error {
+func osSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	summary, err := is_os.ReleaseSummary(ctx)
 	if err != nil {
 		return err
@@ -200,11 +225,11 @@ func osSummary(ctx *types.Context, asJSON bool) error {
 	if summary.PrettyName != "" {
 		rows = append(rows, []string{"pretty-name", summary.PrettyName})
 	}
-	success(ctx, tabular(headers, rows))
+	success(ctx, tabular(headers, rows, asMarkdown))
 	return nil
 }
 
-func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
+func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) error {
 	summary, err := battery.Get(ctx, nth)
 	if err != nil {
 		return err
@@ -249,11 +274,11 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool) error {
 	} else {
 		rows = append(rows, []string{"count", "0"})
 	}
-	success(ctx, tabular(headers, rows))
+	success(ctx, tabular(headers, rows, asMarkdown))
 	return nil
 }
 
-func envSummary(ctx *types.Context, asJSON bool) error {
+func envSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	envMap := make(map[string]any)
 	rows := make([][]string, 0, len(os.Environ()))
 
@@ -297,7 +322,7 @@ func envSummary(ctx *types.Context, asJSON bool) error {
 
 	// Tabular output
 	headers := []string{"Name", "Value"}
-	success(ctx, tabular(headers, rows))
+	success(ctx, tabular(headers, rows, asMarkdown))
 	return nil
 }
 

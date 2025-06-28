@@ -77,7 +77,8 @@ type Battery struct {
 type Summary struct {
 	Attr string `arg:"" required:"" name:"attribute" enum:"battery,os,var" help:"[battery|os|var]"`
 	Nth  int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
-	JSON bool   `help:"print summary as JSON"`
+	JSON bool   `xor:"format" help:"print summary as JSON"`
+	MD   bool   `xor:"format" help:"print summary as a Markdown table"`
 }
 
 //nolint:lll,govet,nolintlint
