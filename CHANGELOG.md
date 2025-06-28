@@ -1,5 +1,12 @@
 # Changes
 
+## 0.9.0 - 2025-06-27
+
+- Add "is known summary var"
+- Add "is known summary var --json"
+- Add "is known summary var --md"
+- Add "is known summary os --md"
+
 ## 0.8.2 - 2025-06-17
 
 - Fix gopls version parsing
