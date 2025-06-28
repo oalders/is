@@ -173,7 +173,12 @@ func summary(ctx *types.Context, attr string, nth int, asJSON bool, asMarkdown b
 		return osSummary(ctx, asJSON, asMarkdown)
 	}
 	if attr == "battery" {
-		return batterySummary(ctx, nth, asJSON, asMarkdown)
+		batt, err := batterySummary(ctx, nth, asJSON, asMarkdown)
+		if err != nil {
+			return err
+		}
+		success(ctx, batt)
+		return nil
 	}
 	if attr == "var" {
 		return envSummary(ctx, asJSON, asMarkdown)
@@ -229,26 +234,24 @@ func osSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	return nil
 }
 
-func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) error {
+func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (string, error) {
 	summary, err := battery.Get(ctx, nth)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if asJSON {
 		if summary.Count == 0 {
 			result, err := toJSON(map[string]int{"count": 0})
 			if err != nil {
-				return err
+				return "", err
 			}
-			success(ctx, result)
-			return nil
+			return result, nil
 		}
 		result, err := toJSON(summary)
 		if err != nil {
-			return err
+			return "", err
 		}
-		success(ctx, result)
-		return nil
+		return result, nil
 	}
 
 	headers := []string{
@@ -274,8 +277,7 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) e
 	} else {
 		rows = append(rows, []string{"count", "0"})
 	}
-	success(ctx, tabular(headers, rows, asMarkdown))
-	return nil
+	return tabular(headers, rows, asMarkdown), nil
 }
 
 func envSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
