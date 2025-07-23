@@ -14,6 +14,7 @@ func main() {
 	//nolint:lll,govet,nolintlint
 	var API struct {
 		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
+		Audio   AudioCmd         `cmd:"" help:"Check audio attributes. e.g. \"is audio level gt 50\""`
 		Battery BatteryCmd       `cmd:"" help:"Check battery attributes. e.g. \"is battery state eq charging\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 		Debug   bool             `help:"turn on debugging statements"`

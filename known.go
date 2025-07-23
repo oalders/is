@@ -15,6 +15,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/lipgloss/table"
 	"github.com/oalders/is/attr"
+	"github.com/oalders/is/audio"
 	"github.com/oalders/is/battery"
 	is_os "github.com/oalders/is/os"
 	"github.com/oalders/is/parser"
@@ -44,6 +45,24 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 			result, err = runCLI(ctx, r.CLI.Name)
 		case r.Var.Name != "":
 			result, err = getEnv(ctx, r.Var.Name, r.Var.JSON)
+		case r.Audio.Attr != "":
+			if r.Audio.Attr == "level" { //nolint:nestif
+				level, levelErr := audio.Level()
+				if levelErr != nil {
+					return levelErr
+				}
+				result = fmt.Sprintf("%d", level)
+			} else {
+				muted, mutedErr := audio.IsMuted()
+				if mutedErr != nil {
+					return mutedErr
+				}
+				if muted {
+					result = "true"
+				} else {
+					result = "false"
+				}
+			}
 		case r.Battery.Attr != "":
 			result, err = battery.GetAttrAsString(
 				ctx,
