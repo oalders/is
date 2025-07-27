@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -eux -o pipefail
+set -eux
 
 go build -o /usr/local/bin/is
