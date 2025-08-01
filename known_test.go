@@ -285,7 +285,7 @@ func Test_envSummary(t *testing.T) {
 func TestMarkdown(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct { //nolint:govet
+	tests := []struct {
 		name     string
 		headers  []string
 		rows     [][]string
