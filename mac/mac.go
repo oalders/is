@@ -1,4 +1,4 @@
-// package main contains macOS logic
+// Package mac contains macOS logic
 package mac
 
 import (
@@ -6,12 +6,11 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/oalders/is/types"
 	"github.com/oalders/is/version"
 )
 
-// TODO: return error when no code name found.
-//
-//nolint:godox
+// CodeName returns the human readable name of a macOS release.
 func CodeName(osVersion string) string {
 	got, err := version.NewVersion(osVersion)
 	if err != nil {
