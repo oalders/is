@@ -1,10 +1,12 @@
 package mac_test
 
 import (
+	"context"
 	"runtime"
 	"testing"
 
 	"github.com/oalders/is/mac"
+	"github.com/oalders/is/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,7 +36,8 @@ func TestCodeName(t *testing.T) {
 
 func TestVersion(t *testing.T) {
 	t.Parallel()
-	version, err := mac.Version()
+	ctx := types.Context{Context: context.Background()}
+	version, err := mac.Version(&ctx)
 	if runtime.GOOS == "darwin" {
 		assert.NotEmpty(t, version)
 		assert.NoError(t, err)

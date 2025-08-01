@@ -1,6 +1,7 @@
 package os_test
 
 import (
+	"context"
 	"runtime"
 	"testing"
 
@@ -15,8 +16,11 @@ func TestOSInfo(t *testing.T) {
 	tests := []string{"name", attr.Version}
 
 	for _, v := range tests {
-		ctx := types.Context{Debug: true}
-		found, err := os.Info(&ctx, v)
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
+		found, err := os.Info(ctx, v)
 		assert.NoError(t, err, v)
 		assert.NotEmpty(t, found, v)
 	}
@@ -26,8 +30,11 @@ func TestOSInfo(t *testing.T) {
 		tests := []string{"id", "pretty-name"}
 
 		for _, v := range tests {
-			ctx := types.Context{Debug: true}
-			found, err := os.Info(&ctx, v)
+			ctx := &types.Context{
+				Context: context.Background(),
+				Debug:   true,
+			}
+			found, err := os.Info(ctx, v)
 			assert.NoError(t, err, v)
 			assert.NotEmpty(t, found, v)
 		}

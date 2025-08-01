@@ -55,8 +55,8 @@ func CodeName(osVersion string) string {
 	return ""
 }
 
-func Version() (string, error) {
-	o, err := exec.Command("sw_vers", "-productVersion").Output()
+func Version(ctx *types.Context) (string, error) {
+	o, err := exec.CommandContext(ctx.Context, "sw_vers", "-productVersion").Output()
 	if err != nil {
 		return "", fmt.Errorf("could not run sw_vers -productVersion: %w", err)
 	}

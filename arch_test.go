@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -27,7 +28,9 @@ func TestArchCmd(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ctx := types.Context{Debug: false}
+		ctx := types.Context{
+			Context: context.Background(),
+		}
 		err := test.Cmd.Run(&ctx)
 		name := fmt.Sprintf("%s %s", test.Cmd.Op, test.Cmd.Val)
 		if test.Error {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/oalders/is/ops"
@@ -42,9 +43,12 @@ func TestCliVersion(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Version: test.Cmp}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		if test.Error {
 			assert.Error(t, err)
 		} else {
@@ -63,30 +67,42 @@ func TestCliAge(t *testing.T) {
 	t.Setenv("PATH", prependPath("testdata/bin"))
 	const command = "tmux"
 	{
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Age: AgeCmp{command, ops.Gt, "1", "s"}}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "100000", "days"}}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "1.1", "d"}}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
 	}
 	{
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Age: AgeCmp{"tmuxxx", ops.Lt, "1", "d"}}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		assert.Error(t, err)
 		assert.False(t, ctx.Success)
 	}
@@ -121,9 +137,12 @@ func TestCliOutput(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := CLICmd{Output: test.Cmp}
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		if test.Error {
 			assert.Error(t, err)
 		} else {

@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/oalders/is/parser"
@@ -16,7 +17,9 @@ const (
 //nolint:lll
 func TestCLIVersion(t *testing.T) {
 	t.Parallel()
-	ctx := &types.Context{}
+	ctx := types.Context{
+		Context: context.Background(),
+	}
 
 	tests := [][]string{
 		{"ansible", "2.14.2", "ansible [core 2.14.2]"},
@@ -85,7 +88,7 @@ Run "nvim -V1 -v" for more info`},
 		},
 		{"oh-my-posh", "16.9.1", "16.9.1"},
 		// the trailing newline is in perltidy's output, so this test should preserve it
-		{"perltidy", "v20230701", `This is perltidy, v20230701 
+		{"perltidy", "v20230701", `This is perltidy, v20230701
 
 Copyright 2000-2023, Steve Hancock
 
@@ -137,12 +140,15 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 
 	for _, test := range tests {
 		assert.Equal(t, test[1], parser.CLIVersion(
-			ctx, test[0], test[2],
+			&ctx, test[0], test[2],
 		))
 	}
 
 	{
-		ctx := &types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
@@ -153,28 +159,38 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 
 func TestCLIOutput(t *testing.T) {
 	t.Parallel()
+	ctx := &types.Context{
+		Context: context.Background(),
+		Debug:   true,
+	}
 	{
-		ctx := &types.Context{Debug: true}
 		o, err := (parser.CLIOutput(ctx, ssh))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 	{
-		ctx := &types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		o, err := (parser.CLIOutput(ctx, tmux))
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
 
 	{
-		ctx := &types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		o, err := (parser.CLIOutput(ctx, "tmuxxx"))
 		assert.Error(t, err)
 		assert.Empty(t, o)
 	}
 
 	{
-		ctx := &types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)

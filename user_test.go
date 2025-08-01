@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/oalders/is/types"
@@ -9,7 +10,10 @@ import (
 
 func TestSudoer(t *testing.T) {
 	t.Parallel()
-	ctx := types.Context{Debug: true}
+	ctx := types.Context{
+		Context: context.Background(),
+		Debug:   true,
+	}
 	cmd := UserCmd{}
 	cmd.Sudoer = "sudoer"
 	err := cmd.Run(&ctx)

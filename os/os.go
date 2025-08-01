@@ -32,7 +32,7 @@ func Info(ctx *types.Context, argName string) (string, error) {
 		return "", nil
 	}
 
-	macVersion, err := mac.Version()
+	macVersion, err := mac.Version(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -58,7 +58,7 @@ func ReleaseSummary(ctx *types.Context) (*types.OSRelease, error) {
 	release.Name = runtime.GOOS
 
 	if runtime.GOOS == darwin {
-		v, versionErr := mac.Version()
+		v, versionErr := mac.Version(ctx)
 		if versionErr != nil {
 			return nil, versionErr
 		}
