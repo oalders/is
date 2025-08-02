@@ -33,14 +33,14 @@ func TestOSInfo(t *testing.T) {
 		}
 	}
 
-	for _, v := range tests {
+	for _, attr := range tests {
 		ctx := types.Context{
 			Context: context.Background(),
 			Debug:   true,
 		}
-		found, err := os.Info(&ctx, v)
-		assert.NoError(t, err, v)
-		assert.NotEmpty(t, found, v)
+		found, err := os.Info(&ctx, attr)
+		assert.NoError(t, err, attr)
+		assert.NotEmpty(t, found, attr)
 	}
 }
 
