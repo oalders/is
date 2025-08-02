@@ -7,6 +7,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/distatus/battery v0.11.0
 	github.com/hashicorp/go-version v1.6.0
+	github.com/itchyny/volume-go v0.2.2
 	github.com/posener/complete v1.2.3
 	github.com/stretchr/testify v1.8.3
 	github.com/willabides/kongplete v0.3.0
@@ -24,7 +25,6 @@ require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.0.0 // indirect
-	github.com/itchyny/volume-go v0.2.2 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
