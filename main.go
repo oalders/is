@@ -2,7 +2,9 @@
 package main
 
 import (
+	"context"
 	"os"
+	"time"
 
 	"github.com/alecthomas/kong"
 	"github.com/oalders/is/types"
@@ -14,6 +16,7 @@ func main() {
 	//nolint:lll,govet,nolintlint
 	var API struct {
 		Arch    ArchCmd          `cmd:"" help:"Check arch e.g. \"is arch like x64\""`
+		Audio   AudioCmd         `cmd:"" help:"Check audio attributes. e.g. \"is audio level gt 50\""`
 		Battery BatteryCmd       `cmd:"" help:"Check battery attributes. e.g. \"is battery state eq charging\""`
 		CLI     CLICmd           `cmd:"" help:"Check cli version. e.g. \"is cli version tmux gte 3\""`
 		Debug   bool             `help:"turn on debugging statements"`
@@ -32,7 +35,7 @@ func main() {
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.9.0"},
+		kong.Vars{"version": "0.10.0"},
 	)
 
 	// Run kongplete.Complete to handle completion requests
@@ -40,15 +43,19 @@ func main() {
 		kongplete.WithPredictor("file", complete.PredictFiles("*")),
 	)
 
-	ctx, err := parser.Parse(os.Args[1:])
+	runCtx, err := parser.Parse(os.Args[1:])
 	parser.FatalIfErrorf(err)
 
-	runContext := types.Context{Debug: API.Debug}
-	err = ctx.Run(&runContext)
-	ctx.FatalIfErrorf(err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
+	runContext := types.Context{Context: ctx, Debug: API.Debug}
+	err = runCtx.Run(&runContext)
+	runCtx.FatalIfErrorf(err)
+
+	exitCode := 1
 	if runContext.Success {
-		os.Exit(0)
+		exitCode = 0
 	}
-	os.Exit(1)
+	cancel() // Cancel context before exiting
+	os.Exit(exitCode)
 }

@@ -16,7 +16,7 @@ func (r *UserCmd) Run(ctx *types.Context) error {
 	if ctx.Debug {
 		log.Printf("Running \"sudo -n true\"\n")
 	}
-	cmd := exec.Command("sudo", "-n", "true")
+	cmd := exec.CommandContext(ctx.Context, "sudo", "-n", "true")
 	output, err := command.Output(cmd, "stderr")
 	if err != nil {
 		if !errors.Is(err, exec.ErrNotFound) {

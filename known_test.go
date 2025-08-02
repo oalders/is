@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -48,10 +49,13 @@ func TestKnownCmd(t *testing.T) {
 	}
 
 	for _, test := range osTests {
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := KnownCmd{}
 		cmd.OS.Attr = test.Attr
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		name := fmt.Sprintf("%s err: %t success: %t", test.Attr, test.Error, test.Success)
 		if test.Error {
 			assert.Error(t, err, name)
@@ -97,8 +101,11 @@ func TestKnownCmd(t *testing.T) {
 	}
 
 	for _, test := range cliTests {
-		ctx := types.Context{Debug: true}
-		err := test.Cmd.Run(&ctx)
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
+		err := test.Cmd.Run(ctx)
 
 		switch test.Error {
 		case true:
@@ -116,10 +123,13 @@ func TestKnownCmd(t *testing.T) {
 	}
 
 	{
-		ctx := types.Context{Debug: true}
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := KnownCmd{}
 		cmd.Arch.Attr = "arch"
-		err := cmd.Run(&ctx)
+		err := cmd.Run(ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success, "success")
 	}
@@ -127,27 +137,31 @@ func TestKnownCmd(t *testing.T) {
 
 func Test_getEnv(t *testing.T) {
 	t.Run("regular environment variable", func(t *testing.T) {
-		ctx := types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		// Setup
 		testVarName := "TEST_ENV_VAR"
 		testValue := "test_value"
 		t.Setenv(testVarName, testValue)
 
 		// Test non-JSON retrieval
-		value, err := getEnv(&ctx, testVarName, false)
+		value, err := getEnv(ctx, testVarName, false)
 		require.True(t, ctx.Success)
 		require.NoError(t, err)
 		assert.Equal(t, testValue, value)
 	})
 
 	t.Run("path environment variable as JSON", func(t *testing.T) {
-		ctx := types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		// Setup
 		pathValue := "/usr/bin:/usr/local/bin:/bin"
 		t.Setenv(path, pathValue)
 
 		// Test JSON retrieval
-		value, err := getEnv(&ctx, path, true)
+		value, err := getEnv(ctx, path, true)
 		require.NoError(t, err)
 		assert.Contains(t, value, "/usr/bin")
 		assert.Contains(t, value, "/usr/local/bin")
@@ -159,13 +173,15 @@ func Test_getEnv(t *testing.T) {
 	})
 
 	t.Run("manpath environment variable as JSON", func(t *testing.T) {
-		ctx := types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		// Setup
 		manpathValue := "/usr/share/man:/usr/local/share/man"
 		t.Setenv(manpath, manpathValue)
 
 		// Test JSON retrieval
-		value, err := getEnv(&ctx, manpath, true)
+		value, err := getEnv(ctx, manpath, true)
 		require.NoError(t, err)
 		assert.Contains(t, value, "/usr/share/man")
 		assert.Contains(t, value, "/usr/local/share/man")
@@ -176,27 +192,31 @@ func Test_getEnv(t *testing.T) {
 	})
 
 	t.Run("non-path variable as JSON returns empty array", func(t *testing.T) {
-		ctx := types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		// Setup
 		testVarName := "REGULAR_VAR"
 		testValue := "something"
 		t.Setenv(testVarName, testValue)
 
 		// Test JSON retrieval for non-path/manpath variable
-		value, err := getEnv(&ctx, testVarName, true)
+		value, err := getEnv(ctx, testVarName, true)
 		require.NoError(t, err)
 		assert.Equal(t, "[\n    \"something\"\n]", strings.TrimSpace(value))
 	})
 
 	t.Run("non-existent variable", func(t *testing.T) { //nolint:paralleltest,nolintlint
-		ctx := types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		// Test non-existent variable with non-JSON mode
-		value, err := getEnv(&ctx, "NON_EXISTENT_VAR", false)
+		value, err := getEnv(ctx, "NON_EXISTENT_VAR", false)
 		require.NoError(t, err)
 		assert.Equal(t, "", value)
 
 		// Test non-existent variable with JSON mode
-		value, err = getEnv(&ctx, "NON_EXISTENT_VAR", true)
+		value, err = getEnv(ctx, "NON_EXISTENT_VAR", true)
 		require.NoError(t, err)
 		assert.Equal(t, "null", strings.TrimSpace(value))
 		require.False(t, ctx.Success)
@@ -210,7 +230,9 @@ func Test_envSummary(t *testing.T) {
 		t.Setenv("PATH", "/usr/bin:/usr/local/bin")
 
 		// Create context and capture stdout
-		ctx := &types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		originalStdout := os.Stdout
 		r, w, err := os.Pipe() //nolint:varnamelen
 		require.NoError(t, err)
@@ -248,7 +270,9 @@ func Test_envSummary(t *testing.T) {
 		t.Setenv("PATH", "/usr/bin:/usr/local/bin")
 
 		// Create context and capture stdout
-		ctx := &types.Context{}
+		ctx := &types.Context{
+			Context: context.Background(),
+		}
 		originalStdout := os.Stdout
 		r, w, err := os.Pipe() //nolint:varnamelen
 		require.NoError(t, err)
@@ -285,7 +309,7 @@ func Test_envSummary(t *testing.T) {
 func TestMarkdown(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct { //nolint:govet
+	tests := []struct {
 		name     string
 		headers  []string
 		rows     [][]string

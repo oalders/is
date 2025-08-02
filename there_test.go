@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/oalders/is/types"
@@ -10,14 +11,20 @@ import (
 func TestThereCmd(t *testing.T) {
 	t.Parallel()
 	{
-		ctx := types.Context{Debug: true}
+		ctx := types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := ThereCmd{Name: "cat"}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
 	}
 	{
-		ctx := types.Context{Debug: true}
+		ctx := types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		cmd := ThereCmd{Name: "catzzzzz"}
 		err := cmd.Run(&ctx)
 		assert.NoError(t, err)

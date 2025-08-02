@@ -74,6 +74,31 @@ type Battery struct {
 	Round bool   `help:"Round float values to the nearest integer"`
 }
 
+type Audio struct {
+	Attr string `arg:"" required:"" enum:"level,muted" help:"[level|muted]"`
+}
+
+//nolint:lll,govet,nolintlint
+type AudioCmd struct {
+	Audio
+	Op  string `arg:"" required:"" default:"eq" enum:"eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Val string `arg:"" optional:"" help:"Value to compare against"`
+}
+
+func (r *AudioCmd) Validate() error {
+	// For "muted" attribute without a value, we're just checking if audio is muted
+	if r.Attr == "muted" && r.Val == "" {
+		return nil
+	}
+
+	// For other attributes or when comparing muted to a specific value
+	if r.Val == "" && r.Op != "eq" && r.Op != "ne" {
+		return fmt.Errorf("missing required argument: val")
+	}
+
+	return nil
+}
+
 type Summary struct {
 	Attr string `arg:"" required:"" name:"attribute" enum:"battery,os,var" help:"[battery|os|var]"`
 	Nth  int    `optional:"" default:"1" help:"Specify which battery to use (1 for the first battery)"`
@@ -151,6 +176,7 @@ type KnownCmd struct {
 	Var     KnownVar `cmd:"" help:"Print env var without a check. e.g. \"is known var PATH\""`
 	Battery Battery  `cmd:"" help:"Print battery information. e.g. \"is known battery state\""`
 	Summary Summary  `cmd:"" help:"summary of available data."`
+	Audio   Audio    `cmd:"" help:"Print without check. e.g. \"is known audio level\""`
 }
 
 // ThereCmd is configuration for finding executables.

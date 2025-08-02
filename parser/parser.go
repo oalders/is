@@ -37,7 +37,7 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	if ctx.Debug {
 		log.Printf("Running: %s %s\n", args[0], args[1])
 	}
-	cmd := exec.Command(cliName, arg)
+	cmd := exec.CommandContext(ctx.Context, cliName, arg)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return "", fmt.Errorf("command output: %w", err)

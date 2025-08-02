@@ -1,7 +1,11 @@
-package types
+// Package types is for is-specific types
+package types //nolint:revive
+
+import "context"
 
 // Context type tracks top level debugging flag.
 type Context struct {
+	Context context.Context //nolint:containedctx
 	Debug   bool
 	Success bool
 }

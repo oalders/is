@@ -80,9 +80,9 @@ linters:
     funlen:
       lines: 75
       statements: 40
-    govet:
-      enable:
-        - fieldalignment
+    # govet:
+      # enable:
+      #   - fieldalignment
     lll:
       line-length: 100
     wrapcheck:

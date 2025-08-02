@@ -1,6 +1,7 @@
 package os_test
 
 import (
+	"context"
 	"runtime"
 	"testing"
 
@@ -14,22 +15,28 @@ func TestOSInfo(t *testing.T) {
 	t.Parallel()
 	tests := []string{"name", attr.Version}
 
-	for _, v := range tests {
-		ctx := types.Context{Debug: true}
-		found, err := os.Info(&ctx, v)
-		assert.NoError(t, err, v)
-		assert.NotEmpty(t, found, v)
+	for _, attr := range tests {
+		ctx := &types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
+		found, err := os.Info(ctx, attr)
+		assert.NoError(t, err, attr)
+		assert.NotEmpty(t, found, attr)
 	}
 
 	// id-like not present in Debian 11, so can't be in a blanket Linux test
 	if runtime.GOOS == "linux" {
 		tests := []string{"id", "pretty-name"}
 
-		for _, v := range tests {
-			ctx := types.Context{Debug: true}
-			found, err := os.Info(&ctx, v)
-			assert.NoError(t, err, v)
-			assert.NotEmpty(t, found, v)
+		for _, attr := range tests {
+			ctx := &types.Context{
+				Context: context.Background(),
+				Debug:   true,
+			}
+			found, err := os.Info(ctx, attr)
+			assert.NoError(t, err, attr)
+			assert.NotEmpty(t, found, attr)
 		}
 	}
 }

@@ -41,7 +41,7 @@ func runCommand(ctx *types.Context, name string) error {
 	if ctx.Debug {
 		log.Printf("🚀 sh -c %q\n", strings.Join(args[1:], " "))
 	}
-	cmd := exec.Command("sh", args...)
+	cmd := exec.CommandContext(ctx.Context, "sh", args...)
 	output, err := cmd.Output()
 	if ctx.Debug && len(output) != 0 {
 		log.Printf("😅 %s", output)
@@ -55,7 +55,7 @@ func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
 	if all {
 		args = append([]string{"-a"}, args...)
 	}
-	cmd := exec.Command("which", args...)
+	cmd := exec.CommandContext(ctx.Context, "which", args...)
 	output, err := cmd.Output()
 	if ctx.Debug {
 		log.Printf("Running: which %s", strings.Join(args, " "))

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 	"testing"
@@ -18,7 +19,10 @@ func TestOSInfo(t *testing.T) {
 
 	if runtime.GOOS == "linux" {
 		tests = append(tests, "id", "pretty-name")
-		ctx := types.Context{Debug: true}
+		ctx := types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		found, err := os.Info(&ctx, "name")
 		assert.NoError(t, err)
 
@@ -29,11 +33,14 @@ func TestOSInfo(t *testing.T) {
 		}
 	}
 
-	for _, v := range tests {
-		ctx := types.Context{Debug: true}
-		found, err := os.Info(&ctx, v)
-		assert.NoError(t, err, v)
-		assert.NotEmpty(t, found, v)
+	for _, attr := range tests {
+		ctx := types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
+		found, err := os.Info(&ctx, attr)
+		assert.NoError(t, err, attr)
+		assert.NotEmpty(t, found, attr)
 	}
 }
 
@@ -75,7 +82,10 @@ func TestOSCmd(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		ctx := types.Context{Debug: false}
+		ctx := types.Context{
+			Context: context.Background(),
+			Debug:   true,
+		}
 		err := test.Cmd.Run(&ctx)
 		name := fmt.Sprintf(
 			"%s %s %s major: %t minor: %t patch: %t",

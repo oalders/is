@@ -23,6 +23,7 @@
   * [Using a Regex](#using-a-regex)
     * [Under the Hood](#under-the-hood)
 * [Top Level Commands](#top-level-commands)
+  * [audio](#audio)
   * [arch](#arch)
   * [battery](#battery)
     * [state](#state)
@@ -74,6 +75,7 @@
     * [unset](#unset)
       * [--compare](#--compare-1)
   * [known](#known)
+  * [audio](#audio-1)
     * [arch](#arch-1)
     * [battery](#battery-1)
     * [os](#os-1)
@@ -343,6 +345,26 @@ is cli output stdout date like "(?i)wed"
 ```
 
 ## Top Level Commands
+
+### audio
+
+Checks against known audio attributes, if available. Returns non-zero and
+prints an error message if audio cannot be discovered.
+
+Available attributes:
+
+* level
+* muted
+
+`level` is a value from 0 to 100.
+
+```shell
+is audio level gte 56 && echo "loud enough"
+```
+
+```shell
+is audio muted && echo "nothing to hear here"
+```
 
 ### arch
 
@@ -1212,6 +1234,30 @@ is: error: wanted result must be an integer
 Prints known information about a resource to `STDOUT`. Returns `0` on success
 and `1` if info cannot be found.
 
+### audio
+
+Prints value of some audio attributes, if available. Returns non-zero  and
+prints an error message if audio cannot be discovered.
+
+Available attributes:
+
+- level
+- muted
+
+`level` prints a value from 0 to 100.
+
+```shell
+$ is known audio level
+56
+```
+
+`muted` prints a string of `true` or `false`
+
+```shell
+$ is known audio muted
+false
+```
+
 #### arch
 
 Prints the value of golang's `runtime.GOARCH`. Note that this is the arch that
@@ -1697,7 +1743,7 @@ Choose from the following options to install `is`.
 1. [Download a release](https://github.com/oalders/is/releases)
 1. Use `go install`
   * `go install github.com/oalders/is@latest`
-  * `go install github.com/oalders/is@v0.9.0`
+  * `go install github.com/oalders/is@v0.10.0`
 1. Use [ubi](https://github.com/houseabsolute/ubi)
 
 ```bash

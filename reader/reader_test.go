@@ -1,6 +1,7 @@
 package reader_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/oalders/is/reader"
@@ -10,7 +11,9 @@ import (
 
 func TestMaybeReadINI(t *testing.T) {
 	t.Parallel()
-	ctx := types.Context{Debug: false}
+	ctx := types.Context{
+		Context: context.Background(),
+	}
 	{
 		release, err := reader.MaybeReadINI(&ctx, "../testdata/etc/os-release")
 		assert.NoError(t, err)

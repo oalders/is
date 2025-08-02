@@ -1,5 +1,10 @@
 # Changes
 
+## 0.10.0 - 2025-07-31
+
+- Add "is audio"
+- Add "is known audio"
+
 ## 0.9.0 - 2025-06-27
 
 - Add "is known summary var"

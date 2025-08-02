@@ -25,7 +25,7 @@ func execCommand(ctx *types.Context, stream, cmd string, args []string) (string,
 		log.Printf("Running command %s with args: %v", cmd, args)
 	}
 	return command.Output(
-		exec.Command(cmd, args...), stream,
+		exec.CommandContext(ctx.Context, cmd, args...), stream,
 	)
 }
 
