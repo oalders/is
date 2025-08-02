@@ -1,6 +1,6 @@
 # Changes
 
-## 0.10.0 - 2025-07-31
+## 0.10.0 - 2025-08-02
 
 - Add "is audio"
 - Add "is known audio"
