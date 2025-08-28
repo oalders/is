@@ -1,12 +1,11 @@
-//go:build !freebsd && !netbsd
+//go:build freebsd || netbsd
 
 // Package audio provides functions to read system audio volume information.
 package audio
 
 import (
-	"fmt"
+	"errors"
 
-	"github.com/itchyny/volume-go"
 	"github.com/oalders/is/types"
 )
 
@@ -17,38 +16,19 @@ type VolumeInfo struct {
 }
 
 // Summary retrieves the current system volume information.
+// On FreeBSD and NetBSD, this returns an error as audio functionality is not supported.
 func Summary(ctx *types.Context) (*VolumeInfo, error) {
-	vol, err := Level()
-	if err != nil {
-		return nil, err
-	}
-
-	muted, err := IsMuted()
-	if err != nil {
-		return nil, err
-	}
-	ctx.Success = true
-
-	return &VolumeInfo{
-		Level: vol,
-		Muted: muted,
-	}, nil
+	return nil, errors.New("audio functionality not supported on this platform")
 }
 
 // Level returns just the volume level (0-100).
+// On FreeBSD and NetBSD, this returns an error as audio functionality is not supported.
 func Level() (int, error) {
-	level, err := volume.GetVolume()
-	if err != nil {
-		return 0, fmt.Errorf("get level: %w", err)
-	}
-	return level, nil
+	return 0, errors.New("audio functionality not supported on this platform")
 }
 
 // IsMuted returns whether the system audio is currently muted.
+// On FreeBSD and NetBSD, this returns an error as audio functionality is not supported.
 func IsMuted() (bool, error) {
-	isMuted, err := volume.GetMuted()
-	if err != nil {
-		return false, fmt.Errorf("get mute status: %w", err)
-	}
-	return isMuted, nil
+	return false, errors.New("audio functionality not supported on this platform")
 }
