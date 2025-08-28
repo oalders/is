@@ -83,8 +83,16 @@ jobs:
         with:
           go-version: 1.24.4
 
-      - name: Install linters
-        run: ./bin/install-linters
+      - name: Install omegasort and precious
+        uses: oalders/install-ubi-action@v0.0.5
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          projects: |
+            houseabsolute/omegasort
+            houseabsolute/precious
+
+      - name: Install Golang linters
+        run: ./bin/install-go-linters
 
       - name: Run precious
         run: precious lint --all
