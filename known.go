@@ -26,6 +26,8 @@ import (
 const (
 	manpath = "MANPATH"
 	path    = "PATH"
+	trueStr = "true"
+	falseStr = "false"
 )
 
 // Run "is known ...".
@@ -58,9 +60,9 @@ func (r *KnownCmd) Run(ctx *types.Context) error {
 					return mutedErr
 				}
 				if muted {
-					result = "true"
+					result = trueStr
 				} else {
-					result = "false"
+					result = falseStr
 				}
 			}
 		case r.Battery.Attr != "":
