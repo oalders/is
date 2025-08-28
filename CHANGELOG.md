@@ -1,6 +1,11 @@
 # Changes
 
-## 0.10.0 - 2025-08-02
+## 0.11.0 - 2025-08-28
+
+- Add "is var [name] true"
+- Add "is var [name] false"
+
+## 0.10.0 - 2025-08-28
 
 - Add "is audio"
 - Add "is known audio"
