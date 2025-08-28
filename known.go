@@ -24,9 +24,9 @@ import (
 )
 
 const (
-	manpath = "MANPATH"
-	path    = "PATH"
-	trueStr = "true"
+	manpath  = "MANPATH"
+	path     = "PATH"
+	trueStr  = "true"
 	falseStr = "false"
 )
 

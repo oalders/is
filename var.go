@@ -27,7 +27,12 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 		}
 		boolVal, err := strconv.ParseBool(val)
 		if err != nil {
-			return fmt.Errorf("environment variable %s value %q cannot be parsed as boolean: %w", r.Name, val, err)
+			return fmt.Errorf(
+				"environment variable %s value %q cannot be parsed as boolean: %w",
+				r.Name,
+				val,
+				err,
+			)
 		}
 		ctx.Success = boolVal
 		return nil
@@ -37,7 +42,12 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 		}
 		boolVal, err := strconv.ParseBool(val)
 		if err != nil {
-			return fmt.Errorf("environment variable %s value %q cannot be parsed as boolean: %w", r.Name, val, err)
+			return fmt.Errorf(
+				"environment variable %s value %q cannot be parsed as boolean: %w",
+				r.Name,
+				val,
+				err,
+			)
 		}
 		ctx.Success = !boolVal
 		return nil
