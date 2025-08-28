@@ -39,8 +39,7 @@ builds:
       - freebsd
 
 archives:
-  - format: tar.gz
-    # this name template makes the OS and Arch compatible with the results of `uname`.
+  - # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -48,16 +47,24 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
+    # use zip for windows archives, tar.gz for others
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
+      - goos: linux
+        formats: [tar.gz]
+      - goos: darwin
+        formats: [tar.gz]
+      - goos: netbsd
+        formats: [tar.gz]
+      - goos: freebsd
+        formats: [tar.gz]
 
 nfpms:
   -
     id: 'is'
     package_name: is
-    builds:
+    ids:
       - 'is'
     vendor: 'Olaf Alders'
     homepage: 'https://www.olafalders.com/'
