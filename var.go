@@ -9,6 +9,7 @@ import (
 	"github.com/oalders/is/types"
 )
 
+//nolint:cyclop
 func (r *VarCmd) Run(ctx *types.Context) error {
 	ctx.Success = false
 
