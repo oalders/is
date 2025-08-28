@@ -125,20 +125,20 @@ type UserCmd struct {
 //nolint:lll,govet,nolintlint
 type VarCmd struct {
 	Name    string `arg:"" required:""`
-	Op      string `arg:"" required:"" enum:"set,unset,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
+	Op      string `arg:"" required:"" enum:"set,unset,true,false,eq,ne,gt,gte,in,lt,lte,like,unlike" help:"[set|unset|true|false|eq|ne|gt|gte|in|like|lt|lte|unlike]"`
 	Val     string `arg:"" optional:""`
 	Compare string `default:"optimistic" enum:"float,integer,string,version,optimistic" help:"[float|integer|string|version|optimistic]"`
 }
 
-// Allow for the following:
-//
-// is var EDITOR eq ""
-// is var EDITOR ne ""
-//
-// .
+// Validate allows for some commands to forego requiring an additional argument.
 func (r *VarCmd) Validate() error {
-	if r.Op != "set" && r.Op != "unset" && r.Op != "eq" && r.Op != "ne" && r.Val == "" {
-		return fmt.Errorf("missing required argument: val")
+	switch r.Op {
+	case "set", "unset", "true", "false", "eq", "ne":
+		return nil
+	default:
+		if r.Val == "" {
+			return fmt.Errorf("missing required argument: val")
+		}
 	}
 	return nil
 }
