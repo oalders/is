@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/oalders/is/types"
 )
@@ -18,6 +19,26 @@ func (r *VarCmd) Run(ctx *types.Context) error {
 		return nil
 	case "unset":
 		ctx.Success = !set
+		return nil
+	case "true":
+		if !set {
+			return fmt.Errorf("environment variable %s is not set", r.Name)
+		}
+		boolVal, err := strconv.ParseBool(val)
+		if err != nil {
+			return fmt.Errorf("environment variable %s value %q cannot be parsed as boolean: %w", r.Name, val, err)
+		}
+		ctx.Success = boolVal
+		return nil
+	case "false":
+		if !set {
+			return fmt.Errorf("environment variable %s is not set", r.Name)
+		}
+		boolVal, err := strconv.ParseBool(val)
+		if err != nil {
+			return fmt.Errorf("environment variable %s value %q cannot be parsed as boolean: %w", r.Name, val, err)
+		}
+		ctx.Success = !boolVal
 		return nil
 	default:
 		if !set {

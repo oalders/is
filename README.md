@@ -73,6 +73,8 @@
   * [var](#var)
     * [set](#set)
     * [unset](#unset)
+    * [true](#true)
+    * [false](#false)
       * [--compare](#--compare-1)
   * [known](#known)
   * [audio](#audio-1)
@@ -1175,19 +1177,51 @@ unset EDITOR
 is var EDITOR unset
 ```
 
-`set` and `unset` don't require arguments, but the comparison operators do.
+#### true
 
-Supported comparisons are:
+Check if an environment variable's value can be parsed as a boolean `true`. Uses Go's `strconv.ParseBool` function, which accepts: `1`, `t`, `T`, `TRUE`, `true`, `True` as true values.
 
-- `lt`
-- `lte`
-- `eq`
-- `gte`
-- `gt`
-- `in`
-- `ne`
-- `like`
-- `unlike`
+```bash
+export DEBUG=true
+is var DEBUG true && echo "Debug mode is enabled"
+```
+
+```bash
+export VERBOSE=1
+is var VERBOSE true && echo "Verbose output enabled"
+```
+
+#### false
+
+Check if an environment variable's value can be parsed as a boolean `false`. Uses Go's `strconv.ParseBool` function, which accepts: `0`, `f`, `F`, `FALSE`, `false`, `False` as false values.
+
+```bash
+export PRODUCTION=false
+is var PRODUCTION false && echo "Not in production mode"
+```
+
+```bash
+export DEBUG=0
+is var DEBUG false && echo "Debug mode is disabled"
+```
+
+`set`, `unset`, `true`, and `false` don't require additional arguments, but the comparison operators do.
+
+Supported operations are:
+
+- `set` - check if variable is set
+- `unset` - check if variable is unset
+- `true` - check if variable value is a boolean true
+- `false` - check if variable value is a boolean false
+- `lt` - less than comparison
+- `lte` - less than or equal comparison
+- `eq` - equality comparison
+- `gte` - greater than or equal comparison
+- `gt` - greater than comparison
+- `in` - check if value is in comma-separated list
+- `ne` - not equal comparison
+- `like` - regex match
+- `unlike` - inverse regex match
 
 Both `eq` and `ne` allow for comparisons with an empty string:
 
