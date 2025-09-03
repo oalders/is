@@ -16,17 +16,22 @@ import (
 	"github.com/oalders/is/types"
 )
 
-func execCommand(ctx *types.Context, stream, cmd string, args []string) (string, error) {
-	if cmd == "bash -c" {
-		cmd = "bash"
-		args = append([]string{"-c"}, args...)
-	}
+func execCommand(ctx *types.Context, stream, cmdLine string, args []string) (string, error) {
+	cmd, cmdArgs := parseCommand(cmdLine, args)
+
 	if ctx.Debug {
-		log.Printf("Running command %s with args: %v", cmd, args)
+		log.Printf("Running command %s with args: %v", cmd, cmdArgs)
 	}
-	return command.Output(
-		exec.CommandContext(ctx.Context, cmd, args...), stream,
-	)
+
+	execCmd := exec.CommandContext(ctx.Context, cmd, cmdArgs...)
+	return command.Output(execCmd, stream)
+}
+
+func parseCommand(cmdLine string, args []string) (string, []string) {
+	if cmdLine == "bash -c" {
+		return "bash", append([]string{"-c"}, args...)
+	}
+	return cmdLine, args
 }
 
 // Run "is cli ...".
