@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/oalders/is/age"
@@ -31,6 +32,16 @@ func parseCommand(cmdLine string, args []string) (string, []string) {
 	if cmdLine == "bash -c" {
 		return "bash", append([]string{"-c"}, args...)
 	}
+
+	// If no explicit args provided via --arg flags, parse command line for embedded arguments
+	if len(args) == 0 {
+		// Split command on spaces to extract command and its arguments
+		parts := strings.Fields(cmdLine)
+		if len(parts) > 1 {
+			return parts[0], parts[1:]
+		}
+	}
+
 	return cmdLine, args
 }
 
