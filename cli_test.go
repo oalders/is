@@ -159,11 +159,11 @@ func TestCliOutput(t *testing.T) {
 //nolint:paralleltest,nolintlint
 func TestParseCommand(t *testing.T) {
 	type test struct {
-		cmdLine      string
-		args         []string
-		wantCmd      string
-		wantArgs     []string
-		description  string
+		cmdLine     string
+		args        []string
+		wantCmd     string
+		wantArgs    []string
+		description string
 	}
 
 	tests := []test{
