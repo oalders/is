@@ -109,3 +109,13 @@ tmux=./testdata/bin/tmux
 @test 'string in' {
     ./is cli output stdout date --arg="+%a" in Mon,Tue,Wed,Thu,Fri,Sat,Sun
 }
+
+@test 'command with arguments - uname -a' {
+    ./is os name ne linux && skip "Linux-only test"
+    ./is cli output stdout "uname -a" like "Linux"
+}
+
+@test 'command with arguments - uname -m' {
+    ./is os name ne linux && skip "Linux-only test"
+    ./is cli output stdout "uname -m" like "x86_64"
+}

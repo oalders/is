@@ -155,3 +155,65 @@ func TestCliOutput(t *testing.T) {
 		}
 	}
 }
+
+//nolint:paralleltest,nolintlint
+func TestParseCommand(t *testing.T) {
+	type test struct {
+		cmdLine     string
+		args        []string
+		wantCmd     string
+		wantArgs    []string
+		description string
+	}
+
+	tests := []test{
+		{
+			cmdLine:     "uname",
+			args:        []string{},
+			wantCmd:     "uname",
+			wantArgs:    []string{},
+			description: "simple command without args",
+		},
+		{
+			cmdLine:     "uname -a",
+			args:        []string{},
+			wantCmd:     "uname",
+			wantArgs:    []string{"-a"},
+			description: "command with embedded args",
+		},
+		{
+			cmdLine:     "uname -m -n",
+			args:        []string{},
+			wantCmd:     "uname",
+			wantArgs:    []string{"-m", "-n"},
+			description: "command with multiple embedded args",
+		},
+		{
+			cmdLine:     "uname",
+			args:        []string{"-a", "-m"},
+			wantCmd:     "uname",
+			wantArgs:    []string{"-a", "-m"},
+			description: "command with explicit --arg flags",
+		},
+		{
+			cmdLine:     "bash -c",
+			args:        []string{"date|wc -l"},
+			wantCmd:     "bash",
+			wantArgs:    []string{"-c", "date|wc -l"},
+			description: "special bash -c case",
+		},
+		{
+			cmdLine:     "cat file.txt",
+			args:        []string{},
+			wantCmd:     "cat",
+			wantArgs:    []string{"file.txt"},
+			description: "command with filename argument",
+		},
+	}
+
+	for _, test := range tests {
+		cmd, args := parseCommand(test.cmdLine, test.args)
+		assert.Equal(t, test.wantCmd, cmd, test.description)
+		assert.Equal(t, test.wantArgs, args, test.description)
+	}
+}
