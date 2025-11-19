@@ -14,6 +14,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/lipgloss/table"
+	"github.com/charmbracelet/x/term"
 	"github.com/oalders/is/attr"
 	"github.com/oalders/is/audio"
 	"github.com/oalders/is/battery"
@@ -151,12 +152,20 @@ func tabular(headers []string, rows [][]string, asMarkdown bool) string {
 	}
 	renderer := lipgloss.NewRenderer(os.Stdout)
 
+	// Get terminal width, default to 80 if unavailable
+	width, _, err := term.GetSize(os.Stdout.Fd())
+	if err != nil || width == 0 {
+		width = 80
+	}
+
 	return table.New().
 		Headers(headers...).
 		Rows(rows...).
 		Border(lipgloss.ThickBorder()).
 		BorderStyle(renderer.NewStyle().Foreground(lipgloss.Color("238"))).
 		BorderRow(true).
+		Width(width).
+		Wrap(true).
 		StyleFunc(func(_, _ int) lipgloss.Style {
 			return renderer.NewStyle().Padding(0, 1)
 		}).String()
