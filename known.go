@@ -25,10 +25,12 @@ import (
 )
 
 const (
-	manpath  = "MANPATH"
-	path     = "PATH"
-	trueStr  = "true"
-	falseStr = "false"
+	manpath       = "MANPATH"
+	path          = "PATH"
+	xdgConfigDirs = "XDG_CONFIG_DIRS"
+	xdgDataDirs   = "XDG_DATA_DIRS"
+	trueStr       = "true"
+	falseStr      = "false"
 )
 
 // Run "is known ...".
@@ -310,6 +312,10 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (
 	return tabular(headers, rows, asMarkdown), nil
 }
 
+func shouldSplitEnvVar(name string) bool {
+	return name == path || name == manpath || name == xdgConfigDirs || name == xdgDataDirs
+}
+
 func envSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	envMap := make(map[string]any)
 	rows := make([][]string, 0, len(os.Environ()))
@@ -325,7 +331,7 @@ func envSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 
 		name, value := parts[0], parts[1]
 
-		if name == path || name == manpath {
+		if shouldSplitEnvVar(name) {
 			pathParts := strings.Split(value, ":")
 			if asJSON {
 				envMap[name] = pathParts
@@ -369,7 +375,7 @@ func getEnv(ctx *types.Context, name string, asJSON bool) (string, error) {
 	values := []string{}
 
 	switch {
-	case set && (name == path || name == manpath):
+	case set && shouldSplitEnvVar(name):
 		values = strings.Split(value, ":")
 	case set:
 		values = append(values, value)
