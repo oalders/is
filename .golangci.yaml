@@ -99,6 +99,9 @@ linters:
       - linters:
           - funlen
         source: ^func Test
+      - linters:
+          - revive
+        text: "var-naming: avoid package names that conflict with Go standard library package names"
     paths:
       - third_party$
       - builtin$
