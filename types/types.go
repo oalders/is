@@ -1,5 +1,5 @@
 // Package types is for is-specific types
-package types //nolint:revive
+package types
 
 import "context"
 
