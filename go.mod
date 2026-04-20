@@ -10,9 +10,9 @@ require (
 	github.com/hashicorp/go-version v1.9.0
 	github.com/itchyny/volume-go v0.2.2
 	github.com/posener/complete v1.2.3
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.11.1
 	github.com/willabides/kongplete v0.3.0
-	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/ini.v1 v1.67.1
 )
 
 require (
