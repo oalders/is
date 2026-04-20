@@ -3,7 +3,7 @@ module github.com/oalders/is
 go 1.23.0
 
 require (
-	github.com/alecthomas/kong v0.7.1
+	github.com/alecthomas/kong v1.15.0
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/x/term v0.2.1
 	github.com/distatus/battery v0.11.0
