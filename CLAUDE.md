@@ -72,6 +72,13 @@ git tag v<new-version>
 git push && git push --tags
 ```
 
+### Go Version
+
+`go.mod` is the single source of truth for the Go version. CI workflows use
+`go-version-file: go.mod` and pick it up automatically. When upgrading Go,
+update the `go` directive in `go.mod` (e.g. via `go mod tidy`) — no workflow
+changes needed.
+
 ## Architecture
 
 ### Core Structure
