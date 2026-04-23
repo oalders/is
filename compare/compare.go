@@ -204,7 +204,6 @@ func Versions( //nolint:cyclop
 	}
 }
 
-//nolint:cyclop
 func Strings(ctx *types.Context, operator, got, want string) (bool, error) {
 	maybeDebug(ctx, "strings", operator, got, want)
 
