@@ -23,7 +23,7 @@ User-supplied CLI name is interpolated directly into a regex and passed to `rege
 ### 3. `ne` operator logic bug in `compare/compare.go:220`
 `ctx.Success` is set to a regex match result inside the `Ne` case, producing wrong exit codes for `ne` comparisons.
 - **Fix:** Remove the side-effecting `ctx.Success` mutation from the `Ne` case.
-- **Status:** Open
+- **Status:** Fixed
 
 ### 4. Missing `cmd.Wait()` in `command/command.go:37` and `parser/parser.go:50`
 Zombie processes accumulate when `is` is invoked in a tight loop because `cmd.Wait()` is never called after `cmd.Start()`.

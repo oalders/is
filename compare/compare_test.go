@@ -267,6 +267,22 @@ func TestStrings(t *testing.T) {
 			Debug:   true,
 		},
 		{
+			Op:      ops.Ne,
+			Got:     "foo",
+			Want:    "bar",
+			Error:   false,
+			Success: true,
+			Debug:   false,
+		},
+		{
+			Op:      ops.Ne,
+			Got:     "foo",
+			Want:    "foo",
+			Error:   false,
+			Success: false,
+			Debug:   false,
+		},
+		{
 			Op:      ops.In,
 			Got:     "delboy trotter",
 			Want:    "delboy trotter, rodney trotter",
