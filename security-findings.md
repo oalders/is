@@ -9,7 +9,7 @@ Identified by automated security review on 2026-04-23. Fix sequentially in discr
 ### 1. Shell injection in `there.go:40`
 `"command -v " + name` is passed to `sh -c`, allowing arbitrary command execution if the argument is externally controlled.
 - **Fix:** Replace with `exec.LookPath(name)`.
-- **Status:** Open
+- **Status:** Fixed
 
 ---
 

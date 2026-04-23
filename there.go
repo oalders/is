@@ -37,11 +37,10 @@ func (r *ThereCmd) Run(ctx *types.Context) error {
 }
 
 func runCommand(ctx *types.Context, name string) error {
-	args := []string{"-c", "command -v " + name}
 	if ctx.Debug {
-		log.Printf("🚀 sh -c %q\n", strings.Join(args[1:], " "))
+		log.Printf("🚀 sh -c %q -- %q\n", "command -v \"$1\"", name)
 	}
-	cmd := exec.CommandContext(ctx.Context, "sh", args...)
+	cmd := exec.CommandContext(ctx.Context, "sh", "-c", "command -v \"$1\"", "--", name)
 	output, err := cmd.Output()
 	if ctx.Debug && len(output) != 0 {
 		log.Printf("😅 %s", output)
