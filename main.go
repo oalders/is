@@ -36,6 +36,12 @@ func main() {
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
 		kong.Vars{"version": "0.11.0"},
+		kong.Exit(func(code int) {
+			if code != 0 {
+				code = 1
+			}
+			os.Exit(code)
+		}),
 	)
 
 	// Run kongplete.Complete to handle completion requests
