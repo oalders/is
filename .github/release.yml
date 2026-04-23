@@ -1,0 +1,21 @@
+changelog:
+  categories:
+    - title: New Features
+      labels:
+        - enhancement
+    - title: Bug Fixes
+      labels:
+        - bug
+    - title: Dependency Updates
+      labels:
+        - dependencies
+        - github_actions
+        - go
+    - title: Other Changes
+      labels:
+        - "*"
+  exclude:
+    labels:
+      - duplicate
+      - invalid
+      - wontfix
