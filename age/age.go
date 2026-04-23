@@ -33,6 +33,9 @@ func StringToDuration(val, rawUnit string) (*time.Duration, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s does not appear to be an integer: %w", val, err)
 	}
+	if value < 1 || value > 36500 {
+		return nil, fmt.Errorf("value %d is out of range: must be between 1 and 36500", value)
+	}
 	durationString := fmt.Sprintf("%d%s", value*unitMultiplier, unit)
 	dur, err := time.ParseDuration(durationString)
 	if err != nil {

@@ -33,7 +33,7 @@ Zombie processes accumulate when `is` is invoked in a tight loop because `cmd.Wa
 ### 5. Integer overflow in `age/age.go:36`
 `value * unitMultiplier` can overflow on 32-bit systems for large inputs.
 - **Fix:** Add a bounds check or cap after `strconv.Atoi`.
-- **Status:** Open
+- **Status:** Fixed
 
 ### 6. `ParseInt` base 0 in `battery.go:39`
 Base 0 accidentally accepts hex (`0x...`) and octal (`0...`) input from the user.
