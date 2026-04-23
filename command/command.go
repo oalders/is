@@ -37,6 +37,9 @@ func Output(cmd *exec.Cmd, stream string) (string, error) {
 		if err := cmd.Start(); err != nil {
 			return "", fmt.Errorf("starting command: %w", err)
 		}
+		// Wait releases OS process resources; defer ensures it runs after
+		// pipe reads complete, preventing zombie processes in tight loops.
+		defer cmd.Wait() //nolint:errcheck
 
 		output, err = io.ReadAll(pipe)
 		if err != nil {
