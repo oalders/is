@@ -27,7 +27,7 @@ func TestFSOLastModifiedTime(t *testing.T) {
 			Context: context.Background(),
 			Debug:   true,
 		}
-		cmd := FSOCmd{Age: AgeCmp{tmux, ops.Lt, "100000", "days"}}
+		cmd := FSOCmd{Age: AgeCmp{tmux, ops.Lt, "36500", "days"}}
 		err := cmd.Run(ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)

@@ -81,7 +81,7 @@ func TestCliAge(t *testing.T) {
 			Context: context.Background(),
 			Debug:   true,
 		}
-		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "100000", "days"}}
+		cmd := CLICmd{Age: AgeCmp{command, ops.Lt, "36500", "days"}}
 		err := cmd.Run(ctx)
 		assert.NoError(t, err)
 		assert.True(t, ctx.Success)
