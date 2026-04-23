@@ -218,14 +218,6 @@ func Strings(ctx *types.Context, operator, got, want string) (bool, error) {
 		}
 		return slices.Contains(wantList, got), nil
 	case ops.Ne:
-		matched, err := regexp.MatchString(want, got)
-		if err != nil {
-			return false, fmt.Errorf(`compare strings "%s" %s "%s"`, got, operator, want)
-		}
-		ctx.Success = matched
-		if operator == ops.Unlike {
-			ctx.Success = !matched
-		}
 		return got != want, nil
 	case ops.Like:
 		success, err := regexp.MatchString(want, got)
