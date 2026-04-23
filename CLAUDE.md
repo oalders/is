@@ -59,6 +59,19 @@ docker compose run --rm dev sh
 ./bin/container-build
 ```
 
+### Releasing
+
+```bash
+# Bump version in main.go, README.md, and test/is.bats in one step
+./bin/bump-version.sh <old-version> <new-version>
+
+# Commit, tag, and push — GoReleaser handles the rest via CI
+git add main.go README.md test/is.bats
+git commit -m "Bump version to <new-version>"
+git tag v<new-version>
+git push && git push --tags
+```
+
 ## Architecture
 
 ### Core Structure
