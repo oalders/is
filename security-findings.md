@@ -28,7 +28,7 @@ User-supplied CLI name is interpolated directly into a regex and passed to `rege
 ### 4. Missing `cmd.Wait()` in `command/command.go:37` and `parser/parser.go:50`
 Zombie processes accumulate when `is` is invoked in a tight loop because `cmd.Wait()` is never called after `cmd.Start()`.
 - **Fix:** Add `defer cmd.Wait()` after each successful `cmd.Start()`.
-- **Status:** Open
+- **Status:** Fixed
 
 ### 5. Integer overflow in `age/age.go:36`
 `value * unitMultiplier` can overflow on 32-bit systems for large inputs.
