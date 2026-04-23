@@ -139,9 +139,11 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test[1], parser.CLIVersion(
+		got, err := parser.CLIVersion(
 			&ctx, test[0], test[2],
-		))
+		)
+		assert.NoError(t, err)
+		assert.Equal(t, test[1], got)
 	}
 
 	{
@@ -152,9 +154,23 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
-		got := parser.CLIVersion(ctx, "../testdata/bin/bad-version", o)
+		got, err := parser.CLIVersion(ctx, "../testdata/bin/bad-version", o)
+		assert.NoError(t, err)
 		assert.Equal(t, "X3v", got)
 	}
+}
+
+func TestCLIVersionInvalidRegex(t *testing.T) {
+	t.Parallel()
+	ctx := &types.Context{
+		Context: context.Background(),
+	}
+	// A CLI name containing '(' is not in the known-regexen map and has more
+	// than one line of output, so it falls through to the fallback regex path.
+	// With regexp.QuoteMeta the parenthesis is escaped and Compile succeeds,
+	// returning the raw output unchanged rather than panicking.
+	_, err := parser.CLIVersion(ctx, "bad(name", "bad(name 1.2.3")
+	assert.NoError(t, err)
 }
 
 func TestCLIOutput(t *testing.T) {

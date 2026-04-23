@@ -18,7 +18,7 @@ Identified by automated security review on 2026-04-23. Fix sequentially in discr
 ### 2. `MustCompile` panic in `parser/parser.go:136`
 User-supplied CLI name is interpolated directly into a regex and passed to `regexp.MustCompile`. An invalid regex (e.g. a name containing `(`) crashes the process.
 - **Fix:** Use `regexp.Compile` + `regexp.QuoteMeta`.
-- **Status:** Open
+- **Status:** Fixed
 
 ### 3. `ne` operator logic bug in `compare/compare.go:220`
 `ctx.Success` is set to a regex match result inside the `Ne` case, producing wrong exit codes for `ne` comparisons.
