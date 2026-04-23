@@ -62,4 +62,4 @@ Acts as a file-existence oracle in restricted shell environments via exit code.
 ### 10. Silently discarded `io.ReadAll` errors in `parser/parser.go`
 Errors from reading subprocess stdout/stderr are discarded with `_`, masking failures.
 - **Fix:** Propagate errors or log them when debug mode is active.
-- **Status:** Open
+- **Status:** Fixed

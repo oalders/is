@@ -51,14 +51,20 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		return "", fmt.Errorf("starting command: %w", err)
 	}
 
-	output, _ := io.ReadAll(stdout)
+	output, err := io.ReadAll(stdout)
+	if err != nil {
+		return "", fmt.Errorf("reading stdout: %w", err)
+	}
 	// ssh -V doesn't print to STDOUT?
 	if len(output) == 0 {
 		if ctx.Debug {
 			log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 		}
 
-		output, _ = io.ReadAll(stderr)
+		output, err = io.ReadAll(stderr)
+		if err != nil {
+			return "", fmt.Errorf("reading stderr: %w", err)
+		}
 	}
 
 	return CLIVersion(ctx, baseName, string(output)), nil
