@@ -67,11 +67,15 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		}
 	}
 
-	return CLIVersion(ctx, baseName, string(output)), nil
+	version, err := CLIVersion(ctx, baseName, string(output))
+	if err != nil {
+		return "", err
+	}
+	return version, nil
 }
 
 //nolint:funlen
-func CLIVersion(ctx *types.Context, cliName, output string) string {
+func CLIVersion(ctx *types.Context, cliName, output string) (string, error) {
 	floatRegex := `\d+\.\d+`
 	floatWithTrailingLetterRegex := `[\d.]*\w`
 	intRegex := `\d*`
@@ -139,7 +143,11 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 			semverRegex, vStringWithTrailingLetterRegex, floatWithTrailingLetterRegex,
 			vStringRegex, optimisticRegex, floatRegex))
 	} else {
-		versionRegex = regexp.MustCompile(`(?i)` + cliName + `\s+(.*)\b`)
+		var err error
+		versionRegex, err = regexp.Compile(`(?i)` + regexp.QuoteMeta(cliName) + `\s+(.*)\b`)
+		if err != nil {
+			return "", fmt.Errorf("invalid CLI name for regex: %w", err)
+		}
 	}
 
 	matches := versionRegex.FindAllStringSubmatch(output, -1)
@@ -151,5 +159,5 @@ func CLIVersion(ctx *types.Context, cliName, output string) string {
 	}
 	output = strings.TrimRight(output, "\n")
 
-	return output
+	return output, nil
 }
