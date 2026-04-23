@@ -43,3 +43,14 @@ tmux=./testdata/bin/tmux
     echo $status
     [ "$status" -eq 0 ]
 }
+
+@test "shell metacharacters in name do not inject" {
+    run ./is there "bash; echo INJECTED"
+    [ "$status" -eq 1 ]
+    [[ "$output" != *"INJECTED"* ]]
+}
+
+@test "is there shell builtin" {
+    run ./is there cd
+    [ "$status" -eq 0 ]
+}
