@@ -36,7 +36,7 @@ func (r *BatteryCmd) Run(ctx *types.Context) error {
 		}
 		ctx.Success = ok
 	case int:
-		want, err := strconv.ParseInt(r.Val, 0, 32)
+		want, err := strconv.ParseInt(r.Val, 10, 0)
 		if err != nil {
 			return errors.Join(
 				errors.New("wanted result could not be converted to an integer"),
