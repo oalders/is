@@ -38,7 +38,7 @@ Zombie processes accumulate when `is` is invoked in a tight loop because `cmd.Wa
 ### 6. `ParseInt` base 0 in `battery.go:39`
 Base 0 accidentally accepts hex (`0x...`) and octal (`0...`) input from the user.
 - **Fix:** Use base 10 (`strconv.ParseInt(r.Val, 10, strconv.IntSize)`).
-- **Status:** Open
+- **Status:** Fixed
 
 ---
 

@@ -50,6 +50,12 @@ setup() {
     ./is battery state unlike char
 }
 
+@test "is battery count eq 0x0 fails with parse error (hex rejected)" {
+    run ./is battery count eq 0x0
+    [ "${status}" -eq 1 ]
+    [[ "${output}" == *"wanted result could not be converted to an integer"* ]]
+}
+
 @test "is battery voltage eq 0 --debug" {
     ./is battery voltage eq 0 --debug
 }
