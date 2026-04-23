@@ -4,8 +4,12 @@ updates:
   directory: "/"
   schedule:
     # Check for updates to GitHub Actions every week
-    interval: "weekly"
+    interval: "monthly"
 - package-ecosystem: gomod
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
+  groups:
+    go-modules:
+      patterns:
+        - "*"
