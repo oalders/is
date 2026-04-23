@@ -54,27 +54,32 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	// pipe reads complete, preventing zombie processes in tight loops.
 	defer cmd.Wait() //nolint:errcheck
 
-	output, err := io.ReadAll(stdout)
-	if err != nil {
-		return "", fmt.Errorf("reading stdout: %w", err)
-	}
-	// ssh -V doesn't print to STDOUT?
-	if len(output) == 0 {
-		if ctx.Debug {
-			log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
-		}
-
-		output, err = io.ReadAll(stderr)
-		if err != nil {
-			return "", fmt.Errorf("reading stderr: %w", err)
-		}
-	}
-
-	version, err := CLIVersion(ctx, baseName, string(output))
+	output, err := readCLIOutput(ctx, args, stdout, stderr)
 	if err != nil {
 		return "", err
 	}
-	return version, nil
+
+	return CLIVersion(ctx, baseName, output)
+}
+
+// readCLIOutput reads stdout and falls back to stderr if stdout is empty
+// (some tools like ssh -V write only to stderr).
+func readCLIOutput(ctx *types.Context, args []string, stdout, stderr io.Reader) (string, error) {
+	out, err := io.ReadAll(stdout)
+	if err != nil {
+		return "", fmt.Errorf("reading stdout: %w", err)
+	}
+	if len(out) > 0 {
+		return string(out), nil
+	}
+	if ctx.Debug {
+		log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
+	}
+	out, err = io.ReadAll(stderr)
+	if err != nil {
+		return "", fmt.Errorf("reading stderr: %w", err)
+	}
+	return string(out), nil
 }
 
 //nolint:funlen
