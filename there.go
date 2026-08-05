@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/oalders/is/attr"
 	"github.com/oalders/is/types"
 )
 
@@ -79,7 +80,7 @@ func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
 			if err != nil {
 				return err
 			}
-			results = append(results, map[string]string{"path": v, "version": version})
+			results = append(results, map[string]string{"path": v, attr.Version: version})
 		}
 		encoded, err := toJSON(results)
 		if err != nil {

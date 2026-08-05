@@ -13,14 +13,18 @@ import (
 	"github.com/oalders/is/types"
 )
 
+// versionSubcommand is the argument passed to CLIs that report their version
+// via a "version" subcommand rather than a --version flag.
+const versionSubcommand = "version"
+
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"dig":     "-v",
-		"hugo":    "version",
-		"go":      "version",
-		"gopls":   "version",
+		"hugo":    versionSubcommand,
+		"go":      versionSubcommand,
+		"gopls":   versionSubcommand,
 		"lua":     "-v",
-		"openssl": "version",
+		"openssl": versionSubcommand,
 		"perldoc": "-V",
 		"pihole":  "-v",
 		"ssh":     "-V",
@@ -96,6 +100,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) (string, error) {
 		"ansible":       fmt.Sprintf(`ansible \[core (%s)\b`, semverRegex),
 		"bash":          fmt.Sprintf(`version (%s)\b`, semverRegex),
 		"bat":           fmt.Sprintf(`bat (%s)\b`, semverRegex),
+		"claude":        fmt.Sprintf(`(%s)\b`, semverRegex),
 		"csh":           fmt.Sprintf(`(%s)`, semverRegex),
 		"curl":          fmt.Sprintf(`curl (%s)\b`, semverRegex),
 		"docker":        fmt.Sprintf(`version (%s),`, semverRegex),

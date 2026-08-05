@@ -69,7 +69,8 @@ func TestVersions(t *testing.T) {
 		{Op: ops.Unlike, Got: "1", Want: "2", Success: true},
 	}
 
-	testTable(t, tests,
+	testTable(
+		t, tests,
 		func(ctx *types.Context, this compareTest) (bool, error) {
 			return compare.Versions(ctx, this.Op, this.Got, this.Want)
 		},
@@ -308,7 +309,8 @@ func TestStrings(t *testing.T) {
 		},
 	}
 
-	testTable(t, tests,
+	testTable(
+		t, tests,
 		func(ctx *types.Context, this compareTest) (bool, error) {
 			return compare.Strings(ctx, this.Op, this.Got, this.Want)
 		},
@@ -441,7 +443,8 @@ func TestOptimistic(t *testing.T) {
 		},
 	}
 
-	testTable(t, tests,
+	testTable(
+		t, tests,
 		func(ctx *types.Context, this compareTest) (bool, error) {
 			return compare.Optimistic(ctx, this.Op, this.Got, this.Want), nil
 		},
@@ -566,7 +569,8 @@ func TestIntegers(t *testing.T) {
 		},
 	}
 
-	testTable(t, tests,
+	testTable(
+		t, tests,
 		func(ctx *types.Context, this compareTest) (bool, error) {
 			return compare.Integers(ctx, this.Op, this.Got, this.Want)
 		},
@@ -683,7 +687,8 @@ func TestFloats(t *testing.T) {
 		},
 	}
 
-	testTable(t, tests,
+	testTable(
+		t, tests,
 		func(ctx *types.Context, this compareTest) (bool, error) {
 			return compare.Floats(ctx, this.Op, this.Got, this.Want)
 		},

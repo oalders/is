@@ -2,8 +2,13 @@
 
 set -eux -o pipefail
 
-go install mvdan.cc/gofumpt@latest
+GOLANGCI_LINT_VERSION=v2.12.2
+
+go install mvdan.cc/gofumpt@v0.11.0
 go install golang.org/x/tools/cmd/goimports@v0.42.0
 
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh |
-    sh -s -- -b "$(go env GOPATH)/bin" latest
+# Use the version-tagged install script so its embedded checksums match the
+# pinned release; installing "latest" via master's install.sh fails checksum
+# verification whenever the two drift.
+curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/${GOLANGCI_LINT_VERSION}/install.sh" |
+    sh -s -- -b "$(go env GOPATH)/bin" "$GOLANGCI_LINT_VERSION"

@@ -31,7 +31,8 @@ func main() {
 		InstallCompletions kongplete.InstallCompletions `cmd:"" help:"install shell completions. e.g. \"is install-completions\" and then run the command which is printed to your terminal to get completion in your current session. add the command to a .bashrc or similar to get completion across all sessions."` //nolint:lll
 	}
 
-	parser := kong.Must(&API,
+	parser := kong.Must(
+		&API,
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
@@ -45,7 +46,8 @@ func main() {
 	)
 
 	// Run kongplete.Complete to handle completion requests
-	kongplete.Complete(parser,
+	kongplete.Complete(
+		parser,
 		kongplete.WithPredictor("file", complete.PredictFiles("*")),
 	)
 

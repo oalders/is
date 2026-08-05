@@ -42,6 +42,7 @@ Release-Date: 2023-02-20
 Protocols: dict file ftp ftps gopher gophers http https imap imaps ldap ldaps mqtt pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
 Features: alt-svc AsynchDNS GSS-API HSTS HTTP2 HTTPS-proxy IPv6 Kerberos Largefile libz MultiSSL NTLM NTLM_WB SPNEGO SSL threadsafe UnixSockets`,
 		},
+		{"claude", "2.1.216", "2.1.216 (Claude Code)"},
 		{"dig", "9.10.6", "DiG 9.10.6"},
 		{"docker", "20.10.21", "version 20.10.21, build baeda1f"},
 		{"fpp", "0.9.2", "fpp version 0.9.2"},
@@ -151,7 +152,7 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 			Context: context.Background(),
 			Debug:   true,
 		}
-		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
+		o, err := parser.CLIOutput(ctx, "../testdata/bin/bad-version")
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
 		got, err := parser.CLIVersion(ctx, "../testdata/bin/bad-version", o)
@@ -180,7 +181,7 @@ func TestCLIOutput(t *testing.T) {
 		Debug:   true,
 	}
 	{
-		o, err := (parser.CLIOutput(ctx, ssh))
+		o, err := parser.CLIOutput(ctx, ssh)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
@@ -188,7 +189,7 @@ func TestCLIOutput(t *testing.T) {
 		ctx := &types.Context{
 			Context: context.Background(),
 		}
-		o, err := (parser.CLIOutput(ctx, tmux))
+		o, err := parser.CLIOutput(ctx, tmux)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
@@ -197,7 +198,7 @@ func TestCLIOutput(t *testing.T) {
 		ctx := &types.Context{
 			Context: context.Background(),
 		}
-		o, err := (parser.CLIOutput(ctx, "tmuxxx"))
+		o, err := parser.CLIOutput(ctx, "tmuxxx")
 		assert.Error(t, err)
 		assert.Empty(t, o)
 	}
@@ -207,7 +208,7 @@ func TestCLIOutput(t *testing.T) {
 			Context: context.Background(),
 			Debug:   true,
 		}
-		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
+		o, err := parser.CLIOutput(ctx, "../testdata/bin/bad-version")
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
 	}
