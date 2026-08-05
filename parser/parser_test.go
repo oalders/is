@@ -152,7 +152,7 @@ bug reports using http://www.info-zip.org/zip-bug.html; see README for details.`
 			Context: context.Background(),
 			Debug:   true,
 		}
-		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
+		o, err := parser.CLIOutput(ctx, "../testdata/bin/bad-version")
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
 		got, err := parser.CLIVersion(ctx, "../testdata/bin/bad-version", o)
@@ -181,7 +181,7 @@ func TestCLIOutput(t *testing.T) {
 		Debug:   true,
 	}
 	{
-		o, err := (parser.CLIOutput(ctx, ssh))
+		o, err := parser.CLIOutput(ctx, ssh)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
@@ -189,7 +189,7 @@ func TestCLIOutput(t *testing.T) {
 		ctx := &types.Context{
 			Context: context.Background(),
 		}
-		o, err := (parser.CLIOutput(ctx, tmux))
+		o, err := parser.CLIOutput(ctx, tmux)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, o)
 	}
@@ -198,7 +198,7 @@ func TestCLIOutput(t *testing.T) {
 		ctx := &types.Context{
 			Context: context.Background(),
 		}
-		o, err := (parser.CLIOutput(ctx, "tmuxxx"))
+		o, err := parser.CLIOutput(ctx, "tmuxxx")
 		assert.Error(t, err)
 		assert.Empty(t, o)
 	}
@@ -208,7 +208,7 @@ func TestCLIOutput(t *testing.T) {
 			Context: context.Background(),
 			Debug:   true,
 		}
-		o, err := (parser.CLIOutput(ctx, "../testdata/bin/bad-version"))
+		o, err := parser.CLIOutput(ctx, "../testdata/bin/bad-version")
 		assert.NoError(t, err)
 		assert.Equal(t, "X3v", o)
 	}

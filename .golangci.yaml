@@ -32,7 +32,7 @@ linters:
     - godox
     - goheader
     - gomoddirectives
-    - gomodguard
+    - gomodguard_v2
     - goprintffuncname
     - gosec
     - grouper
@@ -80,6 +80,10 @@ linters:
     funlen:
       lines: 75
       statements: 40
+    goconst:
+      # Test files legitimately repeat fixture literals (version strings, dummy
+      # names); extracting them into constants hurts readability more than it helps.
+      ignore-tests: true
     # govet:
       # enable:
       #   - fieldalignment

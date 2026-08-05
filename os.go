@@ -4,6 +4,7 @@ package main
 import (
 	"errors"
 
+	"github.com/oalders/is/attr"
 	"github.com/oalders/is/compare"
 	"github.com/oalders/is/ops"
 	"github.com/oalders/is/os"
@@ -14,7 +15,7 @@ import (
 //
 //nolint:funlen
 func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
-	attr, err := os.Info(ctx, r.Attr)
+	value, err := os.Info(ctx, r.Attr)
 	ctx.Success = false // os.Info set success to true
 
 	if err != nil {
@@ -22,29 +23,29 @@ func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 	}
 
 	switch r.Attr {
-	case "version":
+	case attr.Version:
 		switch {
 		case r.Major:
-			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 0)
+			success, err := compare.VersionSegment(ctx, r.Op, value, r.Val, 0)
 			ctx.Success = success
 			return err
 		case r.Minor:
-			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 1)
+			success, err := compare.VersionSegment(ctx, r.Op, value, r.Val, 1)
 			ctx.Success = success
 			return err
 		case r.Patch:
-			success, err := compare.VersionSegment(ctx, r.Op, attr, r.Val, 2)
+			success, err := compare.VersionSegment(ctx, r.Op, value, r.Val, 2)
 			ctx.Success = success
 			return err
 		}
 
 		if r.Op == ops.Like || r.Op == ops.Unlike {
-			success, err := compare.Strings(ctx, r.Op, attr, r.Val)
+			success, err := compare.Strings(ctx, r.Op, value, r.Val)
 			ctx.Success = success
 			return err
 		}
 
-		success, err := compare.Versions(ctx, r.Op, attr, r.Val)
+		success, err := compare.Versions(ctx, r.Op, value, r.Val)
 		ctx.Success = success
 		if err != nil {
 			return err
@@ -61,7 +62,7 @@ func (r *OSCmd) Run(ctx *types.Context) error { //nolint:cyclop
 
 		switch r.Op {
 		case ops.Eq, ops.In, ops.Ne, ops.Like, ops.Unlike:
-			success, err := compare.Strings(ctx, r.Op, attr, r.Val)
+			success, err := compare.Strings(ctx, r.Op, value, r.Val)
 			ctx.Success = success
 			return err
 		}

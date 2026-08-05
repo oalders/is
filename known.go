@@ -31,6 +31,8 @@ const (
 	xdgDataDirs   = "XDG_DATA_DIRS"
 	trueStr       = "true"
 	falseStr      = "false"
+	colValue      = "Value"
+	keyCount      = "count"
 )
 
 // Run "is known ...".
@@ -242,12 +244,12 @@ func osSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	}
 	headers := []string{
 		"Attribute",
-		"Value",
+		colValue,
 	}
 
 	rows := [][]string{
 		{"name", summary.Name},
-		{"version", summary.Version},
+		{attr.Version, summary.Version},
 	}
 
 	if summary.VersionCodeName != "" {
@@ -273,7 +275,7 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (
 	}
 	if asJSON {
 		if summary.Count == 0 {
-			result, err := toJSON(map[string]int{"count": 0})
+			result, err := toJSON(map[string]int{keyCount: 0})
 			if err != nil {
 				return "", err
 			}
@@ -288,7 +290,7 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (
 
 	headers := []string{
 		"Attribute",
-		"Value",
+		colValue,
 	}
 
 	var rows [][]string
@@ -297,7 +299,7 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (
 		rows = [][]string{
 			{"battery-number", fmt.Sprintf("%d", summary.BatteryNumber)},
 			{"charge-rate", fmt.Sprintf("%v mW", summary.ChargeRate)},
-			{"count", fmt.Sprintf("%d", summary.Count)},
+			{keyCount, fmt.Sprintf("%d", summary.Count)},
 			{"current-capacity", fmt.Sprintf("%v mWh", summary.CurrentCapacity)},
 			{"current-charge", fmt.Sprintf("%v %%", summary.CurrentCharge)},
 			{"design-capacity", fmt.Sprintf("%v mWh", summary.DesignCapacity)},
@@ -307,7 +309,7 @@ func batterySummary(ctx *types.Context, nth int, asJSON bool, asMarkdown bool) (
 			{"voltage", fmt.Sprintf("%v V", summary.Voltage)},
 		}
 	} else {
-		rows = append(rows, []string{"count", "0"})
+		rows = append(rows, []string{keyCount, "0"})
 	}
 	return tabular(headers, rows, asMarkdown), nil
 }
@@ -359,7 +361,7 @@ func envSummary(ctx *types.Context, asJSON bool, asMarkdown bool) error {
 	}
 
 	// Tabular output
-	headers := []string{"Name", "Value"}
+	headers := []string{"Name", colValue}
 	success(ctx, tabular(headers, rows, asMarkdown))
 	return nil
 }
