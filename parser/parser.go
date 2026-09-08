@@ -101,6 +101,7 @@ func CLIVersion(ctx *types.Context, cliName, output string) (string, error) {
 		"bash":          fmt.Sprintf(`version (%s)\b`, semverRegex),
 		"bat":           fmt.Sprintf(`bat (%s)\b`, semverRegex),
 		"claude":        fmt.Sprintf(`(%s)\b`, semverRegex),
+		"codex":         fmt.Sprintf(`codex-cli (%s)\b`, semverRegex),
 		"csh":           fmt.Sprintf(`(%s)`, semverRegex),
 		"curl":          fmt.Sprintf(`curl (%s)\b`, semverRegex),
 		"docker":        fmt.Sprintf(`version (%s),`, semverRegex),
