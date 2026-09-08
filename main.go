@@ -36,7 +36,7 @@ func main() {
 		kong.Name("is"),
 		kong.Description("an inspector for your environment"),
 		kong.UsageOnError(),
-		kong.Vars{"version": "0.14.0"},
+		kong.Vars{"version": "0.14.1"},
 		kong.Exit(func(code int) {
 			if code != 0 {
 				code = 1
