@@ -1,5 +1,14 @@
 # Changes
 
+## 0.14.3 - 2026-09-30
+
+- Fix "is there --all" and "is cli version" hanging when a CLI leaves a
+  child process running (e.g. PyInstaller builds such as yt-dlp)
+- "is there --all" now looks up versions in parallel, and a path that times
+  out gets an empty version instead of failing the whole command
+- Clean up CLIs we run on timeout, Ctrl-C or SIGTERM rather than leaving
+  them running in the background
+
 ## 0.14.2 - 2026-09-30
 
 - Fix a potential hang in "is cli version" when a CLI writes heavily to
