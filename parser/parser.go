@@ -2,14 +2,15 @@
 package parser
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
-	"io"
 	"log"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
+	"time"
 
 	"github.com/oalders/is/types"
 )
@@ -19,9 +20,18 @@ const (
 	// via a "version" subcommand rather than a --version flag.
 	versionSubcommand = "version"
 	maxVersionBytes   = 64 * 1024
+	waitDelay         = time.Second
 )
 
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
+	output, err := cliOutput(ctx, cliName)
+	if err != nil {
+		return "", err
+	}
+	return CLIVersion(ctx, filepath.Base(cliName), output)
+}
+
+func cliOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
 		"dig":     "-v",
 		"hugo":    versionSubcommand,
@@ -46,61 +56,50 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 		log.Printf("Running: %s %s\n", args[0], args[1])
 	}
 	cmd := exec.CommandContext(ctx.Context, cliName, arg)
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return "", fmt.Errorf("command output: %w", err)
+	var stdout, stderr cappedBuffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	// A killed or exited CLI may leave a child process (e.g. a PyInstaller
+	// bootloader's worker) holding our pipes open. WaitDelay stops us from
+	// blocking on those pipes until that orphan exits. On cancel, a CLI that
+	// ignores SIGTERM costs us up to WaitDelay beyond the deadline.
+	cmd.WaitDelay = waitDelay
+	useProcessGroup(cmd)
+
+	err := cmd.Run()
+	if ctxErr := ctx.Context.Err(); ctxErr != nil {
+		// Only on cancel: after a normal exit, leave alone any daemon the CLI
+		// may have started on purpose.
+		killProcessGroup(cmd)
+		return "", fmt.Errorf("running %s: %w", cliName, ctxErr)
 	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return "", fmt.Errorf("error output: %w", err)
+	// A non-zero exit or an orphan holding the pipes still leaves us with
+	// usable output, so only a failure to start the command is fatal.
+	var exitErr *exec.ExitError
+	if err != nil && !errors.As(err, &exitErr) && !errors.Is(err, exec.ErrWaitDelay) {
+		return "", fmt.Errorf("running %s: %w", cliName, err)
 	}
 
-	if err := cmd.Start(); err != nil {
-		return "", fmt.Errorf("starting command: %w", err)
-	}
-	// Wait releases OS process resources; defer ensures it runs after
-	// pipe reads complete, preventing zombie processes in tight loops.
-	defer cmd.Wait() //nolint:errcheck
-
-	output, err := readCLIOutput(ctx, args, stdout, stderr)
-	if err != nil {
-		return "", err
-	}
-
-	return CLIVersion(ctx, baseName, output)
-}
-
-// readCLIOutput reads stdout and falls back to stderr if stdout is empty
-// (some tools like ssh -V write only to stderr).
-func readCLIOutput(ctx *types.Context, args []string, stdout, stderr io.Reader) (string, error) {
-	var stdoutOutput, stderrOutput []byte
-	var stdoutErr, stderrErr error
-	var waitGroup sync.WaitGroup
-
-	waitGroup.Add(2)
-	go func() {
-		defer waitGroup.Done()
-		stdoutOutput, stdoutErr = io.ReadAll(io.LimitReader(stdout, maxVersionBytes))
-	}()
-	go func() {
-		defer waitGroup.Done()
-		stderrOutput, stderrErr = io.ReadAll(io.LimitReader(stderr, maxVersionBytes))
-	}()
-	waitGroup.Wait()
-
-	if stdoutErr != nil {
-		return "", fmt.Errorf("reading stdout: %w", stdoutErr)
-	}
-	if stderrErr != nil {
-		return "", fmt.Errorf("reading stderr: %w", stderrErr)
-	}
-	if len(stdoutOutput) > 0 {
-		return string(stdoutOutput), nil
+	// Fall back to stderr if stdout is empty (some tools like ssh -V write
+	// only to stderr).
+	if stdout.Len() > 0 {
+		return stdout.String(), nil
 	}
 	if ctx.Debug {
 		log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 	}
-	return string(stderrOutput), nil
+	return stderr.String(), nil
+}
+
+// cappedBuffer keeps the first maxVersionBytes written to it and discards the
+// rest, so a noisy CLI can neither exhaust memory nor block on a full pipe.
+type cappedBuffer struct{ bytes.Buffer }
+
+func (b *cappedBuffer) Write(p []byte) (int, error) {
+	if room := maxVersionBytes - b.Len(); room > 0 {
+		b.Buffer.Write(p[:min(len(p), room)])
+	}
+	return len(p), nil
 }
 
 //nolint:funlen
