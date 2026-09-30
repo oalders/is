@@ -1,5 +1,11 @@
 # Changes
 
+## 0.14.2 - 2026-09-30
+
+- Fix a potential hang in "is cli version" when a CLI writes heavily to
+  STDERR by draining STDOUT and STDERR concurrently
+- Cap CLI version output reads at 64 KiB
+
 ## 0.11.0 - 2025-08-28
 
 - Add "is var [name] true"
