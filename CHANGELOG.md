@@ -6,6 +6,35 @@
   STDERR by draining STDOUT and STDERR concurrently
 - Cap CLI version output reads at 64 KiB
 
+## 0.14.1 - 2026-09-08
+
+- Fix "is cli version codex" by parsing "codex-cli X.Y.Z" output
+
+## 0.14.0 - 2026-08-05
+
+- Fix "is cli version claude", which previously captured "Code" instead of
+  the version number
+
+## 0.13.0 - 2026-04-23
+
+- Fix shell injection in "is there" via binary names containing shell
+  metacharacters
+- Fix a panic in "is cli version" when the CLI name contains regex special
+  characters
+- Fix incorrect exit codes for "ne" comparisons
+- Fix zombie process accumulation when "is" is invoked in a tight loop
+- Accept only decimal integers in "is battery"
+- Surface pipe read errors in the CLI output parser instead of discarding them
+- Require age comparison values to be between 1 and 36500
+
+## 0.12.0 - 2026-04-23
+
+- Split XDG_CONFIG_DIRS and XDG_DATA_DIRS into per-line entries in
+  "is known var"
+- Wrap long values in table output
+- Fix "is cli output" for commands with embedded arguments
+- Return exit code 1 for "is battery" and "is known battery" with no args
+
 ## 0.11.0 - 2025-08-28
 
 - Add "is var [name] true"
