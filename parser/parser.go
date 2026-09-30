@@ -14,9 +14,12 @@ import (
 	"github.com/oalders/is/types"
 )
 
-// versionSubcommand is the argument passed to CLIs that report their version
-// via a "version" subcommand rather than a --version flag.
-const versionSubcommand = "version"
+const (
+	// versionSubcommand is the argument passed to CLIs that report their version
+	// via a "version" subcommand rather than a --version flag.
+	versionSubcommand = "version"
+	maxVersionBytes   = 64 * 1024
+)
 
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 	versionArg := map[string]string{
@@ -77,11 +80,11 @@ func readCLIOutput(ctx *types.Context, args []string, stdout, stderr io.Reader) 
 	waitGroup.Add(2)
 	go func() {
 		defer waitGroup.Done()
-		stdoutOutput, stdoutErr = io.ReadAll(stdout)
+		stdoutOutput, stdoutErr = io.ReadAll(io.LimitReader(stdout, maxVersionBytes))
 	}()
 	go func() {
 		defer waitGroup.Done()
-		stderrOutput, stderrErr = io.ReadAll(stderr)
+		stderrOutput, stderrErr = io.ReadAll(io.LimitReader(stderr, maxVersionBytes))
 	}()
 	waitGroup.Wait()
 
