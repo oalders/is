@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/oalders/is/types"
 )
@@ -69,21 +70,34 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 // readCLIOutput reads stdout and falls back to stderr if stdout is empty
 // (some tools like ssh -V write only to stderr).
 func readCLIOutput(ctx *types.Context, args []string, stdout, stderr io.Reader) (string, error) {
-	out, err := io.ReadAll(stdout)
-	if err != nil {
-		return "", fmt.Errorf("reading stdout: %w", err)
+	var stdoutOutput, stderrOutput []byte
+	var stdoutErr, stderrErr error
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		stdoutOutput, stdoutErr = io.ReadAll(stdout)
+	}()
+	go func() {
+		defer wg.Done()
+		stderrOutput, stderrErr = io.ReadAll(stderr)
+	}()
+	wg.Wait()
+
+	if stdoutErr != nil {
+		return "", fmt.Errorf("reading stdout: %w", stdoutErr)
 	}
-	if len(out) > 0 {
-		return string(out), nil
+	if stderrErr != nil {
+		return "", fmt.Errorf("reading stderr: %w", stderrErr)
+	}
+	if len(stdoutOutput) > 0 {
+		return string(stdoutOutput), nil
 	}
 	if ctx.Debug {
 		log.Printf("Running: %s %s and checking STDERR\n", args[0], args[1])
 	}
-	out, err = io.ReadAll(stderr)
-	if err != nil {
-		return "", fmt.Errorf("reading stderr: %w", err)
-	}
-	return string(out), nil
+	return string(stderrOutput), nil
 }
 
 //nolint:funlen
