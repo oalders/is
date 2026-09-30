@@ -75,8 +75,7 @@ func TestCLIOutputCleansUpOnCancel(t *testing.T) {
 	pidFile := filepath.Join(dir, "pid")
 	cleanedFile := filepath.Join(dir, "cleaned")
 	cli := writeCLI(t, "trap 'echo > \""+cleanedFile+"\"; exit 0' TERM\n"+
-		"sh -c 'trap \"\" TERM; exec sleep 10' &\n"+
-		"echo $! > \""+pidFile+"\"\n"+
+		"sh -c 'trap \"\" TERM; echo $$ > \""+pidFile+"\"; exec sleep 10' &\n"+
 		"while :; do sleep 0.1; done\n")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

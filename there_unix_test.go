@@ -43,3 +43,16 @@ func TestCLIVersionsSurviveSlowCLI(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []string{"", "1.2.3"}, versions)
 }
+
+// Only timeouts become empty versions; an interrupt (Ctrl-C) still fails.
+func TestCLIVersionsPropagateCancel(t *testing.T) {
+	t.Parallel()
+
+	canceled, cancel := context.WithCancel(context.Background())
+	cancel()
+	ctx := types.Context{Context: canceled}
+
+	_, err := cliVersions(&ctx, []string{"/bin/sh"})
+
+	require.ErrorIs(t, err, context.Canceled)
+}

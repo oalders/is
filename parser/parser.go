@@ -61,12 +61,15 @@ func cliOutput(ctx *types.Context, cliName string) (string, error) {
 	cmd.Stderr = &stderr
 	// A killed or exited CLI may leave a child process (e.g. a PyInstaller
 	// bootloader's worker) holding our pipes open. WaitDelay stops us from
-	// blocking on those pipes until that orphan exits.
+	// blocking on those pipes until that orphan exits. On cancel, a CLI that
+	// ignores SIGTERM costs us up to WaitDelay beyond the deadline.
 	cmd.WaitDelay = waitDelay
 	useProcessGroup(cmd)
 
 	err := cmd.Run()
 	if ctxErr := ctx.Context.Err(); ctxErr != nil {
+		// Only on cancel: after a normal exit, leave alone any daemon the CLI
+		// may have started on purpose.
 		killProcessGroup(cmd)
 		return "", fmt.Errorf("running %s: %w", cliName, ctxErr)
 	}

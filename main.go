@@ -59,6 +59,10 @@ func main() {
 	// Cancel on Ctrl-C or SIGTERM too, so that CLIs we run (which have their
 	// own process group and so miss terminal signals) are cleaned up.
 	signalCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-signalCtx.Done()
+		stop() // let a second Ctrl-C kill us outright
+	}()
 	ctx, cancel := context.WithTimeout(signalCtx, 5*time.Second)
 
 	runContext := types.Context{Context: ctx, Debug: API.Debug}
