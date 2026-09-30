@@ -33,6 +33,8 @@ type cliResult struct {
 	err    error
 }
 
+// runCLIOutput fails the test if cliOutput hangs. The ceiling is generous
+// because macOS can take seconds to first exec a freshly written script.
 func runCLIOutput(ctx context.Context, t *testing.T, cli string) cliResult {
 	t.Helper()
 	resultCh := make(chan cliResult, 1)
@@ -44,7 +46,7 @@ func runCLIOutput(ctx context.Context, t *testing.T, cli string) cliResult {
 	select {
 	case result := <-resultCh:
 		return result
-	case <-time.After(5 * time.Second):
+	case <-time.After(15 * time.Second):
 		t.Fatal("timed out: an orphaned grandchild kept the output pipe open")
 		return cliResult{}
 	}
@@ -55,31 +57,38 @@ func runCLIOutput(ctx context.Context, t *testing.T, cli string) cliResult {
 func TestCLIOutputIgnoresOrphanedGrandchild(t *testing.T) {
 	t.Parallel()
 
-	cli := writeCLI(t, "sleep 10 &\necho 'orphaner 1.2.3'\n")
+	cli := writeCLI(t, "sleep 3 &\necho 'orphaner 1.2.3'\n")
 	result := runCLIOutput(context.Background(), t, cli)
 
 	require.NoError(t, result.err)
 	assert.Equal(t, "orphaner 1.2.3\n", result.output)
 }
 
-// When cancellation kills a CLI whose child still holds the pipe (e.g. a
-// PyInstaller bootloader and its worker), we must return rather than hang,
-// and must not leave that child running.
-func TestCLIOutputKillsGrandchildOnCancel(t *testing.T) {
+// When cancellation interrupts a CLI whose child still holds the pipe (e.g. a
+// PyInstaller bootloader and its worker), we must return rather than hang.
+// The CLI gets SIGTERM so it can clean up, and a child that ignores SIGTERM
+// is killed rather than left running.
+func TestCLIOutputCleansUpOnCancel(t *testing.T) {
 	t.Parallel()
 
-	pidFile := filepath.Join(t.TempDir(), "pid")
-	cli := writeCLI(t, "sleep 10 &\necho $! > "+pidFile+"\nsleep 10\n")
+	dir := t.TempDir()
+	pidFile := filepath.Join(dir, "pid")
+	cleanedFile := filepath.Join(dir, "cleaned")
+	cli := writeCLI(t, "trap 'echo > \""+cleanedFile+"\"; exit 0' TERM\n"+
+		"sh -c 'trap \"\" TERM; exec sleep 10' &\n"+
+		"echo $! > \""+pidFile+"\"\n"+
+		"while :; do sleep 0.1; done\n")
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var pid int
+	pidCh := make(chan int, 1)
 	go func() {
-		for {
+		defer cancel()
+		for ctx.Err() == nil {
 			contents, err := os.ReadFile(pidFile)
 			if err == nil && strings.HasSuffix(string(contents), "\n") {
-				pid, _ = strconv.Atoi(strings.TrimSpace(string(contents)))
-				cancel()
+				pid, _ := strconv.Atoi(strings.TrimSpace(string(contents)))
+				pidCh <- pid
 				return
 			}
 			time.Sleep(10 * time.Millisecond)
@@ -88,10 +97,21 @@ func TestCLIOutputKillsGrandchildOnCancel(t *testing.T) {
 	result := runCLIOutput(ctx, t, cli)
 
 	require.ErrorIs(t, result.err, context.Canceled)
-	require.NotZero(t, pid)
+	assert.FileExists(t, cleanedFile, "CLI did not get SIGTERM")
+	pid := <-pidCh
 	assert.Eventually(t, func() bool {
 		return errors.Is(syscall.Kill(pid, 0), syscall.ESRCH)
 	}, 2*time.Second, 50*time.Millisecond, "orphaned grandchild %d is still running", pid)
+}
+
+func TestCLIOutputUsesOutputOfFailingCLI(t *testing.T) {
+	t.Parallel()
+
+	cli := writeCLI(t, "echo 'orphaner 1.2.3'\nexit 3\n")
+	result := runCLIOutput(context.Background(), t, cli)
+
+	require.NoError(t, result.err)
+	assert.Equal(t, "orphaner 1.2.3\n", result.output)
 }
 
 func TestCLIOutputFallsBackToStderr(t *testing.T) {

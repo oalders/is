@@ -4,6 +4,8 @@ package main
 import (
 	"context"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/alecthomas/kong"
@@ -54,7 +56,10 @@ func main() {
 	runCtx, err := parser.Parse(os.Args[1:])
 	parser.FatalIfErrorf(err)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// Cancel on Ctrl-C or SIGTERM too, so that CLIs we run (which have their
+	// own process group and so miss terminal signals) are cleaned up.
+	signalCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	ctx, cancel := context.WithTimeout(signalCtx, 5*time.Second)
 
 	runContext := types.Context{Context: ctx, Debug: API.Debug}
 	err = runCtx.Run(&runContext)
@@ -65,5 +70,6 @@ func main() {
 		exitCode = 0
 	}
 	cancel() // Cancel context before exiting
+	stop()
 	os.Exit(exitCode)
 }

@@ -20,7 +20,7 @@ const (
 	// via a "version" subcommand rather than a --version flag.
 	versionSubcommand = "version"
 	maxVersionBytes   = 64 * 1024
-	waitDelay         = 500 * time.Millisecond
+	waitDelay         = time.Second
 )
 
 func CLIOutput(ctx *types.Context, cliName string) (string, error) {
@@ -63,10 +63,11 @@ func cliOutput(ctx *types.Context, cliName string) (string, error) {
 	// bootloader's worker) holding our pipes open. WaitDelay stops us from
 	// blocking on those pipes until that orphan exits.
 	cmd.WaitDelay = waitDelay
-	killProcessGroupOnCancel(cmd)
+	useProcessGroup(cmd)
 
 	err := cmd.Run()
 	if ctxErr := ctx.Context.Err(); ctxErr != nil {
+		killProcessGroup(cmd)
 		return "", fmt.Errorf("running %s: %w", cliName, ctxErr)
 	}
 	// A non-zero exit or an orphan holding the pipes still leaves us with

@@ -2,11 +2,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"os/exec"
 	"strings"
+	"sync"
 
 	"github.com/oalders/is/attr"
 	"github.com/oalders/is/types"
@@ -73,14 +75,15 @@ func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
 		string(output),
 	), "\n")
 
+	versions, err := cliVersions(ctx, found)
+	if err != nil {
+		return err
+	}
+
 	if asJSON {
 		results := make([]map[string]string, 0, len(found))
-		for _, v := range found {
-			version, err := runCLI(ctx, v)
-			if err != nil {
-				return err
-			}
-			results = append(results, map[string]string{"path": v, attr.Version: version})
+		for i, path := range found {
+			results = append(results, map[string]string{"path": path, attr.Version: versions[i]})
 		}
 		encoded, err := toJSON(results)
 		if err != nil {
@@ -97,13 +100,32 @@ func runWhich(ctx *types.Context, name string, all, asJSON bool) error {
 
 	rows := make([][]string, 0, len(found))
 
-	for _, path := range found {
-		version, err := runCLI(ctx, path)
-		if err != nil {
-			return err
-		}
-		rows = append(rows, []string{path, version})
+	for i, path := range found {
+		rows = append(rows, []string{path, versions[i]})
 	}
 	success(ctx, tabular(headers, rows, false))
 	return nil
+}
+
+// cliVersions looks up the version of each path concurrently. A path whose
+// lookup times out gets an empty version rather than failing every path.
+func cliVersions(ctx *types.Context, paths []string) ([]string, error) {
+	versions := make([]string, len(paths))
+	errs := make([]error, len(paths))
+	var waitGroup sync.WaitGroup
+	for idx, path := range paths {
+		waitGroup.Go(func() {
+			pathCtx := *ctx // runCLI may set Success, so don't share it
+			version, err := runCLI(&pathCtx, path)
+			if errors.Is(err, context.DeadlineExceeded) {
+				if ctx.Debug {
+					log.Printf("⏰ %s: %v", path, err)
+				}
+				err = nil
+			}
+			versions[idx], errs[idx] = version, err
+		})
+	}
+	waitGroup.Wait()
+	return versions, errors.Join(errs...)
 }
