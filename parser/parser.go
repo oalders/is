@@ -72,18 +72,18 @@ func CLIOutput(ctx *types.Context, cliName string) (string, error) {
 func readCLIOutput(ctx *types.Context, args []string, stdout, stderr io.Reader) (string, error) {
 	var stdoutOutput, stderrOutput []byte
 	var stdoutErr, stderrErr error
-	var wg sync.WaitGroup
+	var waitGroup sync.WaitGroup
 
-	wg.Add(2)
+	waitGroup.Add(2)
 	go func() {
-		defer wg.Done()
+		defer waitGroup.Done()
 		stdoutOutput, stdoutErr = io.ReadAll(stdout)
 	}()
 	go func() {
-		defer wg.Done()
+		defer waitGroup.Done()
 		stderrOutput, stderrErr = io.ReadAll(stderr)
 	}()
-	wg.Wait()
+	waitGroup.Wait()
 
 	if stdoutErr != nil {
 		return "", fmt.Errorf("reading stdout: %w", stdoutErr)

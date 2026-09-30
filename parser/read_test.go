@@ -1,3 +1,4 @@
+//nolint:testpackage // This test validates the unexported stream reader.
 package parser
 
 import (
@@ -18,7 +19,7 @@ type synchronizedReader struct {
 	hasStarted   bool
 }
 
-func (r *synchronizedReader) Read(p []byte) (int, error) {
+func (r *synchronizedReader) Read(buffer []byte) (int, error) {
 	if !r.hasStarted {
 		close(r.started)
 		r.hasStarted = true
@@ -29,12 +30,14 @@ func (r *synchronizedReader) Read(p []byte) (int, error) {
 		return 0, io.EOF
 	}
 
-	n := copy(p, r.output)
+	n := copy(buffer, r.output)
 	r.output = r.output[n:]
 	return n, nil
 }
 
 func TestReadCLIOutputDrainsBothStreams(t *testing.T) {
+	t.Parallel()
+
 	stdoutStarted := make(chan struct{})
 	stderrStarted := make(chan struct{})
 	stdout := &synchronizedReader{
